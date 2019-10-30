@@ -124,19 +124,6 @@ def tetra_cnt(seq_list):
 	return dedupped_df
 
 
-def mock_SAG(fasta_file, chunk_num):
-	# currently just returns half of the genome as a mock SAG
-	genome_contigs = get_seqs(fasta_file)
-	if len(genome_contigs) != 1:
-		half_list = genome_contigs[::int(chunk_num)]
-	else:
-		header = genome_contigs[0][0]
-		seq = genome_contigs[0][1]
-		half_list = [(header,seq[:int(len(seq)/2)])]
-
-	return half_list
-
-
 def main():
 
 	sag_path = sys.argv[1]
@@ -148,11 +135,6 @@ def main():
 	rpkm_per_pass = 0.51
 	gmm_per_pass = 0.51
 	num_components = 20
-
-
-	# for testing
-	#msag_chunk = 5 # i.e. 2 = 50% , 5 = 20%, 10 = 10%, ...
-	#save_path = '/home/rmclaughlin/Ryan/SAG-plus/CAMI_I_HIGH/sag_redux/' + str(msag_chunk) + '/'
 	save_path = sys.argv[4]
 	
 	###############
@@ -202,25 +184,15 @@ def main():
 	elif isfile(sag_path):
 		print('[SAG+]: File specified, processing %s' % basename(sag_path))
 		sag_list = [sag_path]
+	
 	# TODO: subcontig function has issue with trailing kmers, needs to stop at last 10K
-	# Build Mock SAGs (for testing only), else extract all SAG contigs and headers
-	test = False # (True for testing only)
 	print('[SAG+]: Loading/Building subcontigs for all SAGs')
 	sag_contigs_dict = {}
 	sag_subcontigs_dict = {}
 	for sag_file in sag_list:
 		sag_basename = basename(sag_file)
 		sag_id = sag_basename.rsplit('.', 1)[0]
-		if test == True: # (True for testing only)
-			if isfile(join(mocksag_path, sag_id + '.mockSAG.fasta')):
-				sag_contigs = get_seqs(join(mocksag_path, sag_id + '.mockSAG.fasta'))
-			else:
-				sag_contigs = mock_SAG(sag_file, msag_chunk) # run 2, 3, 5, 10 (50%, 33%, 20%, 10%)
-				with open(join(mocksag_path, sag_id + '.mockSAG.fasta'), 'w') as mock_out:
-					seq_rec_list = ['\n'.join(['>'+rec[0], rec[1]]) for rec in sag_contigs]
-					mock_out.write('\n'.join(seq_rec_list))
-		else:
-			sag_contigs = get_seqs(sag_file)
+		sag_contigs = get_seqs(sag_file)
 		sag_contigs_dict[sag_id] = sag_contigs
 
 
@@ -765,12 +737,8 @@ def main():
 		# Combine SAG and final recruits
 		with open(join(ext_path, sag_id + '.extend_SAG.fasta'), 'w') as cat_file:
 			data = []
-			if test == True:
-				with open(join(mocksag_path, sag_id + '.mockSAG.fasta'), 'r') as sag_in:
-					data.extend(sag_in.readlines())
-			else:
-				with open(sag_file, 'r') as sag_in:
-					data.extend(sag_in.readlines())
+			with open(sag_file, 'r') as sag_in:
+				data.extend(sag_in.readlines())
 			with open(join(final_path, sag_id + '.final_recruits.fasta'), 'r') as \
 				recruits_in:
 				data.extend(recruits_in.readlines())
@@ -786,16 +754,11 @@ def main():
 		merge_config = join(asm_sag_path, sag_id + '_merge_config')
 		with open(merge_config, 'w') as merge_out:
 			count = '2'
-			if test == True:
-				mockSAG_path = join(mocksag_path, sag_id + '.mockSAG.fasta')
-			else:
-				mockSAG_path = sag_file
-
 			final_recruits_path = join(final_path, sag_id + '.final_recruits.fasta')
 			min_len = '100'
 			master_file = join(asm_sag_path, sag_id + '.merged.ctg.fasta')
 			gap = '11'
-			config_list = ['count='+count, 'data='+mockSAG_path+',title=SAG',
+			config_list = ['count='+count, 'data='+sag_file+',title=SAG',
 							'data='+final_recruits_path+',title=final_recruits',
 							'min_length='+min_len, 'Master_file='+master_file,
 							'Gap='+gap
@@ -842,20 +805,12 @@ def main():
 		
 		# Use SPAdes to co-assemble mSAG and recruits
 		print('[SAG+]: Re-assembling SAG with final recruits using SPAdes')
-		if test == True:
-			spades_cmd = ['/home/rmclaughlin/bin/SPAdes-3.13.0-Linux/bin/spades.py',
-							'--sc', '-k', '21,33,55,77,99,127', '--careful', '--only-assembler',
-							'-o', join(asm_path, sag_id), '--trusted-contigs',
-							join(mocksag_path, sag_id + '.mockSAG.fasta'),
-							'--s1', join(final_path, sag_id + '.final_recruits.fasta')
-							]
-		else:
-			spades_cmd = ['/home/rmclaughlin/bin/SPAdes-3.13.0-Linux/bin/spades.py',
-							'--sc', '-k', '21,33,55,77,99,127', '--careful', '--only-assembler',
-							'-o', join(asm_path, sag_id), '--trusted-contigs',
-							sag_file,
-							'--s1', join(final_path, sag_id + '.final_recruits.fasta')
-							]
+		spades_cmd = ['/home/rmclaughlin/bin/SPAdes-3.13.0-Linux/bin/spades.py',
+						'--sc', '-k', '21,33,55,77,99,127', '--careful', '--only-assembler',
+						'-o', join(asm_path, sag_id), '--trusted-contigs',
+						sag_file,
+						'--s1', join(final_path, sag_id + '.final_recruits.fasta')
+						]
 		run_spades = Popen(spades_cmd, stdout=PIPE)
 		print(run_spades.communicate()[0].decode())
 		move_cmd = ['mv', join(join(asm_path, sag_id),'scaffolds.fasta'),
