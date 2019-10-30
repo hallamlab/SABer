@@ -34,7 +34,7 @@ def kmer_slide(seq_list, n, o_lap):
 
 
 def get_frags(seq, l_max, o_lap):
-	"Fragments seq into subseqs of length l_max and overlap of o_lap"
+	"Fragments the seq into subseqs of length l_max and overlap of o_lap"
 	"Leftover tail overlaps with tail-1"
 	seq_frags = []
 	if (l_max != 0) and (len(seq) > l_max):
@@ -126,19 +126,20 @@ def tetra_cnt(seq_list):
 
 def main():
 
+	# input files or paths
 	sag_path = sys.argv[1]
 	mg_file = sys.argv[2]
 	mg_raw_file_list = sys.argv[3]
-	#mg_rpkm_file = '/home/rmclaughlin/Ryan/SAG-plus/CAMI_I_HIGH/sag_redux/RPKMs/CAMI_high_GoldStandardAssembly.rpkm.tsv'
+	save_path = sys.argv[4]
+
+	# magic numbers
 	max_contig_len = 10000
 	overlap_len = 2000
 	rpkm_per_pass = 0.51
 	gmm_per_pass = 0.51
 	num_components = 20
-	save_path = sys.argv[4]
 	
-	###############
-	mocksag_path = join(save_path, 'mockSAGs')
+	# sub dirs
 	subcontig_path = join(save_path, 'subcontigs')
 	sig_path = join(save_path, 'signatures')
 	mhr_path = join(save_path, 'minhash_recruits')
@@ -152,8 +153,6 @@ def main():
 	# Check if dirs exist, make them if they don't
 	if not path.exists(save_path):
 		makedirs(save_path)
-	if not path.exists(mocksag_path):
-		makedirs(mocksag_path)
 	if not path.exists(subcontig_path):
 		makedirs(subcontig_path)
 	if not path.exists(sig_path):
@@ -194,7 +193,6 @@ def main():
 		sag_id = sag_basename.rsplit('.', 1)[0]
 		sag_contigs = get_seqs(sag_file)
 		sag_contigs_dict[sag_id] = sag_contigs
-
 
 		# Build sub sequences for each SAG contig
 		if isfile(join(subcontig_path, sag_id + '.subcontigs.fasta')):
