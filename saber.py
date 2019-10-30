@@ -340,14 +340,20 @@ def main():
 		rpkm_output_list = []
 		for line in raw_data:
 			split_line = line.strip('\n').split('\t')
-			pe1 = split_line[0]
-			pe2	= split_line[1]
+			if len(split_line) == 2:
+				pe1 = split_line[0]
+				pe2	= split_line[1]
+				mem_cmd = ['/usr/local/bin/bwa', 'mem', '-t', '2',
+					join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
+					]
+			else: # if the fastq is interleaved
+				pe1 = split_line[0]
+				mem_cmd = ['/usr/local/bin/bwa', 'mem', '-t', '2',
+					join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
+					]
 			pe_basename = basename(pe1)
 			pe_id = pe_basename.split('.')[0]
 			print('[SAG+]: Running BWA mem on %s' % pe_id)
-			mem_cmd = ['/usr/local/bin/bwa', 'mem', '-t', '2',
-						join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
-						]
 			with open(join(ara_path, pe_id + '.sam'), 'w') as sam_file:
 				with open(join(ara_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
 					run_mem = Popen(mem_cmd, stdout=sam_file,
