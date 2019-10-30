@@ -36,6 +36,7 @@ def kmer_slide(seq_list, n, o_lap):
 def get_frags(seq, l_max, o_lap):
 	"Fragments the seq into subseqs of length l_max and overlap of o_lap"
 	"Leftover tail overlaps with tail-1"
+	"Currently, if a seq is < l_max, it returns the full seq"
 	seq_frags = []
 	if (l_max != 0) and (len(seq) > l_max):
 		offset = l_max - o_lap
