@@ -443,7 +443,7 @@ def main():
 											mg_rpkm_pass_stat_df['IQ_25']
 			mg_rpkm_pass_stat_df['upper_bound'] = mg_rpkm_pass_stat_df['IQ_75'] + \
 													(1.5 * mg_rpkm_pass_stat_df['IQR'])
-			mg_rpkm_pass_stat_df['lower_bound'] = mg_rpkm_pass_stat_df['IQ_75'] - \
+			mg_rpkm_pass_stat_df['lower_bound'] = mg_rpkm_pass_stat_df['IQ_25'] - \
 													(1.5 * mg_rpkm_pass_stat_df['IQR'])
 
 			# Use passed MG from MHR to recruit more seqs
