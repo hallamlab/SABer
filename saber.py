@@ -313,7 +313,6 @@ def main():
 	#####################################################################################
 	# NOTE: This is built to accept output from 'join_rpkm_out.py' script
 	# TODO: Add RPKM cmd call to run within this script
-	# TODO: OR impliment Salmon TPM calculation software?
 	print('[SAG+]: Starting Abundance Recruitment Algorithm')
 
 	print('[SAG+]: Checking for RPKM values table for %s' % mg_id)
@@ -398,12 +397,17 @@ def main():
 											!= 'UNMAPPED'
 											]
 	mg_rpkm_trim_df.set_index('Sequence_name', inplace=True)
+	mg_rpkm_trim_df.to_csv(join(ara_path, mg_id + '.cleaned_rpkm.tsv'),
+							sep='\t'
+							)
 	# Normalize data
 	normed_rpkm_df = pd.DataFrame(normalize(mg_rpkm_trim_df.values),
 								columns=mg_rpkm_trim_df.columns,
 								index=mg_rpkm_trim_df.index
 								)
-
+	normed_rpkm_df.to_csv(join(ara_path, mg_id + '.normmed_rpkm.tsv'),
+							sep='\t'
+							)
 	# get MinHash "passed" mg rpkms
 	rpkm_pass_list = []
 	for sag_id in set(minhash_df['sag_id']):
@@ -441,6 +445,7 @@ def main():
 													(1.5 * mg_rpkm_pass_stat_df['IQR'])
 			mg_rpkm_pass_stat_df['lower_bound'] = mg_rpkm_pass_stat_df['IQ_75'] - \
 													(1.5 * mg_rpkm_pass_stat_df['IQR'])
+
 			# Use passed MG from MHR to recruit more seqs
 			iqr_pass_df = mg_rpkm_test_df.copy()
 			for i, col_nm in enumerate(mg_rpkm_test_df.columns):
@@ -461,6 +466,9 @@ def main():
 				ara_out.write('\n'.join(['\t'.join(x) for x in pass_list]))
 		rpkm_pass_list.extend(pass_list)
 
+	mg_rpkm_pass_stat_df.to_csv(join(ara_path, sag_id + '.passed_rpkm_stats.tsv'),
+								sep='\t'
+								)
 	rpkm_df = pd.DataFrame(rpkm_pass_list, columns=['sag_id', 'subcontig_id',
 													'contig_id'
 													])
@@ -490,6 +498,7 @@ def main():
 											rpkm_recruit_max_df['percent_max']
 											]
 	rpkm_max_df = rpkm_df[rpkm_df['contig_id'].isin(list(rpkm_max_only_df['contig_id']))]
+	sys.exit()
 	#####################################################################################
 	#####################################################################################
 	#####################################################################################
