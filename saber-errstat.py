@@ -110,7 +110,7 @@ if not path.exists(err_path):
 # count all bp's for Source genomes, Source MetaG, MockSAGs
 src_metag_file = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/CAMI_high_GoldStandardAssembly.fasta'
 src_genome_path = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/source_genomes/'
-mocksag_path = files_path + 'mockSAGs/'
+mocksag_path = sys.argv[2]
 # list all source genomes
 src_genome_list = [joinpath(src_genome_path, f) for f in listdir(src_genome_path)
 			if ((f.split('.')[-1] == 'fasta' or f.split('.')[-1] == 'fna') and

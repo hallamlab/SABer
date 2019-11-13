@@ -809,6 +809,7 @@ def main():
 		run_clean = Popen(clean_cmd, stdout=PIPE)
 		
 		# Use SPAdes to co-assemble mSAG and recruits
+		# TODO: use SAG as "trusted contigs" and assemble the raw reads recruited from sample(s)
 		print('[SAG+]: Re-assembling SAG with final recruits using SPAdes')
 		spades_cmd = ['/home/rmclaughlin/bin/SPAdes-3.13.0-Linux/bin/spades.py',
 						'--sc', '-k', '21,33,55,77,99,127', '--careful', '--only-assembler',
