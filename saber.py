@@ -137,7 +137,7 @@ def main():
 	max_contig_len = 10000
 	overlap_len = 2000
 	rpkm_per_pass = 0.51
-	gmm_per_pass = 0.51
+	gmm_per_pass = 0.10
 	num_components = 20
 	
 	# sub dirs
@@ -441,10 +441,15 @@ def main():
 			mg_rpkm_pass_stat_df['IQ_99'] = list(mg_rpkm_pass_df.quantile(0.99))
 			mg_rpkm_pass_stat_df['IQR'] = mg_rpkm_pass_stat_df['IQ_75'] - \
 											mg_rpkm_pass_stat_df['IQ_25']
+			# calc Tukey Fences
 			mg_rpkm_pass_stat_df['upper_bound'] = mg_rpkm_pass_stat_df['IQ_75'] + \
 													(1.5 * mg_rpkm_pass_stat_df['IQR'])
 			mg_rpkm_pass_stat_df['lower_bound'] = mg_rpkm_pass_stat_df['IQ_25'] - \
 													(1.5 * mg_rpkm_pass_stat_df['IQR'])
+
+			mg_rpkm_pass_stat_df.to_csv(join(ara_path, sag_id + '.passed_rpkm_stats.tsv'),
+										sep='\t'
+										)
 
 			# Use passed MG from MHR to recruit more seqs
 			iqr_pass_df = mg_rpkm_test_df.copy()
@@ -466,9 +471,6 @@ def main():
 				ara_out.write('\n'.join(['\t'.join(x) for x in pass_list]))
 		rpkm_pass_list.extend(pass_list)
 
-	mg_rpkm_pass_stat_df.to_csv(join(ara_path, sag_id + '.passed_rpkm_stats.tsv'),
-								sep='\t'
-								)
 	rpkm_df = pd.DataFrame(rpkm_pass_list, columns=['sag_id', 'subcontig_id',
 													'contig_id'
 													])
@@ -498,7 +500,7 @@ def main():
 											rpkm_recruit_max_df['percent_max']
 											]
 	rpkm_max_df = rpkm_df[rpkm_df['contig_id'].isin(list(rpkm_max_only_df['contig_id']))]
-	sys.exit()
+	
 	#####################################################################################
 	#####################################################################################
 	#####################################################################################
@@ -759,7 +761,7 @@ def main():
 			join_data = '\n'.join(data).replace('\n\n', '\n')
 			cat_file.write(join_data)
 		
-		
+	'''
 		# Use CISA to integrate the SAG and Recruited contigs
 		asm_sag_path = join(asm_path, sag_id)
 		if not path.exists(asm_sag_path):
@@ -886,7 +888,7 @@ def main():
 					]
 	run_checkm = Popen(checkm_cmd, stdout=PIPE)
 	print(run_checkm.communicate()[0].decode())
-	
+	'''
 if __name__ == "__main__":
 	main()
 
