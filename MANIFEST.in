@@ -1,0 +1,4 @@
+include LICENSE requirements.txt README.md
+recursive-include src/saber *
+recursive-include tests/test-data *
+global-exclude .idea
