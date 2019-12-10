@@ -118,7 +118,8 @@ def check_out_dirs(save_path):
     """
     
     if not os.path.exists(save_path):
-            os.makedirs(save_path)
+        os.makedirs(save_path)
+
     sd_list = ['subcontigs', 'signatures', 'minhash_recruits',
                      'rpkm_recruits', 'tetra_recruits', 'final_recruits',
                      'extend_SAGs', 're_assembled', 'checkM'

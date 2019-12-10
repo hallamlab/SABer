@@ -4,12 +4,11 @@ __author__ = 'Ryan J McLaughlin'
 from pip._internal.operations import freeze
 import logging
 import saber
-import sys
 import saber.args as s_args
 import saber.classy as s_class
 import saber.logger as s_log
 import saber.utilities as s_utils
-
+import saber.minhash_recruiter as mhr
 
 def info(sys_args):
     """
@@ -28,9 +27,6 @@ def info(sys_args):
     logging.info("SABer version " + saber.version + ".\n")
 
     # Write the version of all python deps
-    deps_list = ["numpy", "scipy", "scikit-learn", "pandas",
-                 "biopython", "sourmash", "umap"]
-
     py_deps = {x.split('==')[0]:x.split('==')[1] for x in freeze.freeze()}
 
 
@@ -86,12 +82,14 @@ def recruit(sys_args):
                                              recruit_s.max_contig_len,
                                              recruit_s.overlap_len
                                             )
-    
+    # Run MinHash recruiting algorithm
+    minhash_df = mhr.run_minhash_recruiter(save_dirs_dict['signatures'], save_dirs_dict['minhash_recruits'],
+                                           sag_subcontigs, mg_subcontigs
+                                           )
 
-                      
 
 
-    # MinHash Recruit Module
+
     # Abundance Recruit Module
     # Tetranucleotide Hz Recruit Module
     # Collect and join all recruits
