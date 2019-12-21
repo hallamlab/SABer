@@ -1,3 +1,7 @@
+import matplotlib
+matplotlib.use('agg')
+import seaborn as sns
+import matplotlib.pyplot as plt
 import sys
 from os import listdir, makedirs, path
 from os.path import isfile, join, isdir, basename, dirname
@@ -7,13 +11,14 @@ import pandas as pd
 from itertools import product, islice
 import umap
 from sklearn.mixture import GaussianMixture as GMM
-from sklearn.isotonic import IsotonicRegression as IsoReg
+from sklearn.isotonic import IsotonicRegression
 from sklearn.preprocessing import normalize
 import numpy as np
 from collections import Counter
 from subprocess import Popen, PIPE
 from sklearn.mixture import BayesianGaussianMixture as BayGMM
 import pickle
+from sklearn.preprocessing import StandardScaler
 
 
 def kmer_slide(seq_list, n, o_lap):
@@ -135,7 +140,7 @@ def main():
 	overlap_len = 2000
 	rpkm_per_pass = 0.51
 	gmm_per_pass = 0.01
-	num_components = 20
+	num_components = 50
 	
 	# sub dirs
 	subcontig_path = join(save_path, 'subcontigs')
@@ -309,7 +314,6 @@ def main():
 	##########################                                 ##########################
 	#####################################################################################
 	# NOTE: This is built to accept output from 'join_rpkm_out.py' script
-	# TODO: Add RPKM cmd call to run within this script
 	print('[SABer]: Starting Abundance Recruitment Algorithm')
 
 	print('[SABer]: Checking for RPKM values table for %s' % mg_id)
@@ -320,7 +324,7 @@ def main():
 		print('[SABer]: Building %s RPKM table' % mg_id)
 		# Use BWA to build an index for metagenome assembly
 		print('[SABer]: Creating index with BWA')
-		bwa_cmd = ['bwa', 'index',
+		bwa_cmd = ['/usr/local/bin/bwa', 'index',
 					join(subcontig_path, mg_id + '.subcontigs.fasta')
 					]
 		with open(join(ara_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
@@ -339,12 +343,12 @@ def main():
 			if len(split_line) == 2:
 				pe1 = split_line[0]
 				pe2	= split_line[1]
-				mem_cmd = ['bwa', 'mem', '-t', '2',
+				mem_cmd = ['/usr/local/bin/bwa', 'mem', '-t', '2',
 					join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
 					]
 			else: # if the fastq is interleaved
 				pe1 = split_line[0]
-				mem_cmd = ['bwa', 'mem', '-t', '2',
+				mem_cmd = ['/usr/local/bin/bwa', 'mem', '-t', '2',
 					join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
 					]
 			pe_basename = basename(pe1)
@@ -358,7 +362,7 @@ def main():
 					run_mem.communicate()
 
 			print('[SABer]: Calculating RPKM for %s' % pe_id)
-			rpkm_cmd = ['rpkm',
+			rpkm_cmd = ['/usr/local/bin/rpkm',
 							'-c', join(subcontig_path, mg_id + '.subcontigs.fasta'),
 							'-a', join(ara_path, pe_id + '.sam'),
 							'-o', join(ara_path, pe_id + '.rpkm.csv')
@@ -373,7 +377,7 @@ def main():
 			rpkm_output_list.append(join(ara_path, pe_id + '.rpkm.csv'))
 
 		print('[SABer]: Merging RPKM results for all raw data')
-		merge_cmd = ['python', 'join_rpkm_out.py',
+		merge_cmd = ['python', '/home/rmclaughlin/bin/JunkDrawer/join_rpkm_out.py',
 						','.join(rpkm_output_list), join(ara_path, mg_id + '.rpkm.tsv')
 						]
 		with open(join(ara_path, mg_id + '.merge_stdout.log'), 'w') as stdmerge_file:
@@ -413,8 +417,6 @@ def main():
 		if isfile(join(ara_path, sag_id + '.ara_recruits.tsv')):
 			with open(join(ara_path, sag_id + '.ara_recruits.tsv'), 'r') as ara_in:
 				pass_list = [x.rstrip('\n').split('\t') for x in ara_in.readlines()]
-			with open(join(ara_path, sag_id + '.ara_failed.tsv'), 'r') as ara_in:
-				fail_list = [x.rstrip('\n').split('\t') for x in ara_in.readlines()]
 		else:
 			sag_mh_pass_df = minhash_df[minhash_df['sag_id'] == sag_id]
 			mh_cntg_pass_list = set(sag_mh_pass_df['subcontig_id'])
@@ -452,9 +454,7 @@ def main():
 										)
 
 			# Use passed MG from MHR to recruit more seqs,
-			# also build fail df for GMM training
 			iqr_pass_df = mg_rpkm_test_df.copy()
-			iqr_fail_df = mg_rpkm_test_df.copy()
 			for i, col_nm in enumerate(mg_rpkm_test_df.columns):
 				pass_stats = mg_rpkm_pass_stat_df.iloc[[i]]
 				pass_max = pass_stats['upper_bound'].values[0]
@@ -462,29 +462,18 @@ def main():
 				iqr_pass_df = iqr_pass_df.loc[(iqr_pass_df[col_nm] >= pass_min) &
 												(iqr_pass_df[col_nm] <= pass_max)
 												]
-				iqr_fail_df = iqr_fail_df.loc[(iqr_fail_df[col_nm] < pass_min) |
-												(iqr_fail_df[col_nm] > pass_max)
-												]
 
 			pass_list = []
 			join_rpkm_recruits = set(list(iqr_pass_df.index) + list(mh_cntg_pass_list))
 			for md_nm in join_rpkm_recruits:
 				pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
 
-			fail_list = []
-			join_rpkm_failures = set(list(iqr_fail_df.index))
-			for md_nm in join_rpkm_failures:
-				fail_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
-
 			print('[SABer]: Recruited %s subcontigs to %s' % (len(pass_list), sag_id))
 			print('[SABer]: %s subcontigs failed RPKM filter for %s' % (len(fail_list), sag_id))
 			with open(join(ara_path, sag_id + '.ara_recruits.tsv'), 'w') as ara_out:
 				ara_out.write('\n'.join(['\t'.join(x) for x in pass_list]))
-			with open(join(ara_path, sag_id + '.ara_failed.tsv'), 'w') as ara_out:
-				ara_out.write('\n'.join(['\t'.join(x) for x in fail_list]))
 
 		rpkm_pass_list.extend(pass_list)
-		rpkm_fail_list.extend(fail_list)
 
 	rpkm_df = pd.DataFrame(rpkm_pass_list, columns=['sag_id', 'subcontig_id',
 													'contig_id'
@@ -516,38 +505,6 @@ def main():
 												rpkm_recruit_max_df['percent_max']
 												]
 	rpkm_max_df = rpkm_df[rpkm_df['contig_id'].isin(list(rpkm_max_only_df['contig_id']))]
-	
-	
-	# Now the same for the fails, but only keep 100% failures
-	rpkm_fail_df = pd.DataFrame(rpkm_fail_list, columns=['sag_id', 'subcontig_id',
-													'contig_id'
-													])
-	# Count # of subcontigs recruited to each SAG via rpkm
-	rpkm_fail_cnt_df = rpkm_fail_df.groupby(['sag_id', 'contig_id']).count().reset_index()
-	rpkm_fail_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
-	# Build subcontig count for each MG contig
-	mg_contig_list = [x.rsplit('_', 1)[0] for x in mg_headers]
-	mg_tot_df = pd.DataFrame(zip(mg_contig_list, mg_headers),
-									columns=['contig_id', 'subcontig_id'])
-	mg_tot_cnt_df = mg_tot_df.groupby(['contig_id']).count().reset_index()
-	mg_tot_cnt_df.columns = ['contig_id', 'subcontig_total']
-	rpkm_fail_recruit_df = rpkm_fail_cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
-	rpkm_fail_recruit_df['percent_recruited'] = rpkm_fail_recruit_df['subcontig_recruits'] / \
-											rpkm_fail_recruit_df['subcontig_total']
-	rpkm_fail_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
-	rpkm_fail_recruit_filter_df = rpkm_fail_recruit_df.loc[rpkm_fail_recruit_df['percent_recruited'] >=
-													1.0
-													]
-	mg_contig_fail_per_max_df = rpkm_fail_recruit_filter_df.groupby(['contig_id'])[
-											'percent_recruited'].max().reset_index()
-	mg_contig_fail_per_max_df.columns = ['contig_id', 'percent_max']
-	rpkm_recruit_fail_max_df = rpkm_fail_recruit_filter_df.merge(mg_contig_fail_per_max_df, how='left',
-													on='contig_id')
-	# Now pass contigs that have the maximum recruit % of subcontigs
-	rpkm_max_fail_only_df = rpkm_recruit_fail_max_df.loc[rpkm_recruit_fail_max_df['percent_recruited'] >=
-												rpkm_recruit_fail_max_df['percent_max']
-												]
-	rpkm_max_fail_df = rpkm_fail_df[rpkm_fail_df['contig_id'].isin(list(rpkm_max_fail_only_df['contig_id']))]
 	
 	#####################################################################################
 	#####################################################################################
@@ -606,24 +563,9 @@ def main():
 			mg_rpkm_pass_index = [x for x in mg_tetra_df.index
 							if x in mg_rpkm_contig_list
 							]
-			# get list of subset of RPKM complete failures
-			# subset fail df to size of sag tetra df
-			n_val = len(list(sag_tetra_df.index))
-			rpkm_sub_fail_df = rpkm_max_fail_df.sample(n=n_val, random_state=42)
-
-			mg_rpkm_contig_fail_list = list(rpkm_sub_fail_df.loc[rpkm_sub_fail_df['sag_id'] == sag_id
-													]['subcontig_id'].values
-													)
-			mg_rpkm_fail_index = [x for x in mg_tetra_df.index
-							if x in mg_rpkm_contig_fail_list
-							]
 
 			mg_tetra_filter_df = mg_tetra_df.loc[mg_tetra_df.index.isin(mg_rpkm_pass_index)]
-			# Build Fail tetra df
-			mg_tetra_fail_df = mg_tetra_df.loc[mg_tetra_df.index.isin(mg_rpkm_fail_index)]
-
-
-			concat_tetra_df = pd.concat([sag_tetra_df, mg_tetra_filter_df, mg_tetra_fail_df])
+			concat_tetra_df = pd.concat([sag_tetra_df, mg_tetra_filter_df])
 			normed_tetra_df = pd.DataFrame(normalize(concat_tetra_df.values),
 											columns=concat_tetra_df.columns,
 											index=concat_tetra_df.index
@@ -634,7 +576,7 @@ def main():
 			mg_normed_tetra_df = normed_tetra_df.loc[
 									normed_tetra_df.index.isin(mg_tetra_filter_df.index)
 									]
-
+			
 			# UMAP for Dimension reduction of tetras
 			sag_features = sag_normed_tetra_df.values
 			sag_targets = sag_normed_tetra_df.index.values
@@ -642,20 +584,19 @@ def main():
 			mg_targets = mg_normed_tetra_df.index.values
 			normed_features = normed_tetra_df.values
 			normed_targets = normed_tetra_df.index.values
+			
 			print('[SABer]: Dimension reduction of tetras with UMAP')
 			umap_trans = umap.UMAP(n_neighbors=2, min_dist=0.0,
 							n_components=num_components, metric='manhattan',
 							random_state=42
 							).fit_transform(normed_features)
-
 			pc_col_names = ['pc' + str(x) for x in range(1, num_components + 1)]
 			umap_df = pd.DataFrame(umap_trans, columns=pc_col_names, index=normed_targets)
-
 			sag_umap_df = umap_df.loc[umap_df.index.isin(sag_tetra_df.index)]
 			mg_umap_df = umap_df.loc[umap_df.index.isin(mg_tetra_filter_df.index)]
-			mg_fail_umap_df = umap_df.loc[umap_df.index.isin(mg_tetra_fail_df.index)]
-			train_df = pd.concat([sag_umap_df, mg_fail_umap_df])
-			train_vals = [1 if x in list(sag_tetra_df.index) else 0 for x in train_df.index]
+			sag_train_vals = [1 for x in sag_umap_df.index]
+
+			print('[SABer]: Calculating AIC/BIC for GMM components')
 			n_components = np.arange(1, 100, 1)
 			models = [GMM(n, random_state=42)
 				  for n in n_components]
@@ -664,15 +605,15 @@ def main():
 			for i, model in enumerate(models):
 				n_comp = n_components[i]
 				try:
-					bic = model.fit(train_df.values,
-									train_vals).bic(train_df.values
+					bic = model.fit(sag_umap_df.values,
+									sag_train_vals).bic(sag_umap_df.values
 									)
 					bics.append(bic)
 				except:
 					print('[WARNING]: BIC failed with %s components' % n_comp)
 				try:
-					aic = model.fit(train_df.values,
-									train_vals).aic(train_df.values
+					aic = model.fit(sag_umap_df.values,
+									sag_train_vals).aic(sag_umap_df.values
 									)
 					aics.append(aic)
 				except:
@@ -685,24 +626,22 @@ def main():
 					)
 			print('[SABer]: Using AIC as guide for GMM components')
 			print('[SABer]: Training GMM on SAG tetras')
+
 			gmm = GMM(n_components=min_aic_comp, random_state=42
-							).fit(train_df.values, train_vals
-							)
+							).fit(sag_umap_df.values)
 			print('[SABer]: GMM Converged: ', gmm.converged_)
-			try:
-				train_scores = gmm.score_samples(train_df.values)
+			try: # TODO: add predict and predict_proba to this and output all to table
 				sag_scores = gmm.score_samples(sag_umap_df.values)
-				sag_scores_df = pd.DataFrame(data=sag_scores, index=sag_targets)
+				sag_scores_df = pd.DataFrame(data=sag_scores, index=sag_umap_df.index.values)
 				sag_score_min = min(sag_scores_df.values)[0]
 				sag_score_max = max(sag_scores_df.values)[0]
 				mg_scores = gmm.score_samples(mg_umap_df.values)
-				mg_scores_df = pd.DataFrame(data=mg_scores, index=mg_targets)
+				mg_scores_df = pd.DataFrame(data=mg_scores, index=mg_umap_df.index.values)
 				gmm_pass_df = mg_scores_df.loc[(mg_scores_df[0] >= sag_score_min) &
 												(mg_scores_df[0] <= sag_score_max)
 												]
 				# And is has to be from the RPKM pass list
 				gmm_pass_df = gmm_pass_df.loc[gmm_pass_df.index.isin(mg_rpkm_pass_index)]
-
 				pass_list = []
 				for md_nm in gmm_pass_df.index.values:
 					pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
