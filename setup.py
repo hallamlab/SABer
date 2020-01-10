@@ -36,9 +36,7 @@ SETUP_METADATA = \
         #"py_modules": [splitext(basename(path))[0] for path in glob('src/*.py')],
         "entry_points": {'console_scripts': ['saber = saber.__main__:main']},
         "classifiers": CLASSIFIERS,
-        "install_requires": ["numpy", "pytest", "sourmash", "pandas",
-        						'sklearn'
-        						]
+        "install_requires": ["numpy", "pytest"]
     }
 
 setup(**SETUP_METADATA)
