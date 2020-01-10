@@ -1,0 +1,41 @@
+10/01 11:39:22 INFO:
+[SABer]: File specified, processing 1036647.gt1kb.mockSAG.fasta
+
+10/01 11:39:22 INFO:
+[SABer]: Loading/Building subcontigs for 1036647.gt1kb.mockSAG
+
+10/01 11:39:22 INFO:
+[SABer]: Loading/Building subcontigs for metaG_1036647
+
+10/01 11:39:22 INFO:
+[SABer]: Starting MinHash Recruitment Algorithm
+
+10/01 11:39:22 INFO:
+[SABer]: Loading metaG_1036647 Signatures
+10/01 11:39:22 INFO:
+[SABer]: Comparing Signatures of SAGs to MetaG contigs
+
+10/01 11:39:22 INFO:
+[SABer]: Loading 1036647.gt1kb.mockSAG and MetaG signature recruit list
+
+10/01 11:39:22 INFO:
+[SABer]: Starting Abundance Recruitment Algorithm
+
+10/01 11:39:22 INFO:
+[SABer]: Checking for abundance table for metaG_1036647
+
+10/01 11:39:22 INFO:
+[SABer]: Loading  metaG_1036647 abundance table
+
+10/01 11:39:22 INFO:
+[SABer]: Calulating/Loading abundance stats for 1036647.gt1kb.mockSAG
+
+10/01 11:39:22 INFO:
+[SABer]: Loading tetramer Hz matrix for metaG_1036647
+
+10/01 11:39:22 INFO:
+[SABer]: Loading  1036647.gt1kb.mockSAG tetramer Hz recruit list
+
+10/01 11:39:23 INFO:
+SABer has finished successfully.
+

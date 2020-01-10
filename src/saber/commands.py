@@ -93,7 +93,7 @@ def recruit(sys_args):
                                            sag_subcontigs, mg_subcontigs, recruit_s.jacc_thresh
                                            )
     # Abundance Recruit Module
-    abund_df = abr.run_abund_recruiter(save_dirs_dict['subcontigs'], save_dirs_dict['rpkm_recruits'], mg_subcontigs,
+    abund_df = abr.run_abund_recruiter(save_dirs_dict['subcontigs'], save_dirs_dict['abund_recruits'], mg_subcontigs,
                                        recruit_s.mg_raw_file_list, minhash_df, recruit_s.rpkm_per_pass
                                        )
     # Tetranucleotide Hz Recruit Module
