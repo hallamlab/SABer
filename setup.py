@@ -1,7 +1,6 @@
 from glob import glob
 from os.path import basename
 from os.path import splitext
-from setuptools import Extension
 from setuptools import setup, find_packages
 
 with open("README.md", "r") as readme:
@@ -14,8 +13,7 @@ CLASSIFIERS = [
     "Natural Language :: English",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.8",
     "Topic :: Scientific/Engineering :: Bioinformatics",
 ]
 
@@ -33,12 +31,11 @@ SETUP_METADATA = \
         "license": "GPL-3.0",
         "packages": find_packages('src', exclude=["tests"]),
         "include_package_data": True,
-        "package_dir": {'samsum': 'src/saber'},  # Necessary for proper importing
+        "package_dir": {'saber': 'src/saber'},  # Necessary for proper importing
         #"package_data": {'tests': ["tests/test-data/*.sam"]},
-        "py_modules": [splitext(basename(path))[0] for path in glob('src/*.py')],
+        #"py_modules": [splitext(basename(path))[0] for path in glob('src/*.py')],
         "entry_points": {'console_scripts': ['saber = saber.__main__:main']},
         "classifiers": CLASSIFIERS,
-        #"ext_modules": [fasta_module, sam_module],
         "install_requires": ["numpy", "pytest", "sourmash", "pandas",
         						'sklearn'
         						]
