@@ -5,6 +5,9 @@ import os
 import re
 import subprocess
 import logging
+from itertools import product, islice
+from collections import Counter
+import pandas as pd
 
 
 def is_exe(fpath):
@@ -181,7 +184,7 @@ def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
                 sub_rec_list = ['\n'.join(['>'+rec[0], rec[1]])
                                 for rec in zip(headers, subs)
                                 ]
-                sub_out.write('\n'.join(sub_rec_list))
+                sub_out.write('\n'.join(sub_rec_list) + '\n')
     
     return (samp_id, headers, subs)
 
