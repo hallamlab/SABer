@@ -5,6 +5,7 @@ from os.path import join as o_join
 from subprocess import Popen
 from sklearn.preprocessing import normalize
 from samsum import commands
+import sys
 
 def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_list,
                         minhash_df, ss_per_pass=0.51
@@ -19,17 +20,20 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
                                )
     else:
         logging.info('[SABer]: Building %s abundance table\n' % mg_id)
-        # Use BWA to build an index for metagenome assembly
-        logging.info('[SABer]: Creating index with BWA\n')
-        bwa_cmd = ['bwa', 'index',
-                   o_join(subcontig_path, mg_id + '.subcontigs.fasta')
-                   ] #TODO: how to get install path for executables?
-        with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
-            with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
-                run_bwa = Popen(bwa_cmd, stdout=stdout_file,
-                                stderr=stderr_file
-                                )
-                run_bwa.communicate()
+        mg_sub_path = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
+        # is is indexed?
+        index_ext_list = ['amb', 'ann', 'bwt', 'pac', 'sa']
+        check_ind_list = ['.'.join([mg_sub_path, x]) for x in index_ext_list]
+        if False in (isfile(f) for f in check_ind_list):
+            # Use BWA to build an index for metagenome assembly
+            logging.info('[SABer]: Creating index with BWA\n')
+            bwa_cmd = ['bwa', 'index', mg_sub_path] #TODO: how to get install path for executables?
+            with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
+                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                    run_bwa = Popen(bwa_cmd, stdout=stdout_file,
+                                    stderr=stderr_file
+                                    )
+                    run_bwa.communicate()
 
         # Process raw metagenomes to calculate abundances
         with open(mg_raw_file_list, 'r') as raw_fa_in:
@@ -52,13 +56,16 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
                            ] #TODO: how to get install path for executables?
             pe_basename = basename(pe1)
             pe_id = pe_basename.split('.')[0]
-            logging.info('[SABer]: Running BWA mem on %s\n' % pe_id)
-            with open(o_join(abr_path, pe_id + '.sam'), 'w') as sam_file:
-                with open(o_join(abr_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
-                    run_mem = Popen(mem_cmd, stdout=sam_file,
-                                    stderr=stderr_file
-                                    )
-                    run_mem.communicate()
+            # BWA sam file exists?
+            mg_sam_out = o_join(abr_path, pe_id + '.sam')
+            if isfile(mg_sam_out) == False:
+                logging.info('[SABer]: Running BWA mem on %s\n' % pe_id)
+                with open(mg_sam_out, 'w') as sam_file:
+                    with open(o_join(abr_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
+                        run_mem = Popen(mem_cmd, stdout=sam_file,
+                                        stderr=stderr_file
+                                        )
+                        run_mem.communicate()
 
             logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)
             # implement samsum API
