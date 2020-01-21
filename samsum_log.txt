@@ -1,0 +1,47 @@
+17/01 18:37:27 DEBUG:
+Using FASTA module to retrieve sequence lengths from FASTA... 
+17/01 18:37:27 DEBUG:
+done.
+
+17/01 18:37:27 DEBUG:
+Converting list of sequence lengths into dictionary... 
+17/01 18:37:27 DEBUG:
+done.
+
+17/01 18:37:27 INFO:
+380 sequences were read from tests/test-data/output/subcontigs/metaG_1036647.subcontigs.fasta
+
+17/01 18:37:27 DEBUG:
+Loading the reference sequences into objects... 
+17/01 18:37:27 DEBUG:
+done.
+
+17/01 18:40:29 DEBUG:
+133103 of unique read names returned by _sam_module.
+
+17/01 18:40:29 INFO:
+Instantiating alignment data... 
+17/01 18:40:31 DEBUG:
+Weight for 'NA' is greater than 1 (8388608.0).
+
+17/01 18:40:31 INFO:
+done.
+
+17/01 18:40:31 DEBUG:
+Info for stats:
+	Alignment file: 'tests/test-data/output/abund_recruits/RH_S005__insert_270.sam'
+	Reference sequence file: 'tests/test-data/output/subcontigs/metaG_1036647.subcontigs.fasta'
+
+17/01 18:40:31 INFO:
+Associating read alignments with their respective reference sequences... 
+17/01 18:40:31 INFO:
+done.
+
+17/01 18:40:31 INFO:
+Filtering out reference sequences with coverage below 50%... 
+17/01 18:40:32 INFO:
+done.
+
+17/01 18:40:33 INFO:
+samsum has finished successfully.
+

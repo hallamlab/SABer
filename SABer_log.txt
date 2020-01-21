@@ -1,269 +1,41 @@
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: File specified, processing 1036647.gt1kb.mockSAG.fasta
 
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Loading/Building subcontigs for 1036647.gt1kb.mockSAG
 
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Loading/Building subcontigs for metaG_1036647
 
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Starting MinHash Recruitment Algorithm
 
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Loading metaG_1036647 Signatures
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Comparing Signatures of SAGs to MetaG contigs
 
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Loading 1036647.gt1kb.mockSAG and MetaG signature recruit list
 
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Starting Abundance Recruitment Algorithm
 
-16/01 12:09:23 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Checking for abundance table for metaG_1036647
 
-16/01 12:09:23 INFO:
-[SABer]: Building metaG_1036647 abundance table
+21/01 10:17:30 INFO:
+[SABer]: Loading  metaG_1036647 abundance table
 
-16/01 12:09:23 INFO:
-[SABer]: Raw reads in interleaved file...
-
-16/01 12:09:23 INFO:
-[SABer]: Calculating TPM with samsum for RH_S001__insert_270
-
-16/01 12:09:23 DEBUG:
-Using FASTA module to retrieve sequence lengths from FASTA... 
-16/01 12:09:23 DEBUG:
-done.
-
-16/01 12:09:23 DEBUG:
-Converting list of sequence lengths into dictionary... 
-16/01 12:09:23 DEBUG:
-done.
-
-16/01 12:09:23 INFO:
-380 sequences were read from tests/test-data/output/subcontigs/metaG_1036647.subcontigs.fasta
-
-16/01 12:09:23 DEBUG:
-Loading the reference sequences into objects... 
-16/01 12:09:23 DEBUG:
-done.
-
-16/01 12:12:28 DEBUG:
-553032 of unique read names returned by _sam_module.
-
-16/01 12:12:28 INFO:
-Instantiating alignment data... 
-16/01 12:12:32 DEBUG:
-Weight for 'NA' is greater than 1 (8388608.0).
-
-16/01 12:12:32 INFO:
-done.
-
-16/01 12:12:32 INFO:
-Associating read alignments with their respective reference sequences... 
-16/01 12:12:33 INFO:
-done.
-
-16/01 12:12:33 INFO:
-Filtering out reference sequences with coverage below 50%... 
-16/01 12:12:36 INFO:
-done.
-
-16/01 12:12:36 INFO:
-[SABer]: Raw reads in interleaved file...
-
-16/01 12:12:36 INFO:
-[SABer]: Calculating TPM with samsum for RH_S002__insert_270
-
-16/01 12:12:36 DEBUG:
-Using FASTA module to retrieve sequence lengths from FASTA... 
-16/01 12:12:36 DEBUG:
-done.
-
-16/01 12:12:36 DEBUG:
-Converting list of sequence lengths into dictionary... 
-16/01 12:12:36 DEBUG:
-done.
-
-16/01 12:12:36 INFO:
-380 sequences were read from tests/test-data/output/subcontigs/metaG_1036647.subcontigs.fasta
-
-16/01 12:12:36 DEBUG:
-Loading the reference sequences into objects... 
-16/01 12:12:36 DEBUG:
-done.
-
-16/01 12:15:36 DEBUG:
-323642 of unique read names returned by _sam_module.
-
-16/01 12:15:36 INFO:
-Instantiating alignment data... 
-16/01 12:15:38 DEBUG:
-Weight for 'NA' is greater than 1 (8388608.0).
-
-16/01 12:15:38 INFO:
-done.
-
-16/01 12:15:38 INFO:
-Associating read alignments with their respective reference sequences... 
-16/01 12:15:39 INFO:
-done.
-
-16/01 12:15:39 INFO:
-Filtering out reference sequences with coverage below 50%... 
-16/01 12:15:40 INFO:
-done.
-
-16/01 12:15:40 INFO:
-[SABer]: Raw reads in interleaved file...
-
-16/01 12:15:40 INFO:
-[SABer]: Calculating TPM with samsum for RH_S003__insert_270
-
-16/01 12:15:40 DEBUG:
-Using FASTA module to retrieve sequence lengths from FASTA... 
-16/01 12:15:40 DEBUG:
-done.
-
-16/01 12:15:40 DEBUG:
-Converting list of sequence lengths into dictionary... 
-16/01 12:15:40 DEBUG:
-done.
-
-16/01 12:15:40 INFO:
-380 sequences were read from tests/test-data/output/subcontigs/metaG_1036647.subcontigs.fasta
-
-16/01 12:15:40 DEBUG:
-Loading the reference sequences into objects... 
-16/01 12:15:40 DEBUG:
-done.
-
-16/01 12:18:34 DEBUG:
-275226 of unique read names returned by _sam_module.
-
-16/01 12:18:34 INFO:
-Instantiating alignment data... 
-16/01 12:18:36 DEBUG:
-Weight for 'NA' is greater than 1 (8388608.0).
-
-16/01 12:18:36 INFO:
-done.
-
-16/01 12:18:36 INFO:
-Associating read alignments with their respective reference sequences... 
-16/01 12:18:37 INFO:
-done.
-
-16/01 12:18:37 INFO:
-Filtering out reference sequences with coverage below 50%... 
-16/01 12:18:38 INFO:
-done.
-
-16/01 12:18:38 INFO:
-[SABer]: Raw reads in interleaved file...
-
-16/01 12:18:38 INFO:
-[SABer]: Calculating TPM with samsum for RH_S004__insert_270
-
-16/01 12:18:38 DEBUG:
-Using FASTA module to retrieve sequence lengths from FASTA... 
-16/01 12:18:38 DEBUG:
-done.
-
-16/01 12:18:38 DEBUG:
-Converting list of sequence lengths into dictionary... 
-16/01 12:18:38 DEBUG:
-done.
-
-16/01 12:18:38 INFO:
-380 sequences were read from tests/test-data/output/subcontigs/metaG_1036647.subcontigs.fasta
-
-16/01 12:18:38 DEBUG:
-Loading the reference sequences into objects... 
-16/01 12:18:38 DEBUG:
-done.
-
-16/01 12:21:35 DEBUG:
-204128 of unique read names returned by _sam_module.
-
-16/01 12:21:35 INFO:
-Instantiating alignment data... 
-16/01 12:21:37 DEBUG:
-Weight for 'NA' is greater than 1 (8388608.0).
-
-16/01 12:21:37 INFO:
-done.
-
-16/01 12:21:37 INFO:
-Associating read alignments with their respective reference sequences... 
-16/01 12:21:37 INFO:
-done.
-
-16/01 12:21:37 INFO:
-Filtering out reference sequences with coverage below 50%... 
-16/01 12:21:38 INFO:
-done.
-
-16/01 12:21:38 INFO:
-[SABer]: Raw reads in interleaved file...
-
-16/01 12:21:38 INFO:
-[SABer]: Calculating TPM with samsum for RH_S005__insert_270
-
-16/01 12:21:38 DEBUG:
-Using FASTA module to retrieve sequence lengths from FASTA... 
-16/01 12:21:38 DEBUG:
-done.
-
-16/01 12:21:38 DEBUG:
-Converting list of sequence lengths into dictionary... 
-16/01 12:21:38 DEBUG:
-done.
-
-16/01 12:21:38 INFO:
-380 sequences were read from tests/test-data/output/subcontigs/metaG_1036647.subcontigs.fasta
-
-16/01 12:21:38 DEBUG:
-Loading the reference sequences into objects... 
-16/01 12:21:38 DEBUG:
-done.
-
-16/01 12:24:32 DEBUG:
-133103 of unique read names returned by _sam_module.
-
-16/01 12:24:32 INFO:
-Instantiating alignment data... 
-16/01 12:24:33 DEBUG:
-Weight for 'NA' is greater than 1 (8388608.0).
-
-16/01 12:24:33 INFO:
-done.
-
-16/01 12:24:33 INFO:
-Associating read alignments with their respective reference sequences... 
-16/01 12:24:33 INFO:
-done.
-
-16/01 12:24:33 INFO:
-Filtering out reference sequences with coverage below 50%... 
-16/01 12:24:34 INFO:
-done.
-
-16/01 12:24:34 INFO:
-[SABer]: Merging results for all samsum output
-
-16/01 12:24:34 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Calulating/Loading abundance stats for 1036647.gt1kb.mockSAG
 
-16/01 12:24:35 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Loading tetramer Hz matrix for metaG_1036647
 
-16/01 12:24:35 INFO:
+21/01 10:17:30 INFO:
 [SABer]: Loading  1036647.gt1kb.mockSAG tetramer Hz recruit list
 
-16/01 12:24:35 INFO:
+21/01 10:17:30 INFO:
 SABer has finished successfully.
 

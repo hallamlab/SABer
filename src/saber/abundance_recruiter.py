@@ -4,7 +4,9 @@ from os.path import isfile, basename
 from os.path import join as o_join
 from subprocess import Popen
 from sklearn.preprocessing import normalize
-from samsum import commands
+from samsum import commands, file_parsers
+import samsum.alignment_utils as ss_aln_utils
+
 import sys
 
 def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_list,
@@ -39,6 +41,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
         with open(mg_raw_file_list, 'r') as raw_fa_in:
             raw_data = raw_fa_in.readlines()
         ss_output_list = []
+        sample_count = 0
         for line in raw_data:
             split_line = line.strip('\n').split('\t')
             if len(split_line) == 2:
@@ -68,15 +71,30 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
                         run_mem.communicate()
 
             logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)
-            # implement samsum API
             mg_input = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
             sam_input = o_join(abr_path, pe_id + '.sam')
+            mg_ss_out = sam_input.rsplit('.', 1)[0] + '.ss.csv'
+            '''
+            ss_cmd = ['samsum', 'stats', '-f', mg_input, '-a', sam_input, '--multireads',
+                      '-o', mg_ss_out
+                      ]
+            with open(o_join(abr_path, pe_id + '.ss_log.txt'), 'w') as ss_log:
+                run_ss = Popen(ss_cmd, stdout=ss_log, stderr=ss_log)
+                run_ss.communicate()
+            '''
+            ss_df = pd.read_csv(mg_ss_out, header=0, sep=',')
+            ss_df['rso_sample_index'] = sample_count
+            ss_output_list.append(ss_df)
+            sample_count += 1
+
+            '''
+            # implement samsum API
             ref_seq_abunds = commands.ref_sequence_abundances(aln_file=sam_input,
                                                               seq_file=mg_input, multireads=True
                                                               )
-            ss_output_list.append(ref_seq_abunds)
-
+            '''
         logging.info('[SABer]: Merging results for all samsum output\n')
+        '''
         # Merge API output for each raw sample file
         refseq_header_list = ss_output_list[0].keys()
         refseq_merge_list = []
@@ -98,10 +116,22 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
                                                               'length', 'reads_mapped',
                                                               'weight_total', 'fpkm', 'tpm'
                                                               ])
-        mg_ss_df.to_csv(o_join(abr_path, mg_id + '.samsum_merged.tsv'), sep='\t')
-
+        '''
+        mg_ss_df = pd.concat(ss_output_list)
+        # re-calculate TPM and intermediates
+        mg_ss_df['new_RPK'] = mg_ss_df['Fragments']/(mg_ss_df['contig_len']/1000)
+        samp2rpkmsum = {}
+        for sample in set(mg_ss_df['rso_sample_index']):
+            sub_ss_df = mg_ss_df.loc[mg_ss_df['rso_sample_index'] == sample]
+            sum_RPKM = sub_ss_df['new_RPK'].sum(axis=0)
+            samp2rpkmsum[sample] = sum_RPKM
+        mg_ss_df['per_mil_scaler'] = [samp2rpkmsum[x]/1e6 for x in mg_ss_df['rso_sample_index']]
+        mg_ss_df['new_TPM'] = mg_ss_df['new_RPK']/mg_ss_df['per_mil_scaler']
+        mg_ss_df.to_csv(o_join(abr_path, mg_id + '.samsum_merged.tsv'), sep='\t', index=False)
     # extract TPM and pivot for MG
-    mg_ss_trim_df = mg_ss_df[['subcontig_id', 'sample_index', 'tpm']]
+    mg_ss_trim_df = mg_ss_df[['RefSequence', 'rso_sample_index', 'new_TPM']]
+    mg_ss_trim_df.columns = ['subcontig_id', 'sample_index', 'tpm']
+    mg_ss_trim_df.dropna(how='any', inplace=True)
     # TODO: pivot sample_index column to create TPM matrix
     mg_ss_piv_df = pd.pivot_table(mg_ss_trim_df, values='tpm', index='subcontig_id',
                                   columns='sample_index')
