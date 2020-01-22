@@ -74,14 +74,12 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
             mg_input = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
             sam_input = o_join(abr_path, pe_id + '.sam')
             mg_ss_out = sam_input.rsplit('.', 1)[0] + '.ss.csv'
-            '''
             ss_cmd = ['samsum', 'stats', '-f', mg_input, '-a', sam_input, '--multireads',
                       '-o', mg_ss_out
                       ]
             with open(o_join(abr_path, pe_id + '.ss_log.txt'), 'w') as ss_log:
                 run_ss = Popen(ss_cmd, stdout=ss_log, stderr=ss_log)
                 run_ss.communicate()
-            '''
             ss_df = pd.read_csv(mg_ss_out, header=0, sep=',')
             ss_df['rso_sample_index'] = sample_count
             ss_output_list.append(ss_df)

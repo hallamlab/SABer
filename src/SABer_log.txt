@@ -1,0 +1,3608 @@
+22/01 10:43:07 INFO:
+[SABer]: Directory specified, looking for SAGs
+
+22/01 10:43:07 INFO:
+[SABer]: Found 596 SAGs in directory
+
+22/01 10:43:07 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BQ_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CD_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BZ_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1285_Q_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1220_Q_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1035996.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1048924.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036569.014.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1021_N_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1030911.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BA_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1049026.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1052956.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1139_F_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for 1021_BD_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:08 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048972.030.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for evo_1052956.020.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AA_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036569.028.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BI_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BM_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CM_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AZ_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036686.021.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1139_Q_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1030731.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BU_run189_run193.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1036653.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1286_U_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1030764.gt1kb.mockSAG
+
+22/01 10:43:09 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CM_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048975.026.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1049074.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AI_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1030815.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1036647.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1036581.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BP_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AG_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1030770.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1139_P_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1286_T_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for evo_1052956.019.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1030725.gt1kb.mockSAG
+
+22/01 10:43:10 INFO:
+[SABer]: Loading/Building subcontigs for 1036008.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AE_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BK_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1048576.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1036563.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1021_O_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BL_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AG_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1286_C_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1021_AI_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1030722.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1021_BE_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1048930.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1220_CH_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CL_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1139_G_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AB_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AW_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AT_run189_run193.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1021_W_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1030788.gt1kb.mockSAG
+
+22/01 10:43:11 INFO:
+[SABer]: Loading/Building subcontigs for 1048987.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048987.032.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BG_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1220_F_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1036551.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1285_Z_run188_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1030890.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048975.038.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AN_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BY_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1021_L_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.037.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1030872.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1220_R_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1036620.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1035948.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BH_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AV_run189_run193.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AU_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:12 INFO:
+[SABer]: Loading/Building subcontigs for 1048777.gt1kb.mockSAG
+
+22/01 10:43:13 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CG_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:13 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CO_run191_run197_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:13 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036662.016.mockSAG
+
+22/01 10:43:13 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030827.033.mockSAG
+
+22/01 10:43:13 INFO:
+[SABer]: Loading/Building subcontigs for 1030827.gt1kb.mockSAG
+
+22/01 10:43:13 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CB_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1030965.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1036668.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1048918.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AB_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1285_K_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1139_R_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BR_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1220_CC_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BK_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AY_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:14 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CO_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048969.002.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1287_H_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AG_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1030758.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1030875.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1048957.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BN_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AB_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1021_T_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1030710.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1030719.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AF_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:15 INFO:
+[SABer]: Loading/Building subcontigs for 1030704.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1049014.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BO_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AC_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1049041.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BT_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BA_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1139_S_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CM_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1021_M_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1036542.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AX_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AK_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1048786.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1052986.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1286_W_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:16 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AV_run191_run197_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BJ_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1030833.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036686.006.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CN_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AZ_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AT_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AW_run189_run193.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AC_run158.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1035909.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1220_M_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1036776.gt1kb.mockSAG
+
+22/01 10:43:17 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BK_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:18 INFO:
+[SABer]: Loading/Building subcontigs for 1286_E_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:19 INFO:
+[SABer]: Loading/Building subcontigs for 1036794.gt1kb.mockSAG
+
+22/01 10:43:19 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BF_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:19 INFO:
+[SABer]: Loading/Building subcontigs for 1021_U_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:19 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BC_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:20 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BQ_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:20 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AO_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:20 INFO:
+[SABer]: Loading/Building subcontigs for 1036545.gt1kb.mockSAG
+
+22/01 10:43:20 INFO:
+[SABer]: Loading/Building subcontigs for 1220_CK_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:20 INFO:
+[SABer]: Loading/Building subcontigs for 1365_E_run201.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:20 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036569.031.mockSAG
+
+22/01 10:43:20 INFO:
+[SABer]: Loading/Building subcontigs for 1053016.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BK_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for evo_1220_W.003.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1287_G_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1053043.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BN_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1035936.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CJ_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1048933.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048963.008.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CQ_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1220_CI_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CK_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1285_U_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AY_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1049086.gt1kb.mockSAG
+
+22/01 10:43:21 INFO:
+[SABer]: Loading/Building subcontigs for 1048984.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1285_H_run188_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1048999.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BP_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BS_run189_run193.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1030773.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1036659.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1287_P_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CR_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1021_R_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1048876.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1286_K_run191_run197_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1220_W_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1036611.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AH_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AK_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BG_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1285_M_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:22 INFO:
+[SABer]: Loading/Building subcontigs for 1048894.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1036560.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CL_run158.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1030791.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CI_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for evo_1220_Q.030.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AJ_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030827.025.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036569.020.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1049211.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1030785.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BE_run189_run193.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1036569.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.021.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BO_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1036002.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AC_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1285_T_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CI_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:23 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BM_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BT_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AT_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CF_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1030857.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AP_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1036605.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CP_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1048975.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CC_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1049077.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AQ_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1030767.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1036650.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1220_V_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1036596.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1021_S_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:24 INFO:
+[SABer]: Loading/Building subcontigs for 1048990.gt1kb.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.009.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for 1139_V_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for 1285_I_run188_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for 1030818.gt1kb.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for evo_1052956.014.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for evo_1052962.028.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for 1048927.gt1kb.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for 1030947.gt1kb.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for 1021_BA_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BL_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:25 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CH_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1287_F_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1048972.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1049038.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1285_L_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1036602.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for evo_1220_Q.021.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AF_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BU_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1021_H_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AL_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1139_O_run158_run162_run167.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1048912.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CH_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:26 INFO:
+[SABer]: Loading/Building subcontigs for 1030830.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1036662.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1365_G_run201.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AU_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1036797.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1220_C_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BH_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AD_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BW_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AA_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1287_D_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1049017.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1030707.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1139_C_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1035945.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AH_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:27 INFO:
+[SABer]: Loading/Building subcontigs for 1036665.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1048915.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1285_O_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AV_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BV_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AE_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048975.035.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BL_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1220_T_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036686.032.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AS_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AW_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036569.002.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CI_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1220_G_run172.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1021_I_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BM_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.003.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1220_U_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:28 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AR_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1365_F_run201.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1036548.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1030746.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1036671.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BE_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.017.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1030929.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1030713.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AZ_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1048954.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1286_F_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CR_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BI_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048969.022.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1286_A_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1220_B_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:29 INFO:
+[SABer]: Loading/Building subcontigs for 1036689.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AE_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1021_Q_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1030893.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1220_I_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1048774.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BN_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AM_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CJ_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CI_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1036623.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1220_Z_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1036761.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1285_N_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:30 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BW_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BR_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1030839.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1036734.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1030824.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1048906.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1049047.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1287_B_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036674.014.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1035915.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1036722.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BO_run172_run176_run188_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1048762.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AO_run189_run193.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AL_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1052962.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AM_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1220_CE_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1220_K_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BA_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1052980.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for 1048780.gt1kb.mockSAG
+
+22/01 10:43:31 INFO:
+[SABer]: Loading/Building subcontigs for evo_1220_W.025.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1286_X_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BY_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1048765.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BW_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1049008.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1036770.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1030860.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1036632.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1285_Y_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1048855.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CL_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1036725.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1035912.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1286_V_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1365_I_run201.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1036698.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1021_F_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BL_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:32 INFO:
+[SABer]: Loading/Building subcontigs for 1286_N_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1287_C_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.013.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CD_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CQ_run191_run197_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AJ_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1139_J_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CH_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AZ_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036569.006.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AP_run189_run193_run202_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1030821.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1048903.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BV_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1048771.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1036779.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1365_P_run201.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1036764.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1285_X_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BX_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:33 INFO:
+[SABer]: Loading/Building subcontigs for 1052989.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CA_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1036806.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1048951.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1365_H_run201.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CG_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1030743.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AN_run189_run193.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1049053.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1021_G_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1036674.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AI_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for evo_1052962.015.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1285_C_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BC_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CC_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1048873.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1036587.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1048891.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1036578.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1287_O_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:34 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BP_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1220_N_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BT_run162_run167.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1030794.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1220_H_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BC_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BX_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1021_AZ_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1036719.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1030809.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1053046.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1286_L_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1035933.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1030956.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1048936.gt1kb.mockSAG
+
+22/01 10:43:35 INFO:
+[SABer]: Loading/Building subcontigs for 1285_W_run188_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1220_CG_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1053013.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for evo_1220_Q.034.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1049029.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1048963.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1048981.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1035984.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1035999.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CD_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CP_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AX_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1010920.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BI_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BB_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BU_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1048882.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AY_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CK_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:36 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AH_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1035990.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CN_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1021_AC_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1287_Y_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1036758.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AQ_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1030917.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1035972.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1286_M_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1053007.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1139_I_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1049068.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1053052.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BY_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for evo_1220_Q.019.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1036710.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048963.035.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BQ_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1365_B_run201_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036686.005.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AN_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:37 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AA_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:38 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BZ_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:38 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CE_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:38 INFO:
+[SABer]: Loading/Building subcontigs for 1285_A_run188_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:38 INFO:
+[SABer]: Loading/Building subcontigs for 1048867.gt1kb.mockSAG
+
+22/01 10:43:38 INFO:
+[SABer]: Loading/Building subcontigs for 1036593.gt1kb.mockSAG
+
+22/01 10:43:38 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AM_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:38 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AF_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CB_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1035975.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1021_AN_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BQ_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BH_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1048768.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BJ_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1139_M_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1286_I_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1036677.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1285_E_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CA_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:39 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AJ_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AS_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1220_D_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BU_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AO_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1036692.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BF_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1048900.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AQ_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AQ_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:40 INFO:
+[SABer]: Loading/Building subcontigs for 1030935.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1036638.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1021_B_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1048948.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1049002.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1036773.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CH_run158_run162_run167.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CG_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for evo_1052962.017.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AP_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1021_AR_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1048909.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1139_U_run158.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1285_D_run188_run192.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for 1021_AE_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:41 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.036.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AK_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BG_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1036686.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1220_L_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036662.017.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BT_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AN_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1049059.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1030749.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1049044.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CC_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1286_H_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CP_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BC_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1052983.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CK_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BI_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:42 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.011.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for evo_1052962.024.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CL_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BL_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1036572.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.005.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1036590.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1048864.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1036656.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1285_G_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1030761.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CC_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1049071.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1048879.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1285_BG_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1220_Y_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1030734.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CE_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1036575.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for evo_1036569.038.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1365_O_run201.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:43 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AR_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1036746.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BE_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048972.034.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1048969.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1049023.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1053019.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1036713.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1030803.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1035924.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1287_AL_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BV_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1287_I_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1048582.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BD_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1365_D_run201_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048972.019.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1049062.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1286_AH_run191_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1048960.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1021_Y_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1053010.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1036752.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1035978.gt1kb.mockSAG
+
+22/01 10:43:44 INFO:
+[SABer]: Loading/Building subcontigs for 1287_CM_run206.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1220_BW_run172_run176.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for evo_1220_W.027.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1285_CB_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1139_CD_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1035987.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1287_BZ_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1285_F_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1049080.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1048888.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1021_AG_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048963.038.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1220_CD_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1139_AS_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1030845.gt1kb.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for evo_1048987.039.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030719.028.mockSAG
+
+22/01 10:43:45 INFO:
+[SABer]: Loading/Building subcontigs for 1286_CA_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1036617.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1286_BE_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1021_A_run134.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1036584.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1139_BS_run158_run162.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1048657.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1286_Q_run191.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1036599.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1049065.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1030797.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AG_run188_run192_run197.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1035897.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for evo_1030827.038.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1285_AR_run189.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:46 INFO:
+[SABer]: Loading/Building subcontigs for 1220_AV_run172_run176_run188.final.scaffolds.gt1kb.mockSAG
+
+22/01 10:43:53 INFO:
+[SABer]: Loading/Building subcontigs for CAMI_high_GoldStandardAssembly
+
+22/01 10:44:12 INFO:
+[SABer]: Starting MinHash Recruitment Algorithm
+
+22/01 10:44:12 INFO:
+[SABer]: Loading CAMI_high_GoldStandardAssembly Signatures
+22/01 10:44:12 INFO:
+[SABer]: Comparing Signatures of SAGs to MetaG contigs
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1285_BQ_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1287_CD_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1139_BZ_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1285_Q_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1220_Q_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1035996.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1048924.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading evo_1036569.014.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1021_N_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1030911.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1286_BA_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1049026.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1052956.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1139_F_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1021_BD_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading evo_1048972.030.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading evo_1052956.020.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1286_AA_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading evo_1036569.028.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1285_BI_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1139_BM_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1285_CM_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1139_AZ_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading evo_1036686.021.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1139_Q_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1030731.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1285_BU_run189_run193.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1036653.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1286_U_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1030764.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1139_CM_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading evo_1048975.026.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1049074.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1220_AI_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1030815.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1036647.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1036581.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1285_BP_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1220_AG_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1030770.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1139_P_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1286_T_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading evo_1052956.019.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1030725.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1036008.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1287_AE_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1286_BK_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1048576.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1036563.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1021_O_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1139_BL_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1286_AG_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1286_C_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1021_AI_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1030722.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1021_BE_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:12 INFO:
+[SABer]: Loading 1048930.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_CH_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_CL_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_G_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_AB_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_AW_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_AT_run189_run193.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1021_W_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030788.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048987.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1048987.032.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_BG_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_F_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036551.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_Z_run188_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030890.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1048975.038.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_AN_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_BY_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1021_L_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1030719.037.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030872.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_R_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036620.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1035948.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_BH_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_AV_run189_run193.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_AU_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048777.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_CG_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_CO_run191_run197_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1036662.016.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1030827.033.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030827.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_CB_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030965.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036668.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048918.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_AB_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_K_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_R_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_BR_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_CC_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_BK_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_AY_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_CO_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1048969.002.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_H_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_AG_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030758.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030875.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048957.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_BN_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_AB_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1021_T_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030710.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030719.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_AF_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030704.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1049014.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_BO_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_AC_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1049041.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_BT_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_BA_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_S_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_CM_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1021_M_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036542.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_AX_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_AK_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048786.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1052986.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_W_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_AV_run191_run197_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_BJ_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030833.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1036686.006.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_CN_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_AZ_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_AT_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_AW_run189_run193.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_AC_run158.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1035909.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_M_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036776.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_BK_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_E_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036794.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_BF_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1021_U_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_BC_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_BQ_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_AO_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036545.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_CK_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1365_E_run201.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1036569.031.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1053016.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_BK_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1220_W.003.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_G_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1053043.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_BN_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1035936.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_CJ_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048933.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1048963.008.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_CQ_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_CI_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_CK_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_U_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_AY_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1049086.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048984.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_H_run188_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048999.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_BP_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_BS_run189_run193.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030773.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036659.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_P_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_CR_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1021_R_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048876.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_K_run191_run197_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_W_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036611.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_AH_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_AK_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_BG_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_M_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048894.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036560.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_CL_run158.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030791.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_CI_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1220_Q.030.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_AJ_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1030827.025.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1036569.020.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1049211.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030785.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_BE_run189_run193.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036569.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1030719.021.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_BO_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036002.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_AC_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_T_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_CI_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_BM_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_BT_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_AT_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_CF_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030857.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_AP_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036605.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1285_CP_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048975.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1287_CC_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1049077.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1286_AQ_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1030767.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036650.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1220_V_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1036596.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1021_S_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1048990.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading evo_1030719.009.mockSAG and MetaG signature recruit list
+
+22/01 10:44:13 INFO:
+[SABer]: Loading 1139_V_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_I_run188_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030818.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1052956.014.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1052962.028.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048927.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030947.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1021_BA_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_BL_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_CH_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_F_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048972.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1049038.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_L_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036602.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1220_Q.021.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_AF_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_BU_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1021_H_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_AL_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1139_O_run158_run162_run167.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048912.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_CH_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030830.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036662.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1365_G_run201.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_AU_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036797.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_C_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1139_BH_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_AD_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_BW_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_AA_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_D_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1049017.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030707.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1139_C_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1035945.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1139_AH_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036665.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048915.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_O_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_AV_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_BV_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_AE_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1048975.035.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_BL_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_T_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1036686.032.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_AS_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_AW_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1036569.002.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_CI_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_G_run172.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1021_I_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_BM_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1030719.003.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_U_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_AR_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1365_F_run201.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036548.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030746.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036671.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_BE_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1030719.017.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030929.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030713.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_AZ_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048954.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_F_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_CR_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1139_BI_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1048969.022.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_A_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_B_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036689.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_AE_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1021_Q_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030893.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_I_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048774.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_BN_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_AM_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_CJ_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1139_CI_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036623.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_Z_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036761.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_N_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_BW_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_BR_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030839.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036734.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030824.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048906.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1049047.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1287_B_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1036674.014.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1035915.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036722.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_BO_run172_run176_run188_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048762.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_AO_run189_run193.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_AL_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1052962.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_AM_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_CE_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1220_K_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_BA_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1052980.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048780.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading evo_1220_W.025.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_X_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_BY_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048765.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1139_BW_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1049008.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036770.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1030860.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036632.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1285_Y_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1048855.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_CL_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1036725.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1035912.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1286_V_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:14 INFO:
+[SABer]: Loading 1365_I_run201.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036698.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1021_F_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_BL_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_N_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1287_C_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading evo_1030719.013.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_CD_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_CQ_run191_run197_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_AJ_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_J_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1287_CH_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_AZ_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading evo_1036569.006.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_AP_run189_run193_run202_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1030821.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048903.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_BV_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048771.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036779.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1365_P_run201.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036764.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_X_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_BX_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1052989.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_CA_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036806.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048951.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1365_H_run201.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_CG_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1030743.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_AN_run189_run193.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1049053.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1021_G_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036674.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_AI_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading evo_1052962.015.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_C_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_BC_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_CC_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048873.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036587.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048891.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036578.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1287_O_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_BP_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_N_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_BT_run162_run167.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1030794.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_H_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_BC_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_BX_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1021_AZ_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036719.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1030809.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1053046.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_L_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1035933.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1030956.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048936.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_W_run188_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_CG_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1053013.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading evo_1220_Q.034.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1049029.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048963.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048981.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1035984.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1035999.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_CD_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1287_CP_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_AX_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1010920.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_BI_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_BB_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_BU_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048882.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_AY_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1287_CK_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_AH_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1035990.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_CN_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1021_AC_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1287_Y_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036758.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_AQ_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1030917.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1035972.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_M_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1053007.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_I_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1049068.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1053052.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_BY_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading evo_1220_Q.019.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036710.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading evo_1048963.035.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_BQ_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1365_B_run201_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading evo_1036686.005.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_AN_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_AA_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_BZ_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_CE_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_A_run188_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048867.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036593.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_AM_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_AF_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_CB_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1035975.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1021_AN_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_BQ_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1220_BH_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1048768.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_BJ_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1139_M_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1286_I_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1036677.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_E_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:15 INFO:
+[SABer]: Loading 1285_CA_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1286_AJ_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1220_AS_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1220_D_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1220_BU_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1287_AO_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1036692.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1286_BF_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1048900.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1285_AQ_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1139_AQ_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1030935.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1036638.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1021_B_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1048948.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1049002.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1036773.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1139_CH_run158_run162_run167.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading 1139_CG_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:16 INFO:
+[SABer]: Loading evo_1052962.017.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_AP_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1021_AR_run134_run137WDH_run147.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1048909.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_U_run158.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1285_D_run188_run192.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1021_AE_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1030719.036.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1286_AK_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_BG_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1036686.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1220_L_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1036662.017.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1220_BT_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1287_AN_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1049059.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1030749.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1049044.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1286_CC_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1286_H_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_CP_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1220_BC_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1052983.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1286_CK_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1286_BI_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1030719.011.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1052962.024.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1287_CL_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1287_BL_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1036572.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1030719.005.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1036590.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1048864.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1036656.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1285_G_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1030761.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1285_CC_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1049071.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1048879.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1285_BG_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1220_Y_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1030734.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_CE_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1036575.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1036569.038.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1365_O_run201.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_AR_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1036746.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_BE_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1048972.034.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1048969.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1049023.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1053019.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1036713.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1030803.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1035924.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1287_AL_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1220_BV_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1287_I_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1048582.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_BD_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1365_D_run201_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1048972.019.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1049062.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1286_AH_run191_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1048960.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1021_Y_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1053010.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1036752.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1035978.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1287_CM_run206.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1220_BW_run172_run176.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading evo_1220_W.027.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1285_CB_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1139_CD_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:17 INFO:
+[SABer]: Loading 1035987.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1287_BZ_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1285_F_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1049080.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1048888.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1021_AG_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading evo_1048963.038.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1220_CD_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1139_AS_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1030845.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading evo_1048987.039.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading evo_1030719.028.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1286_CA_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1036617.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1286_BE_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1021_A_run134.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1036584.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1139_BS_run158_run162.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1048657.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1286_Q_run191.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1036599.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1049065.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1030797.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1285_AG_run188_run192_run197.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1035897.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading evo_1030827.038.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1285_AR_run189.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Loading 1220_AV_run172_run176_run188.final.scaffolds.gt1kb.mockSAG and MetaG signature recruit list
+
+22/01 10:44:18 INFO:
+[SABer]: Starting Abundance Recruitment Algorithm
+
+22/01 10:44:18 INFO:
+[SABer]: Checking for abundance table for CAMI_high_GoldStandardAssembly
+
+22/01 10:44:18 INFO:
+[SABer]: Building CAMI_high_GoldStandardAssembly abundance table
+
+22/01 10:44:18 INFO:
+[SABer]: Raw reads in interleaved file...
+
+22/01 10:44:18 INFO:
+[SABer]: Calculating TPM with samsum for RH_S001__insert_270
+
