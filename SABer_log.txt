@@ -1,74 +1,41 @@
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: File specified, processing 1036647.gt1kb.mockSAG.fasta
 
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Loading/Building subcontigs for 1036647.gt1kb.mockSAG
 
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Loading/Building subcontigs for metaG_1036647
 
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Starting MinHash Recruitment Algorithm
 
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Loading metaG_1036647 Signatures
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Comparing Signatures of SAGs to MetaG contigs
 
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Loading 1036647.gt1kb.mockSAG and MetaG signature recruit list
 
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Starting Abundance Recruitment Algorithm
 
-22/01 22:21:26 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Checking for abundance table for metaG_1036647
 
-22/01 22:21:26 INFO:
-[SABer]: Building metaG_1036647 abundance table
+23/01 14:48:54 INFO:
+[SABer]: Loading  metaG_1036647 abundance table
 
-22/01 22:21:26 INFO:
-[SABer]: Raw reads in interleaved file...
-
-22/01 22:21:26 INFO:
-[SABer]: Calculating TPM with samsum for RH_S001__insert_270
-
-22/01 22:24:11 INFO:
-[SABer]: Raw reads in interleaved file...
-
-22/01 22:24:11 INFO:
-[SABer]: Calculating TPM with samsum for RH_S002__insert_270
-
-22/01 22:27:04 INFO:
-[SABer]: Raw reads in interleaved file...
-
-22/01 22:27:04 INFO:
-[SABer]: Calculating TPM with samsum for RH_S003__insert_270
-
-22/01 22:29:48 INFO:
-[SABer]: Raw reads in interleaved file...
-
-22/01 22:29:48 INFO:
-[SABer]: Calculating TPM with samsum for RH_S004__insert_270
-
-22/01 22:32:32 INFO:
-[SABer]: Raw reads in interleaved file...
-
-22/01 22:32:32 INFO:
-[SABer]: Calculating TPM with samsum for RH_S005__insert_270
-
-22/01 22:35:12 INFO:
-[SABer]: Merging results for all samsum output
-
-22/01 22:35:12 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Calulating/Loading abundance stats for 1036647.gt1kb.mockSAG
 
-22/01 22:35:12 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Loading tetramer Hz matrix for metaG_1036647
 
-22/01 22:35:13 INFO:
+23/01 14:48:54 INFO:
 [SABer]: Loading  1036647.gt1kb.mockSAG tetramer Hz recruit list
 
-22/01 22:35:13 INFO:
+23/01 14:48:54 INFO:
 SABer has finished successfully.
 
