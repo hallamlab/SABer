@@ -70,7 +70,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
                                         )
                         run_mem.communicate()
 
-            logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)
+            logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id) # TODO: re-enable the SS API
             mg_input = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
             sam_input = o_join(abr_path, pe_id + '.sam')
             mg_ss_out = sam_input.rsplit('.', 1)[0] + '.ss.csv'
