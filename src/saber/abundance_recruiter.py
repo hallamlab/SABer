@@ -115,7 +115,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
     normed_ss_df.to_csv(o_join(abr_path, mg_id + '.samsum_normmed.tsv'),
                           sep='\t'
                           )
-    # get MinHash "passed" mg sss
+    # get MinHash "passed" mg ss
     ss_pass_list = []
     for sag_id in set(minhash_df['sag_id']):
         logging.info('[SABer]: Calulating/Loading abundance stats for %s\n' % sag_id)
@@ -125,11 +125,11 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
         else:
             sag_mh_pass_df = minhash_df[minhash_df['sag_id'] == sag_id]
             mh_cntg_pass_list = set(sag_mh_pass_df['subcontig_id'])
-            mg_ss_pass_df = normed_ss_df[
-                normed_ss_df.index.isin(mh_cntg_pass_list)
+            mg_ss_pass_df = mg_ss_piv_df[
+                mg_ss_piv_df.index.isin(mh_cntg_pass_list)
             ]
-            mg_ss_test_df = normed_ss_df[
-                ~normed_ss_df.index.isin(mh_cntg_pass_list)
+            mg_ss_test_df = mg_ss_piv_df[
+                ~mg_ss_piv_df.index.isin(mh_cntg_pass_list)
             ]
 
             mg_ss_pass_stat_df = mg_ss_pass_df.mean().reset_index()
@@ -197,7 +197,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
     ss_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
     # Only pass contigs that have the magjority of subcontigs recruited (>= 51%)
     ss_recruit_filter_df = ss_recruit_df.loc[ss_recruit_df['percent_recruited'] >=
-                                                 ss_per_pass
+                                                 float(ss_per_pass)
                                                  ]
     mg_contig_per_max_df = ss_recruit_filter_df.groupby(['contig_id'])[
         'percent_recruited'].max().reset_index()

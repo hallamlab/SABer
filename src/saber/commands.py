@@ -89,20 +89,24 @@ def recruit(sys_args):
                                              recruit_s.overlap_len
                                             )
     # Run MinHash recruiting algorithm
+    logging.info('[SABer]: Starting Kmer Recruitment Step\n')
     minhash_df = mhr.run_minhash_recruiter(save_dirs_dict['signatures'], save_dirs_dict['minhash_recruits'],
                                            sag_subcontigs, mg_subcontigs, recruit_s.jacc_thresh
                                            )
     # Abundance Recruit Module
+    logging.info('[SABer]: Starting Abundance Recruitment Step\n')
     abund_df = abr.run_abund_recruiter(save_dirs_dict['subcontigs'], save_dirs_dict['abund_recruits'], mg_subcontigs,
                                        recruit_s.mg_raw_file_list, minhash_df, recruit_s.rpkm_per_pass
                                        )
     # Tetranucleotide Hz Recruit Module
-    tetra_df = tra.run_abund_recruiter(save_dirs_dict['tetra_recruits'], sag_subcontigs, mg_subcontigs, abund_df,
+    logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
+    tetra_df_dict = tra.run_abund_recruiter(save_dirs_dict['tetra_recruits'], sag_subcontigs, mg_subcontigs, abund_df,
                                        recruit_s.num_components,
                                        )
     # Collect and join all recruits
+    logging.info('[SABer]: Combining All Recruits\n')
     combine_df = com.run_combine_recruits(save_dirs_dict['final_recruits'], save_dirs_dict['extend_SAGs'],
-                                          save_dirs_dict['re_assembled'], mg_contigs, tetra_df, minhash_df,
+                                          save_dirs_dict['re_assembled'], mg_contigs, tetra_df_dict, minhash_df,
                                           mg_subcontigs, sag_list, recruit_s.gmm_per_pass
                                           )
     # Re-assemble SAG with MG recruits

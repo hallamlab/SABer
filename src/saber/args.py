@@ -66,7 +66,7 @@ class SABerArgumentParser(argparse.ArgumentParser):
                                  dest="rpkm_per_pass",
                                  help="Proportion of subcontigs required to pass RPKM filter [0.51]."
                                  )
-        self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.01,
+        self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.51,
                                  dest="gmm_per_pass",
                                  help="Proportion of subcontigs required to pass "
                                       "tetranucleotide filter [0.01]."
