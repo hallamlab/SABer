@@ -58,15 +58,15 @@ class SABerArgumentParser(argparse.ArgumentParser):
                                  dest="overlap_len",
                                  help="subcontig overlap in basepairs [2000]."
                                  )
-        self.optopt.add_argument("--minhash_jacc_thresh", required=False, default=0.95,
+        self.optopt.add_argument("--minhash_jacc_thresh", required=False, default=0.99,
                                  dest="jacc_thresh",
-                                 help="Minimum Jaccard index between SAG and MG subcontig MinHash signatures [0.95]."
+                                 help="Minimum Jaccard index between SAG and MG subcontig MinHash signatures [0.99]."
                                  )
         self.optopt.add_argument("--rpkm_pass_prop", required=False, default=0.51,
                                  dest="rpkm_per_pass",
                                  help="Proportion of subcontigs required to pass RPKM filter [0.51]."
                                  )
-        self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.51,
+        self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.01,
                                  dest="gmm_per_pass",
                                  help="Proportion of subcontigs required to pass "
                                       "tetranucleotide filter [0.01]."

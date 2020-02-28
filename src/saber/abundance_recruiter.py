@@ -107,7 +107,6 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
     mg_ss_trim_df = mg_ss_df[['subcontig_id', 'sample_index', 'tpm']].dropna(how='any')
     mg_ss_piv_df = pd.pivot_table(mg_ss_trim_df, values='tpm', index='subcontig_id',
                                   columns='sample_index')
-    # Normalize data # TODO: is this needed now? Probs not :)
     normed_ss_df = pd.DataFrame(normalize(mg_ss_piv_df.values),
                                   columns=mg_ss_piv_df.columns,
                                   index=mg_ss_piv_df.index
@@ -209,5 +208,9 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
                                                ss_recruit_max_df['percent_max']
                                                ]
     ss_max_df = ss_df[ss_df['contig_id'].isin(list(ss_max_only_df['contig_id']))]
+
+    ss_max_df.to_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), sep='\t',
+                        index=False
+                        )
 
     return ss_max_df

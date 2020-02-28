@@ -10,10 +10,12 @@ from sklearn.mixture import GaussianMixture as GMM
 from sklearn import svm
 from sklearn.ensemble import IsolationForest
 from functools import reduce
+from os.path import basename
 
 
 
-def run_abund_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, num_components):
+def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, num_components,
+                            gmm_per_pass=0.01):
     # TODO: 1. Think about using Minimum Description Length (MDL) instead of AIC/BIC
     #        2. [Normalized Maximum Likelihood or Fish Information Approximation]
     #        3. Can TetraNuc Hz be calc'ed for each sample? Does that improve things?
@@ -199,6 +201,7 @@ def run_abund_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, nu
             svm_id_list = [x[1] for x in svm_pass_list]
             iso_id_list = [x[1] for x in iso_pass_list]
             comb_set_list = list(set(gmm_id_list) & set(svm_id_list) & set(iso_id_list))
+            #comb_set_list = list(set(gmm_id_list) & set(svm_id_list))
             comb_pass_list = []
             for md_nm in comb_set_list:
                 comb_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
@@ -227,7 +230,42 @@ def run_abund_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, nu
     iso_df = pd.DataFrame(iso_total_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
     comb_df = pd.DataFrame(comb_total_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
 
-    return {'gmm':gmm_df, 'svm':svm_df, 'iso':iso_df, 'comb':comb_df}
+    tetra_df_dict = {'gmm':gmm_df, 'svm':svm_df, 'iso':iso_df, 'comb':comb_df}
+    #tetra_df_dict = {'gmm':gmm_df, 'svm':svm_df, 'comb':comb_df}
+
+    for tetra_id in tetra_df_dict:
+        tetra_df = tetra_df_dict[tetra_id]
+        mg_id, mg_headers, mg_subs = mg_subcontigs
+        # Count # of subcontigs recruited to each SAG
+        gmm_cnt_df = tetra_df.groupby(['sag_id', 'contig_id']).count().reset_index()
+        gmm_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
+        # Build subcontig count for each MG contig
+        mg_contig_list = [x.rsplit('_', 1)[0] for x in mg_headers]
+        mg_tot_df = pd.DataFrame(zip(mg_contig_list, mg_headers),
+                                 columns=['contig_id', 'subcontig_id'])
+        mg_tot_cnt_df = mg_tot_df.groupby(['contig_id']).count().reset_index()
+        mg_tot_cnt_df.columns = ['contig_id', 'subcontig_total']
+        mg_recruit_df = gmm_cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
+        mg_recruit_df['percent_recruited'] = mg_recruit_df['subcontig_recruits'] / \
+                                             mg_recruit_df['subcontig_total']
+        mg_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
+        # Only pass contigs that have the magjority of subcontigs recruited (>= N%)
+        mg_recruit_filter_df = mg_recruit_df.loc[mg_recruit_df['percent_recruited'] >= float(gmm_per_pass)]
+        mg_contig_per_max_df = mg_recruit_filter_df.groupby(['contig_id'])[
+            'percent_recruited'].max().reset_index()
+        mg_contig_per_max_df.columns = ['contig_id', 'percent_max']
+        mg_recruit_max_df = mg_recruit_filter_df.merge(mg_contig_per_max_df, how='left',
+                                                       on='contig_id')
+        # Now pass contigs that have the maximum recruit % of subcontigs
+        mg_max_only_df = mg_recruit_max_df.loc[mg_recruit_max_df['percent_recruited'] >=
+                                               mg_recruit_max_df['percent_max']
+                                               ]
+        mg_max_only_df.to_csv(o_join(tra_path, mg_id + '.' + tetra_id + '.tra_trimmed_recruits.tsv'), sep='\t', index=False)
+
+        tetra_df_dict[tetra_id] = mg_max_only_df
+
+
+    return tetra_df_dict
 
 
 

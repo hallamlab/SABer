@@ -1,8 +1,4 @@
-import matplotlib
-matplotlib.use('agg')
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import os
 import sys
 from os.path import join as joinpath
@@ -12,7 +8,6 @@ from collections import Counter
 from os import listdir, makedirs, path
 from Bio import SeqIO
 from sklearn.metrics import auc
-
 
 def calc_err(df):
     # build error type df for each filter separately
@@ -29,10 +24,15 @@ def calc_err(df):
                                 (group_df['FalseNeg'] + group_df['TruePos'])
     group_df['F1_score'] = 2 * ((group_df['precision'] * group_df['sensitivity']) / \
                                 (group_df['precision'] + group_df['sensitivity']))
-
+    group_df['N'] = group_df['TrueNeg'] + group_df['TruePos'] + \
+                    group_df['FalseNeg'] + group_df['FalsePos']
+    group_df['S'] = (group_df['TruePos'] + group_df['FalseNeg']) / group_df['N']
+    group_df['P'] = (group_df['TruePos'] + group_df['FalsePos']) / group_df['N']
+    group_df['MCC'] = ((group_df['TruePos']/group_df['N'])-group_df['S']*group_df['P']) / \
+                        ((group_df['S']*group_df['P'])*(1-group_df['S'])*(1-group_df['P']))**(1/2)
     group_df.set_index(['sag_id', 'algorithm', 'level'], inplace=True)
     stats_df = group_df[['precision', 'sensitivity', 'specificity', 'type1_error',
-                            'type2_error', 'F1_score']]
+                            'type2_error', 'F1_score', 'MCC']]
     stack_df = stats_df.stack().reset_index()
     stack_df.columns = ['sag_id', 'algorithm', 'level', 'statistic', 'score']
     return stack_df
@@ -73,7 +73,8 @@ def cnt_contig_bp(fasta_file):
 
     return fa_cnt_dict
 
-#'''
+
+
 # Map genome id and contig id to taxid for error analysis
 sag_tax_map = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/genome_taxa_info.tsv'
 sag_taxmap_df = pd.read_csv(sag_tax_map, sep='\t', header=0)
@@ -103,14 +104,20 @@ tax_mg_df = taxpath_df.merge(mg_contig_map_df, left_on='CAMI_genomeID', right_on
 tax_mg_df = tax_mg_df[['@@SEQUENCEID', 'CAMI_genomeID', 'domain', 'phylum', 'class', 'order',
                         'family', 'genus', 'species', 'strain'
                         ]]
-#'''
+
 files_path = sys.argv[1]
 err_path = files_path + '/error_analysis'
 if not path.exists(err_path):
     makedirs(err_path)
-#'''
+
 # count all bp's for Source genomes, Source MetaG, MockSAGs
 src_metag_file = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/CAMI_high_GoldStandardAssembly.fasta'
+# count all bp's for each read in metaG
+src_metag_cnt_dict = cnt_contig_bp(src_metag_file)
+# Add to tax DF
+tax_mg_df['bp_cnt'] = [src_metag_cnt_dict[x] for x in tax_mg_df['@@SEQUENCEID']]
+
+
 src_genome_path = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/source_genomes/'
 mocksag_path = sys.argv[2]
 # list all source genomes
@@ -148,7 +155,9 @@ for ind, row in unstack_cnt_df.iterrows():
     data_type_list = ['mockSAG', 'src_genome']
     for dt in data_type_list:
         algorithm = dt
-        for level in ['genus', 'species', 'strain', 'perfect']:
+        for level in ['domain', 'phylum', 'class', 'order',
+                        'family', 'genus', 'species', 'strain', 'exact'
+                        ]:
             s_m_err_list = [sag_id, algorithm, level, 0, 0, 0, 0]
             if dt == 'mockSAG':
                 s_m_err_list[3] += mockSAG_tot # 'TruePos'
@@ -156,111 +165,56 @@ for ind, row in unstack_cnt_df.iterrows():
                 s_m_err_list[5] += src_genome_tot - mockSAG_tot # 'FalseNeg'
                 s_m_err_list[6] += 0 # 'TrueNeg'
                 src_mock_err_list.append(s_m_err_list)
-            #else:
-            #    s_m_err_list[3] += src_genome_tot # 'TruePos'
-            #    s_m_err_list[4] += 0 # 'FalsePos'
-            #    s_m_err_list[5] += 0 # 'FalseNeg'
-            #    s_m_err_list[6] += 0 # 'TrueNeg'
-            #src_mock_err_list.append(s_m_err_list)
 
 src_mock_err_df = pd.DataFrame(src_mock_err_list, columns=['sag_id', 'algorithm', 'level',
                                                     'TruePos', 'FalsePos',
                                                     'FalseNeg', 'TrueNeg'
                                                     ])
 
-# count all bp's for each read in metaG
-src_metag_cnt_dict = cnt_contig_bp(src_metag_file)
 
 # MinHash
-mh_path = joinpath(files_path, 'minhash_recruits/')
-mh_df_list = []
-mh_file_list = [x for x in os.listdir(mh_path)
-                    if 'mhr_recruits.tsv' in x
-                    ]
-print('loading minhash files')
-for mh_file in mh_file_list:
-    file_path = os.path.join(mh_path, mh_file)
-    file_df = pd.read_csv(file_path, sep='\t', header=None,
-                            names=['sag_id', 'subcontig_id', 'contig_id']
-                            )
-    mh_df_list.append(file_df)
-mh_concat_df = pd.concat(mh_df_list)
+mh_file = joinpath(files_path, 'minhash_recruits/CAMI_high_GoldStandardAssembly.mhr_trimmed_recruits.tsv')
+mh_concat_df = pd.read_csv(mh_file, sep='\t', header=0)
 
 # TPM
-tpm_path = joinpath(files_path, 'abund_recruits/')
-tpm_df_list = []
-tpm_file_list = [x for x in os.listdir(tpm_path)
-                    if 'abr_recruits.tsv' in x
-                    ]
-print('loading TPM files')
-for tpm_file in tpm_file_list:
-    file_path = os.path.join(tpm_path, tpm_file)
-    file_df = pd.read_csv(file_path, sep='\t', header=None,
-                            names=['sag_id', 'subcontig_id', 'contig_id']
-                            )
-    tpm_df_list.append(file_df)
-tpm_concat_df = pd.concat(tpm_df_list)
+tpm_file = joinpath(files_path,
+    'abund_recruits/CAMI_high_GoldStandardAssembly.abr_trimmed_recruits.tsv'
+    )
+tpm_concat_df = pd.read_csv(tpm_file, sep='\t', header=0)
 
 # Tetra GMM
-gmm_path = joinpath(files_path, 'tetra_recruits/')
-gmm_df_list = []
-gmm_file_list = [x for x in os.listdir(gmm_path)
-                    if 'gmm_recruits.tsv' in x
-                    ]
-print('loading tetra GMM files')
-for gmm_file in gmm_file_list:
-    file_path = os.path.join(gmm_path, gmm_file)
-    file_df = pd.read_csv(file_path, sep='\t', header=None,
-                            names=['sag_id', 'subcontig_id', 'contig_id']
-                            )
-    gmm_df_list.append(file_df)
-gmm_concat_df = pd.concat(gmm_df_list)
+gmm_file = joinpath(files_path,
+    'tetra_recruits/CAMI_high_GoldStandardAssembly.gmm.tra_trimmed_recruits.tsv'
+    )
+gmm_concat_df = pd.read_csv(gmm_file, sep='\t', header=0)
+gmm_concat_df['subcontig_id'] = None
+gmm_concat_df = gmm_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # Tetra OCSVM
-svm_path = joinpath(files_path, 'tetra_recruits/')
-svm_df_list = []
-svm_file_list = [x for x in os.listdir(svm_path)
-                    if 'svm_recruits.tsv' in x
-                    ]
-print('loading tetra OCSVM files')
-for svm_file in svm_file_list:
-    file_path = os.path.join(svm_path, svm_file)
-    file_df = pd.read_csv(file_path, sep='\t', header=None,
-                            names=['sag_id', 'subcontig_id', 'contig_id']
-                            )
-    svm_df_list.append(file_df)
-svm_concat_df = pd.concat(svm_df_list)
+svm_file = joinpath(files_path,
+    'tetra_recruits/CAMI_high_GoldStandardAssembly.svm.tra_trimmed_recruits.tsv'
+    )
+svm_concat_df = pd.read_csv(svm_file, sep='\t', header=0)
+svm_concat_df['subcontig_id'] = None
+svm_concat_df = svm_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
+'''
 # Tetra Isolation Forest
-iso_path = joinpath(files_path, 'tetra_recruits/')
-iso_df_list = []
-iso_file_list = [x for x in os.listdir(iso_path)
-                    if 'iso_recruits.tsv' in x
-                    ]
-print('loading tetra Isolation Forest files')
-for iso_file in iso_file_list:
-    file_path = os.path.join(iso_path, iso_file)
-    file_df = pd.read_csv(file_path, sep='\t', header=None,
-                            names=['sag_id', 'subcontig_id', 'contig_id']
-                            )
-    iso_df_list.append(file_df)
-iso_concat_df = pd.concat(iso_df_list)
+iso_file = joinpath(files_path,
+    'tetra_recruits/CAMI_high_GoldStandardAssembly.iso.tra_trimmed_recruits.tsv'
+    )
+iso_concat_df = pd.read_csv(iso_file, sep='\t', header=0)
+iso_concat_df['subcontig_id'] = None
+iso_concat_df = iso_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
+'''
 
 # Tetra Combined
-comb_path = joinpath(files_path, 'tetra_recruits/')
-comb_df_list = []
-comb_file_list = [x for x in os.listdir(comb_path)
-                    if 'comb_recruits.tsv' in x
-                    ]
-print('loading tetra combined files')
-for comb_file in comb_file_list:
-    file_path = os.path.join(comb_path, comb_file)
-    file_df = pd.read_csv(file_path, sep='\t', header=None,
-                            names=['sag_id', 'subcontig_id', 'contig_id']
-                            )
-    comb_df_list.append(file_df)
-comb_concat_df = pd.concat(comb_df_list)
-
+comb_file = joinpath(files_path,
+    'tetra_recruits/CAMI_high_GoldStandardAssembly.comb.tra_trimmed_recruits.tsv'
+    )
+comb_concat_df = pd.read_csv(comb_file, sep='\t', header=0)
+comb_concat_df['subcontig_id'] = None
+comb_concat_df = comb_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # GMM Final Recruits
 gmm_final_file = joinpath(files_path, 'final_recruits/gmm.final_recruits.tsv')
@@ -273,89 +227,120 @@ gmm_final_df = gmm_final_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # OCSVM Final Recruits
 svm_final_file = joinpath(files_path, 'final_recruits/svm.final_recruits.tsv')
-print('loading GMM combined files')
+print('loading OCSVM combined files')
 svm_final_df = pd.read_csv(svm_final_file, sep='\t', header=0,# index_col=0,
                             names=['sag_id', 'contig_id']
                             )
 svm_final_df['subcontig_id'] = None
 svm_final_df = svm_final_df[['sag_id', 'subcontig_id', 'contig_id']]
 
+'''
 # ISO Final Recruits
 iso_final_file = joinpath(files_path, 'final_recruits/iso.final_recruits.tsv')
-print('loading GMM combined files')
+print('loading ISO combined files')
 iso_final_df = pd.read_csv(iso_final_file, sep='\t', header=0,# index_col=0,
                             names=['sag_id', 'contig_id']
                             )
 iso_final_df['subcontig_id'] = None
 iso_final_df = iso_final_df[['sag_id', 'subcontig_id', 'contig_id']]
+'''
 
 # Combined Final Recruits
 comb_final_file = joinpath(files_path, 'final_recruits/comb.final_recruits.tsv')
-print('loading GMM combined files')
+print('loading Combined combined files')
 comb_final_df = pd.read_csv(comb_final_file, sep='\t', header=0,# index_col=0,
                             names=['sag_id', 'contig_id']
                             )
 comb_final_df['subcontig_id'] = None
 comb_final_df = comb_final_df[['sag_id', 'subcontig_id', 'contig_id']]
 
+# Extended SAGs
+extSAG_path = joinpath(files_path, 'extend_SAGs/')
+extSAG_df_list = []
+extSAG_file_list = [x for x in os.listdir(extSAG_path)
+                    if '.extended_SAG.fasta' in x
+                    ]
+print('loading extended SAG files')
+'''
+alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
+            'iso':'iso_extend', 'comb':'comb_extend'
+            }
+'''
+alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
+            'comb':'comb_extend'
+            }
+
+for extSAG_file in extSAG_file_list:
+    file_path = os.path.join(extSAG_path, extSAG_file)
+    with open(file_path, 'r') as file_in:
+        data = file_in.readlines()
+    header_list = []
+    for line in data:
+        if '>' in line:
+            header = line.replace('>','').strip('\n')
+            prefix = file_path.split('/')[-1].replace('.extended_SAG.fasta', '')
+            sag_id = prefix.rsplit('.', 1)[0]
+            alg = alg2algo[prefix.rsplit('.', 1)[1]]
+            header_list.append([sag_id, header, alg])
+    extSAG_df = pd.DataFrame(header_list, columns=['sag_id', 'contig_id', 'algorithm'])
+    extSAG_df['subcontig_id'] = None
+    extSAG_df = extSAG_df[['sag_id', 'subcontig_id', 'contig_id', 'algorithm']]
+    extSAG_df_list.append(extSAG_df)
+exSAG_concat_df = pd.concat(extSAG_df_list)
 
 mh_concat_df['algorithm'] = 'MinHash'
 tpm_concat_df['algorithm'] = 'TPM'
 gmm_concat_df['algorithm'] = 'tetra_gmm'
 svm_concat_df['algorithm'] = 'tetra_svm'
-iso_concat_df['algorithm'] = 'tetra_iso'
+#iso_concat_df['algorithm'] = 'tetra_iso'
 comb_concat_df['algorithm'] = 'tetra_comb'
 gmm_final_df['algorithm'] = 'gmm_combined'
 svm_final_df['algorithm'] = 'svm_combined'
-iso_final_df['algorithm'] = 'iso_combined'
+#iso_final_df['algorithm'] = 'iso_combined'
 comb_final_df['algorithm'] = 'comb_combined'
 
 final_concat_df = pd.concat([mh_concat_df, tpm_concat_df,
                             gmm_concat_df, svm_concat_df,
-                            iso_concat_df, comb_concat_df,
+                            #iso_concat_df,
+                            comb_concat_df,
                             gmm_final_df, svm_final_df,
-                            iso_final_df, comb_final_df
+                            #iso_final_df,
+                            comb_final_df,
+                            exSAG_concat_df
                             ])
 final_group_df = final_concat_df.groupby(['sag_id', 'algorithm', 'contig_id'])[
                                             'subcontig_id'].count().reset_index()
-print(mh_concat_df.head())
-print(mh_concat_df.shape)
-print(tpm_concat_df.head())
-print(tpm_concat_df.shape)
-print(gmm_concat_df.head())
-print(gmm_concat_df.shape)
-print(svm_concat_df.head())
-print(svm_concat_df.shape)
-print(iso_concat_df.head())
-print(iso_concat_df.shape)
-print(comb_concat_df.head())
-print(comb_concat_df.shape)
-print(gmm_final_df.head())
-print(gmm_final_df.shape)
-print(svm_final_df.head())
-print(svm_final_df.shape)
-print(iso_final_df.head())
-print(iso_final_df.shape)
-print(comb_final_df.head())
-print(comb_final_df.shape)
 
 print('merging all')
 final_tax_df = final_group_df.merge(tax_mg_df, left_on='contig_id', right_on='@@SEQUENCEID',
                                 how='left'
                                 )
+
 sag_cnt_dict = final_tax_df.groupby('sag_id')['sag_id'].count().to_dict()
 
 error_list = []
+'''
 algo_list = ['MinHash', 'TPM', 'tetra_gmm', 'tetra_svm', 'tetra_iso', 'tetra_comb',
-                'gmm_combined', 'svm_combined', 'iso_combined', 'comb_combined'
+                'gmm_combined', 'svm_combined', 'iso_combined', 'comb_combined',
+                'gmm_extend', 'svm_extend', 'iso_extend', 'comb_extend'
                 ]
-level_list = ['genus', 'species', 'strain', 'CAMI_genomeID']
+'''
+algo_list = ['MinHash', 'TPM', 'tetra_gmm', 'tetra_svm', 'tetra_comb',
+                'gmm_combined', 'svm_combined', 'comb_combined',
+                'gmm_extend', 'svm_extend', 'comb_extend'
+                ]
+
+level_list = ['domain', 'phylum', 'class', 'order', 'family',
+                'genus', 'species', 'strain', 'CAMI_genomeID'
+                ]
+
 for i, sag_id in enumerate(list(final_concat_df['sag_id'].unique())):
     sag_key_list = [str(s) for s in set(tax_mg_df['CAMI_genomeID']) if str(s) in sag_id]
     sag_key = max(sag_key_list, key=len)
     sag_sub_df = final_tax_df.loc[final_tax_df['sag_id'] == sag_id]
     for algo in algo_list:
         algo_sub_df = sag_sub_df.loc[sag_sub_df['algorithm'] == algo]
+        algo_include_contigs = list(algo_sub_df['contig_id'])
         for col in level_list:
             col_key = final_tax_df.loc[final_tax_df['CAMI_genomeID'] == sag_key,
                                         col].iloc[0]
@@ -373,21 +358,20 @@ for i, sag_id in enumerate(list(final_concat_df['sag_id'].unique())):
                 len(sag_include_contigs), len(cami_include_ids)
                 )
             if col == 'CAMI_genomeID':
-                col = 'perfect'
+                col = 'exact'
                 col_key = sag_key
             err_list = [sag_id, algo, col, 0, 0, 0, 0]
-            for contig_id in tax_mg_df['@@SEQUENCEID']:
-                contig_count = src_metag_cnt_dict[contig_id]
-                if contig_id in list(algo_sub_df['contig_id']):
-                    if contig_id in mg_include_contigs:
-                        err_list[3] += contig_count # 'TruePos'
-                    else:
-                        err_list[4] += contig_count # 'FalsePos'
-                else:
-                    if contig_id in sag_include_contigs:
-                        err_list[5] += contig_count # 'FalseNeg'
-                    else:
-                        err_list[6] += contig_count # 'TrueNeg'
+            #for contig_id, contig_count in zip(tax_mg_df['@@SEQUENCEID'], tax_mg_df['bp_cnt']):
+            Pos_cnt_df = tax_mg_df.loc[tax_mg_df['@@SEQUENCEID'].isin(algo_include_contigs)]
+            TP_cnt_df = Pos_cnt_df.loc[Pos_cnt_df['@@SEQUENCEID'].isin(mg_include_contigs)]
+            FP_cnt_df = Pos_cnt_df.loc[~Pos_cnt_df['@@SEQUENCEID'].isin(mg_include_contigs)]
+            Neg_cnt_df = tax_mg_df.loc[~tax_mg_df['@@SEQUENCEID'].isin(algo_include_contigs)]
+            FN_cnt_df = Neg_cnt_df.loc[Neg_cnt_df['@@SEQUENCEID'].isin(sag_include_contigs)]
+            TN_cnt_df = Neg_cnt_df.loc[~Neg_cnt_df['@@SEQUENCEID'].isin(sag_include_contigs)]
+            err_list[3] = TP_cnt_df['bp_cnt'].sum() # 'TruePos'
+            err_list[4] = FP_cnt_df['bp_cnt'].sum() # 'FalsePos'
+            err_list[5] = FN_cnt_df['bp_cnt'].sum() # 'FalseNeg'
+            err_list[6] = TN_cnt_df['bp_cnt'].sum() # 'TrueNeg'
             error_list.append(err_list)
 
 mg_err_df = pd.DataFrame(error_list, columns=['sag_id', 'algorithm', 'level',
@@ -396,58 +380,21 @@ mg_err_df = pd.DataFrame(error_list, columns=['sag_id', 'algorithm', 'level',
                                                     ])
 final_err_df = pd.concat([src_mock_err_df, mg_err_df])
 final_err_df.to_csv(err_path + '/All_error_count.tsv', index=False, sep='\t')
-#'''
-#final_err_df = pd.read_csv(err_path + '/All_error_count.tsv', header=0, sep='\t')
+
 calc_stats_df = calc_err(final_err_df)
-stat_list = ['precision', 'sensitivity', 'F1_score']
+stat_list = ['precision', 'sensitivity', 'F1_score', 'MCC']
 calc_stats_df = calc_stats_df.loc[calc_stats_df['statistic'].isin(stat_list)]
 calc_stats_df.to_csv(err_path + '/All_stats_count.tsv', index=False, sep='\t')
 
-for level in set(calc_stats_df['level']):
-    level_df = calc_stats_df.loc[calc_stats_df['level'] == level]
-    sns.set_context("paper")
-    ax = sns.catplot(x="statistic", y="score", hue='algorithm', kind='box',
-                        data=level_df, aspect=2, palette=sns.light_palette("black")
-                        )
-    plt.plot([-1, 3], [0.25, 0.25], linestyle='--', alpha=0.3, color='k')
-    plt.plot([-1, 3], [0.50, 0.50], linestyle='--', alpha=0.3, color='k')
-    plt.plot([-1, 3], [0.75, 0.75], linestyle='--', alpha=0.3, color='k')
+'''
+score_count_df = calc_stats_df.groupby(['algorithm', 'level', 'statistic'])[
+                                            'score'].count().reset_index()
+score_count_df.columns = ['algorithm', 'level', 'statistic', 'count']
+score_sum_df = calc_stats_df.groupby(['algorithm', 'level', 'statistic'])[
+                                            'score'].sum().reset_index()
+score_sum_df.columns = ['algorithm', 'level', 'statistic', 'sum']
 
-    plt.ylim(0, 1)
-    plt.xlim(-0.5, 2.5)
-    #plt.title('SAG-plus CAMI-1-High error analysis')
-    ax._legend.set_title('Workflow\nStage')
-    plt.savefig(err_path + '/' + level + '_error_boxplox_count.pdf',
-                bbox_inches='tight'
-                )
-    plt.clf()
+score_df = pd.merge(score_count_df, score_sum_df, on=['algorithm', 'level', 'statistic'])
+score_df['average'] = score_df['sum']/score_df['count']
 
-# build multi-level precision boxplot
-level_list = ['genus', 'species', 'strain', 'perfect']
-stat_list = ['precision', 'sensitivity', 'F1_score']
-comb_stat_df = calc_stats_df.loc[((calc_stats_df['algorithm'].isin(['combined'])) &
-                                    (calc_stats_df['level'].isin(level_list)) &
-                                    (calc_stats_df['statistic'].isin(stat_list))
-                                    )]
-mock_stat_df = calc_stats_df.loc[((calc_stats_df['algorithm'].isin(['mockSAG'])) &
-                                    (calc_stats_df['level'].isin(['genus'])) &
-                                    (calc_stats_df['statistic'].isin(stat_list))
-                                    )]
-mock_stat_df['level'] = 'mockSAG'
-concat_stat_df = pd.concat([mock_stat_df, comb_stat_df])
-sns.set_context("paper")
-ax = sns.catplot(x="level", y="score", hue='statistic', kind='box',
-                    data=concat_stat_df, aspect=2
-                    )
-
-plt.plot([-1, 3], [0.25, 0.25], linestyle='--', alpha=0.3, color='k')
-plt.plot([-1, 3], [0.50, 0.50], linestyle='--', alpha=0.3, color='k')
-plt.plot([-1, 3], [0.75, 0.75], linestyle='--', alpha=0.3, color='k')
-
-plt.ylim(0, 1)
-plt.title('SAG-plus CAMI-1-High')
-
-plt.savefig(err_path + '/multi-level_precision_boxplox_count.pdf',
-                bbox_inches='tight'
-                )
-plt.clf()
+'''

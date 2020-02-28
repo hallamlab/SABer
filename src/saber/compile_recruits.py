@@ -4,11 +4,13 @@ from os.path import join as o_join
 from os.path import basename
 import pandas as pd
 from subprocess import Popen, PIPE
+from os.path import isfile
 
 
-def run_combine_recruits(final_path, ext_path, asm_path, mg_contigs, tetra_df_dict, minhash_df, mg_subcontigs, sag_list,
-                         gmm_per_pass=0.51
-                         ):
+
+def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs, tetra_df_dict, minhash_df,
+                            mg_subcontigs, sag_list
+                             ):
     for tetra_id in tetra_df_dict:
         tetra_df = tetra_df_dict[tetra_id]
         # TODO: Use full contigs instead of subcontigs for co-asm, reduces asm time for Minimus2? CISA?
@@ -20,42 +22,18 @@ def run_combine_recruits(final_path, ext_path, asm_path, mg_contigs, tetra_df_di
             sag_id = base.rsplit('.', 1)[0]
             sag2path_dict[sag_id] = sag_path
 
-        mg_id, mg_headers, mg_subs = mg_subcontigs
-        # Count # of subcontigs recruited to each SAG
-        gmm_cnt_df = tetra_df.groupby(['sag_id', 'contig_id']).count().reset_index()
-        gmm_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
-        # Build subcontig count for each MG contig
-        mg_contig_list = [x.rsplit('_', 1)[0] for x in mg_headers]
-        mg_tot_df = pd.DataFrame(zip(mg_contig_list, mg_headers),
-                                 columns=['contig_id', 'subcontig_id'])
-        mg_tot_cnt_df = mg_tot_df.groupby(['contig_id']).count().reset_index()
-        mg_tot_cnt_df.columns = ['contig_id', 'subcontig_total']
-        mg_recruit_df = gmm_cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
-        mg_recruit_df['percent_recruited'] = mg_recruit_df['subcontig_recruits'] / \
-                                             mg_recruit_df['subcontig_total']
-        mg_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
-        # Only pass contigs that have the magjority of subcontigs recruited (>= N%)
-        mg_recruit_filter_df = mg_recruit_df.loc[mg_recruit_df['percent_recruited'] >= gmm_per_pass]
-        mg_contig_per_max_df = mg_recruit_filter_df.groupby(['contig_id'])[
-            'percent_recruited'].max().reset_index()
-        mg_contig_per_max_df.columns = ['contig_id', 'percent_max']
-        mg_recruit_max_df = mg_recruit_filter_df.merge(mg_contig_per_max_df, how='left',
-                                                       on='contig_id')
-        # Now pass contigs that have the maximum recruit % of subcontigs
-        mg_max_only_df = mg_recruit_max_df.loc[mg_recruit_max_df['percent_recruited'] >=
-                                               mg_recruit_max_df['percent_max']
-                                               ]
-
         # Merge MinHash and GMM Tetra (passed first by ABR)
         mh_gmm_merge_df = minhash_df[['sag_id', 'contig_id']].merge(
-            mg_max_only_df[['sag_id', 'contig_id']], how='outer',
+            tetra_df[['sag_id', 'contig_id']], how='outer',
             on=['sag_id', 'contig_id']
         ).drop_duplicates()
 
         mh_gmm_merge_df.to_csv(o_join(final_path, tetra_id + '.final_recruits.tsv'), sep='\t', index=True)
-
         mg_contigs_df = pd.DataFrame(mg_contigs, columns=['contig_id', 'seq'])
+        sag_de_df_list = []
         for sag_id in set(mh_gmm_merge_df['sag_id']):
+            final_rec = o_join(final_path, sag_id + '.' + tetra_id + '.final_recruits.fasta')
+
             sag_file = sag2path_dict[sag_id]
             sub_merge_df = mh_gmm_merge_df.loc[mh_gmm_merge_df['sag_id'] == sag_id]
             print('[SABer]: Recruited %s contigs from entire analysis for %s' %
@@ -71,8 +49,10 @@ def run_combine_recruits(final_path, ext_path, asm_path, mg_contigs, tetra_df_di
                                          )
                                      ]
                 final_out.write('\n'.join(final_mgsubs_list))
+            '''
             # Combine SAG and final recruits # TODO: is this actually needed if MinHash is so good? I think not :)
-            with open(o_join(ext_path, sag_id + '.extend_SAG.fasta'), 'w') as cat_file:
+            ext_SAG = o_join(ext_path, sag_id + '.extend_SAG.fasta')
+            with open(ext_SAG, 'w') as cat_file:
                 data = []
                 with open(sag_file, 'r') as sag_in:
                     data.extend(sag_in.readlines())
@@ -81,21 +61,88 @@ def run_combine_recruits(final_path, ext_path, asm_path, mg_contigs, tetra_df_di
                     data.extend(recruits_in.readlines())
                 join_data = '\n'.join(data).replace('\n\n', '\n')
                 cat_file.write(join_data)
+            '''
 
-
-
-
-
-
-
-
-
-
-
-        # TODO: Maybe create a SABer SAG for each sample? Seems like the best way to go.
-        #  OR since the ASM is merged from all samples, maybe just cat all samples and
-        #  assemble with SABer SAG OR original SAG as ref? Would probably use SPAdes for this.
+            # Use BBTools dedupe.sh to deduplicate the extend SAG file
+            dedupe_SAG = o_join(ext_path, sag_id + '.' + tetra_id + '.extended_SAG.fasta')
+            dedupe_cmd = ['dedupe.sh', 'in=' + final_rec, 'out=' + dedupe_SAG,
+                            'threads=8', 'minidentity=97', 'overwrite=true']
+            run_dedupe = Popen(dedupe_cmd, stdout=PIPE)
+            print(run_dedupe.communicate()[0].decode())
+            de_header_list = []
+            with open(dedupe_SAG, 'r') as de_file:
+                data = de_file.readlines()
+                for line in data:
+                    if '>' in line:
+                        de_header_list.append(line.strip('>').strip('\n'))
+            de_sag_df = pd.DataFrame(de_header_list, columns=['contig_id'])
+            de_sag_df['sag_id'] = sag_id
+            de_sag_df['tetra_id'] = tetra_id
+            sag_de_df_list.append(de_sag_df)
+        sag_de_df = pd.concat(sag_de_df_list)
+        sag_de_df.to_csv(o_join(ext_path, tetra_id + '.extended_SAGs.tsv'), sep='\t', index=True)
         '''
+            # Use minimus2 to merge the SAG and the recruits into one assembly
+            toAmos_cmd = ['/home/rmclaughlin/bin/amos-3.1.0/bin/toAmos', '-s',
+                            ext_SAG, '-o', o_join(asm_path, sag_id + '.afg')
+                            ]
+            run_toAmos = Popen(toAmos_cmd, stdout=PIPE)
+            print(run_toAmos.communicate()[0].decode())
+            minimus_cmd = ['/home/rmclaughlin/bin/amos-3.1.0/bin/minimus2',
+                            o_join(asm_path, sag_id),
+                            '-D', 'REFCOUNT=0', '-D', 'OVERLAP=200', '-D', 'MINID=95'
+                            ]
+            run_minimus = Popen(minimus_cmd, stdout=PIPE)
+            print(run_minimus.communicate()[0].decode())
+            if isfile(o_join(asm_path, sag_id + '.fasta')):
+                filenames = [o_join(asm_path, sag_id + '.fasta'), o_join(asm_path, sag_id + '.singletons.seq')]
+                with open(o_join(asm_path, sag_id + '.minimus2.asm.fasta'), 'w') as outfile:
+                    for fname in filenames:
+                        with open(fname) as infile:
+                            for line in infile:
+                                outfile.write(line)
+                move_cmd = ['mv', o_join(asm_path, sag_id + '.fasta'),
+                            o_join(asm_path, sag_id + '.minimus2_no_singles.asm.fasta')
+                            ]
+
+            run_move = Popen(move_cmd, stdout=PIPE)
+            clean_cmd = ['rm', '-r', o_join(asm_path, sag_id + '.runAmos.log'),
+                            o_join(asm_path, sag_id + '.afg'),
+                            o_join(asm_path, sag_id + '.OVL'),
+                            o_join(asm_path, sag_id + '.singletons'),
+                            o_join(asm_path, sag_id + '.singletons.seq'),
+                            o_join(asm_path, sag_id + '.contig'),
+                            o_join(asm_path, sag_id + '.ovl'),
+                            o_join(asm_path, sag_id + '.coords'),
+                            o_join(asm_path, sag_id + '.qry.seq'),
+                            o_join(asm_path, sag_id + '.delta'),
+                            o_join(asm_path, sag_id + '.bnk'),
+                            o_join(asm_path, sag_id + '.ref.seq')
+                            ]
+            run_clean = Popen(clean_cmd, stdout=PIPE)
+        '''
+
+    # Run CheckM on all new rebuilt/updated SAGs
+    print('[SABer]: Checking all new SAG quality using CheckM')
+    checkm_cmd = ['checkm', 'lineage_wf', '--tab_table', '-x',
+                    'fasta', '--threads', '8', '--pplacer_threads', '8', '-f',
+                    o_join(check_path, 'checkM_stdout.tsv'), ext_path, check_path
+                    ]
+    run_checkm = Popen(checkm_cmd, stdout=PIPE)
+    print(run_checkm.communicate()[0].decode())
+
+
+
+
+
+
+
+
+
+    # TODO: Maybe create a SABer SAG for each sample? Seems like the best way to go.
+    #  OR since the ASM is merged from all samples, maybe just cat all samples and
+    #  assemble with SABer SAG OR original SAG as ref? Would probably use SPAdes for this.
+    '''
         # Use SPAdes to co-assemble mSAG and recruits
         # TODO: use SAG as "trusted contigs" and assemble the raw reads recruited from sample(s).
         #  Get this function from Phylo(whatever) from Lulu 16S extraction from metaG's.
@@ -117,7 +164,7 @@ def run_combine_recruits(final_path, ext_path, asm_path, mg_contigs, tetra_df_di
         clean_cmd = ['rm', '-rf', o_join(asm_path, sag_id)]
         run_clean = Popen(clean_cmd, stdout=PIPE)
         print(run_clean.communicate()[0].decode())
-        '''
+    '''
 
     '''
         # Use CISA to integrate the SAG and Recruited contigs
@@ -143,8 +190,8 @@ def run_combine_recruits(final_path, ext_path, asm_path, mg_contigs, tetra_df_di
         run_merge = Popen(merge_cmd, stdout=PIPE)
         merge_stdout = run_merge.communicate()[0].decode()
         #genome_len = str(int(sum([int(x.split(':')[1]) for x in str(merge_stdout).split('\n')
-        #					if 'whole:' in x
-        #					])*0.75))
+        #                    if 'whole:' in x
+        #                    ])*0.75))
         genome_len = str([int(x.split(':')[1]) for x in str(merge_stdout).split('\n')
                             if 'whole:' in x
                             ][0])
@@ -172,7 +219,7 @@ def run_combine_recruits(final_path, ext_path, asm_path, mg_contigs, tetra_df_di
         run_cisa = Popen(cisa_cmd, stdout=PIPE, cwd=asm_sag_path)
         cisa_stdout = run_cisa.communicate()[0].decode()
         print(cisa_stdout)
-        move_cmd = ['mv', cisa_outfile,	join(asm_path, sag_id + '.CISA.asm.fasta')]
+        move_cmd = ['mv', cisa_outfile,    join(asm_path, sag_id + '.CISA.asm.fasta')]
         run_move = Popen(move_cmd, stdout=PIPE)
         clean_cmd = ['rm', '-rf', asm_sag_path]
         run_clean = Popen(clean_cmd, stdout=PIPE)
@@ -198,52 +245,5 @@ def run_combine_recruits(final_path, ext_path, asm_path, mg_contigs, tetra_df_di
         run_clean = Popen(clean_cmd, stdout=PIPE)
         print(run_clean.communicate()[0].decode())
 
-        # Use minimus2 to merge the SAG and the recruits into one assembly
-        toAmos_cmd = ['/home/rmclaughlin/bin/amos-3.1.0/bin/toAmos', '-s',
-                        join(ext_path, sag_id + '.extend_SAG.fasta'), '-o',
-                        join(asm_path, sag_id + '.afg')
-                        ]
-        run_toAmos = Popen(toAmos_cmd, stdout=PIPE)
-        print(run_toAmos.communicate()[0].decode())
-        minimus_cmd = ['/home/rmclaughlin/bin/amos-3.1.0/bin/minimus2',
-                        join(asm_path, sag_id),
-                        '-D', 'REFCOUNT=0', '-D', 'OVERLAP=200', '-D', 'MINID=95'
-                        ]
-        run_minimus = Popen(minimus_cmd, stdout=PIPE)
-        print(run_minimus.communicate()[0].decode())
-        if isfile(join(asm_path, sag_id + '.fasta')):
-            filenames = [join(asm_path, sag_id + '.fasta'), join(asm_path, sag_id + '.singletons.seq')]
-            with open(join(asm_path, sag_id + '.minimus2.asm.fasta'), 'w') as outfile:
-                for fname in filenames:
-                    with open(fname) as infile:
-                        for line in infile:
-                            outfile.write(line)
-            move_cmd = ['mv', join(asm_path, sag_id + '.fasta'),
-                        join(asm_path, sag_id + '.minimus2_no_singles.asm.fasta')
-                        ]
 
-        run_move = Popen(move_cmd, stdout=PIPE)
-        clean_cmd = ['rm', '-r', join(asm_path, sag_id + '.runAmos.log'),
-                        join(asm_path, sag_id + '.afg'),
-                        join(asm_path, sag_id + '.OVL'),
-                        join(asm_path, sag_id + '.singletons'),
-                        join(asm_path, sag_id + '.singletons.seq'),
-                        join(asm_path, sag_id + '.contig'),
-                        join(asm_path, sag_id + '.ovl'),
-                        join(asm_path, sag_id + '.coords'),
-                        join(asm_path, sag_id + '.qry.seq'),
-                        join(asm_path, sag_id + '.delta'),
-                        join(asm_path, sag_id + '.bnk'),
-                        join(asm_path, sag_id + '.ref.seq')
-                        ]
-        run_clean = Popen(clean_cmd, stdout=PIPE)
-
-    # Run CheckM on all new rebuilt/updated SAGs
-    print('[SABer]: Checking all new SAG quality using CheckM')
-    checkm_cmd = ['checkm', 'lineage_wf', '--tab_table', '-x',
-                    'fasta', '--threads', '8', '--pplacer_threads', '8', '-f',
-                    join(check_path, 'checkM_stdout.tsv'), asm_path, check_path
-                    ]
-    run_checkm = Popen(checkm_cmd, stdout=PIPE)
-    print(run_checkm.communicate()[0].decode())
     '''
