@@ -1,6 +1,3 @@
-from glob import glob
-from os.path import basename
-from os.path import splitext
 from setuptools import setup, find_packages
 
 with open("README.md", "r") as readme:
