@@ -1,3 +1,0 @@
-[console_scripts]
-saber = saber.__main__:main
-
