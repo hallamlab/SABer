@@ -5,3 +5,5 @@ build
 dist
 dist/SABer-0.0.1.tar.gz
 SABer.egg-info
+samsum/*
+samsum
