@@ -5,6 +5,10 @@ Check out the [wiki](https://github.com/hallamlab/SABer/wiki) for tutorials and 
 
 
 ## Here are the install instructions for SABer (until its on PyPI):
+Currently the easiest way to install SABer is to use a conda virtual environment.  
+This will require the installation of [Anaconda](https://www.anaconda.com/distribution/).  
+Once Anaconda is installed, you can follow the directions below to install all dependencies  
+and SABer within a conda environment.
 ```
 git clone --recurse-submodules git@github.com:hallamlab/SABer.git  
 cd SABer  
