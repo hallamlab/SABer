@@ -1,7 +1,7 @@
 # SABer
 SAG Anchored Binner for recruiting metagenomic reads using single-cell amplified genomes as references
 
-Check out the [wiki]() for tutorials and more information on SABer!!
+Check out the [wiki](https://github.com/hallamlab/SABer.wiki.git) for tutorials and more information on SABer!!
 
 
 ## Here are the install instructions for SABer (until its on PyPI):
