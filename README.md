@@ -3,7 +3,7 @@ SAG Anchored Binner for recruiting metagenomic reads using single-cell amplified
 
 Check out the [wiki](https://github.com/hallamlab/SABer/wiki) for tutorials and more information on SABer!!
 
-## WARNING: SABer has only been tested on a Linux OS and Python 3.5 or greater.
+## WARNING: SABer has only been tested on Linux and Python 3.5 or greater.
 
 ## Here are the install instructions for SABer (until its on PyPI):
 Currently the easiest way to install SABer is to use a conda virtual environment.  
