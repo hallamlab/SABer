@@ -29,6 +29,5 @@ scipy==1.4.1
 screed==1.0.4
 six==1.14.0
 sourmash==3.2.2
-umap-learn==0.3.10
 wcwidth==0.1.8
 zipp==1.2.0

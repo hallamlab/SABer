@@ -5,7 +5,7 @@ from os.path import isfile
 from os.path import join as o_join
 import saber.utilities as s_utils
 from sklearn.preprocessing import normalize
-import umap
+#import umap
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn import svm
 from sklearn.ensemble import IsolationForest
