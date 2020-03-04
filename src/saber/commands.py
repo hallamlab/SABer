@@ -54,7 +54,7 @@ def recruit(sys_args):
     :return: None
     """
     parser = s_args.SABerArgumentParser(description="Recruit environmental reads to reference SAG(s).")
-    parser.add_stats_args()
+    parser.add_recruit_args()
     args = parser.parse_args(sys_args)
 
     s_log.prep_logging("SABer_log.txt", args.verbose)
@@ -68,7 +68,6 @@ def recruit(sys_args):
     recruit_s.jacc_thresh = args.jacc_thresh
     recruit_s.rpkm_per_pass = args.rpkm_per_pass
     recruit_s.gmm_per_pass = args.gmm_per_pass
-    recruit_s.num_components = args.num_components
 
     # Build save dir structure
     save_dirs_dict = s_utils.check_out_dirs(recruit_s.save_path)

@@ -34,7 +34,7 @@ class SABerArgumentParser(argparse.ArgumentParser):
 
         return args
 
-    def add_stats_args(self):
+    def add_recruit_args(self):
         self.reqs.add_argument("-s", "--sag", required=True, dest="sag_path",
                                help="Path to reference SAG FASTA file or directory "
                                     "containing only FASTA files."
@@ -70,10 +70,5 @@ class SABerArgumentParser(argparse.ArgumentParser):
                                  dest="gmm_per_pass",
                                  help="Proportion of subcontigs required to pass "
                                       "tetranucleotide filter [0.01]."
-                                 )
-        self.optopt.add_argument("--numcomps", required=False, default=20,
-                                 dest="num_components",
-                                 help="Number of components to keep during dimension "
-                                      "reduction step [20]."
                                  )
         return
