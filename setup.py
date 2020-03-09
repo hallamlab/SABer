@@ -11,13 +11,13 @@ CLASSIFIERS = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
     "Programming Language :: Python :: 3.5",
-    "Topic :: Scientific/Engineering :: Bioinformatics",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 
 
 SETUP_METADATA = \
     {
-        "name": "SABer",
+        "name": "SABerML",
         "version": "0.0.1",
         "description": "Software for recruiting metagenomic reads using single-cell amplified genome data.",
         "long_description": LONG_DESCRIPTION,
