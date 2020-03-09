@@ -1,4 +1,7 @@
 # SABer
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a2954edef114b81a583bb23ffba2ace)](https://app.codacy.com/gh/hallamlab/SABer?utm_source=github.com&utm_medium=referral&utm_content=hallamlab/SABer&utm_campaign=Badge_Grade_Dashboard)
+
 SAG Anchored Binner for recruiting metagenomic reads using single-cell amplified genomes as references
 
 Check out the [wiki](https://github.com/hallamlab/SABer/wiki) for tutorials and more information on SABer!!
