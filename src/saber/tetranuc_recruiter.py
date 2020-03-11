@@ -10,8 +10,7 @@ from sklearn.ensemble import IsolationForest
 
 
 
-def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, num_components,
-                            gmm_per_pass=0.01):
+def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, gmm_per_pass=0.01):
     # TODO: 1. Think about using Minimum Description Length (MDL) instead of AIC/BIC
     #        2. [Normalized Maximum Likelihood or Fish Information Approximation]
     #        3. Can TetraNuc Hz be calc'ed for each sample? Does that improve things?
