@@ -40,7 +40,7 @@ def get_seqs(fasta_file):
     with open(fasta_file, 'r') as fasta_in:
         for record in SeqIO.parse(fasta_in, 'fasta'):
             f_id = record.id
-            f_description = record.description
+            #f_description = record.description
             f_seq = str(record.seq)
             if f_seq != '':
                 fa_recs.append((f_id, f_seq))

@@ -1,15 +1,7 @@
 import sys
 import random
-import operator
-import os
 from Bio import SeqIO
 import os
-import re
-import subprocess
-import logging
-from itertools import product, islice
-from collections import Counter
-import pandas as pd
 
 def get_SAGs(sag_path):
     # Find the SAGs!
@@ -60,7 +52,7 @@ def kmer_slide(seq_list, n, o_lap):
 
 
 def get_frags(seq, l_max, o_lap):
-    "Fragments the seq into subseqs of length l_max and overlap of o_lap"
+    "Fragments the seq into subseqs of length l_max and overlap of o_lap."
     "Leftover tail overlaps with tail-1"
     "Currently, if a seq is < l_max, it returns the full seq"
     seq_frags = []
@@ -85,7 +77,7 @@ def get_seqs(fasta_file):
     with open(fasta_file, 'r') as fasta_in:
         for record in SeqIO.parse(fasta_in, 'fasta'): # TODO: replace biopython with base python
             f_id = record.id
-            f_description = record.description
+            #f_description = record.description
             f_seq = str(record.seq)
             if f_seq != '':
                 sag_contigs.append((f_id, f_seq))

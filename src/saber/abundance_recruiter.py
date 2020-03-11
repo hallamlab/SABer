@@ -39,7 +39,6 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
         with open(mg_raw_file_list, 'r') as raw_fa_in:
             raw_data = raw_fa_in.readlines()
         ss_output_list = []
-        sample_count = 0
         for line in raw_data:
             split_line = line.strip('\n').split('\t')
             if len(split_line) == 2:

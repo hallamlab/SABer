@@ -3,6 +3,7 @@ __author__ = 'Ryan J McLaughlin'
 from Bio import SeqIO
 import os
 import re
+import sys
 import subprocess
 import logging
 from itertools import product, islice
@@ -29,11 +30,9 @@ def which(program):
 
 
 def executable_dependency_versions(exe_dict):
-    """
-    Function for retrieving the version numbers for each executable in exe_dict
+    """Function for retrieving the version numbers for each executable in exe_dict
     :param exe_dict: A dictionary mapping names of software to the path to their executable
-    :return: A formatted string with the executable name and its respective version found
-    """
+    :return: A formatted string with the executable name and its respective version found"""
     versions_dict = dict()
     versions_string = "Software versions used:\n"
 
@@ -80,15 +79,13 @@ def executable_dependency_versions(exe_dict):
 
 
 def launch_write_command(cmd_list, just_do_it=False, collect_all=True):
-    """
-    Wrapper function for opening subprocesses through subprocess.Popen()
+    """Wrapper function for opening subprocesses through subprocess.Popen()
 
     :param cmd_list: A list of strings forming a complete command call
     :param just_do_it: Always return even if the returncode isn't 0
     :param collect_all: A flag determining whether stdout and stderr are returned
     via stdout or just stderr is returned leaving stdout to be written to the screen
-    :return: A string with stdout and/or stderr text and the returncode of the executable
-    """
+    :return: A string with stdout and/or stderr text and the returncode of the executable"""
     stdout = ""
     if collect_all:
         proc = subprocess.Popen(cmd_list,
@@ -113,12 +110,10 @@ def launch_write_command(cmd_list, just_do_it=False, collect_all=True):
 
 
 def check_out_dirs(save_path):
-    """
-    Checks if dirs all exist in save_path, makes them if not.
+    """Checks if dirs all exist in save_path, makes them if not.
 
     :param save_path: directory where all intermediate and final files are saved.
-    :return: A dictionary with the stage dir and the full path.
-    """
+    :return: A dictionary with the stage dir and the full path."""
 
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -206,7 +201,7 @@ def kmer_slide(seq_list, n, o_lap):
 
 
 def get_frags(seq, l_max, o_lap):
-    "Fragments the seq into subseqs of length l_max and overlap of o_lap"
+    "Fragments the seq into subseqs of length l_max and overlap of o_lap."
     "Leftover tail overlaps with tail-1"
     "Currently, if a seq is < l_max, it returns the full seq"
     seq_frags = []
