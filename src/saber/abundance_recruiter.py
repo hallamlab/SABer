@@ -10,7 +10,7 @@ from samsum import commands
 def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_list,
                         minhash_df, ss_per_pass=0.51
                         ):
-    mg_id, mg_headers, mg_subs = mg_subcontigs
+    mg_id, mg_headers = mg_subcontigs[0], mg_subcontigs[1]
     logging.info('[SABer]: Starting Abundance Recruitment Algorithm\n')
     logging.info('[SABer]: Checking for abundance table for %s\n' % mg_id)
     if isfile(o_join(abr_path, mg_id + '.samsum_merged.tsv')):
@@ -62,9 +62,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
                 logging.info('[SABer]: Running BWA mem on %s\n' % pe_id)
                 with open(mg_sam_out, 'w') as sam_file:
                     with open(o_join(abr_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
-                        run_mem = Popen(mem_cmd, stdout=sam_file,
-                                        stderr=stderr_file
-                                        )
+                        run_mem = Popen(mem_cmd, stdout=sam_file, stderr=stderr_file)
                         run_mem.communicate()
 
             logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)
