@@ -1,48 +1,147 @@
 import sys
+import random
+import operator
+import os
+from Bio import SeqIO
+import os
+import re
+import subprocess
+import logging
+from itertools import product, islice
+from collections import Counter
+import pandas as pd
+
+def get_SAGs(sag_path):
+    # Find the SAGs!
+    if os.path.isdir(sag_path):
+        print('[SABer]: Directory specified, looking for SAGs\n')
+        sag_list = [os.path.join(sag_path, f) for f in
+                    os.listdir(sag_path) if ((f.split('.')[-1] == 'fasta' or
+                    f.split('.')[-1] == 'fna') and 'Sample' not in f)
+                    ]
+        print('[SABer]: Found %s SAGs in directory\n'
+                     % str(len(sag_list))
+                     )
+
+    elif os.path.isfile(sag_path):
+        print('[SABer]: File specified, processing %s\n'
+                     % os.path.basename(sag_path)
+                     )
+        sag_list = [sag_path]
+
+    return sag_list
+
+
+def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
+    basename = os.path.basename(in_fasta)
+    samp_id = basename.rsplit('.', 1)[0]
+    contigs = get_seqs(in_fasta)
+    headers, subs = kmer_slide(contigs, max_contig_len,
+                                        overlap_len
+                                        )
+
+    return (samp_id, headers, subs)
+
+
+def kmer_slide(seq_list, n, o_lap):
+    all_sub_seqs = []
+    all_sub_headers = []
+    for seq_tup in seq_list:
+        header, seq = seq_tup
+        clean_seq = seq.strip('\n').lower()
+        sub_list = get_frags(clean_seq, n, o_lap)
+        sub_headers = [header + '_' + str(i) for i, x in
+                        enumerate(sub_list, start=0)
+                        ]
+        all_sub_seqs.extend(sub_list)
+        all_sub_headers.extend(sub_headers)
+
+    return all_sub_headers, all_sub_seqs
+
+
+def get_frags(seq, l_max, o_lap):
+    "Fragments the seq into subseqs of length l_max and overlap of o_lap"
+    "Leftover tail overlaps with tail-1"
+    "Currently, if a seq is < l_max, it returns the full seq"
+    seq_frags = []
+    if (l_max != 0) and (len(seq) > l_max):
+        offset = l_max - o_lap
+        for i in range(0, len(seq), offset):
+            if i+l_max < len(seq):
+                frag = seq[i:i+l_max]
+                seq_frags.append(frag)
+            else:
+                frag = seq[i:]
+                seq_frags.append(frag)
+                break
+    else:
+        seq_frags.append(seq)
+
+    return seq_frags
 
 
 def get_seqs(fasta_file):
-	sag_contigs = []
-	with open(fasta_file, 'r') as fasta_in:
-		for record in SeqIO.parse(fasta_in, 'fasta'):
-			f_id = record.id
-			f_description = record.description
-			f_seq = str(record.seq)
-			if f_seq != '':
-				sag_contigs.append((f_id, f_seq))
+    sag_contigs = []
+    with open(fasta_file, 'r') as fasta_in:
+        for record in SeqIO.parse(fasta_in, 'fasta'): # TODO: replace biopython with base python
+            f_id = record.id
+            f_description = record.description
+            f_seq = str(record.seq)
+            if f_seq != '':
+                sag_contigs.append((f_id, f_seq))
 
-	return sag_contigs
-
-
-def mock_SAG(fasta_file, chunk_num):
-	# currently just returns half of the genome as a mock SAG
-	genome_contigs = get_seqs(fasta_file)
-	if len(genome_contigs) != 1:
-		half_list = genome_contigs[::int(chunk_num)]
-	else:
-		header = genome_contigs[0][0]
-		seq = genome_contigs[0][1]
-		half_list = [(header,seq[:int(len(seq)/2)])]
-
-	return half_list
-
-def main():
+    return sag_contigs
 
 
-	# for testing
-	#msag_chunk = 5 # i.e. 2 = 50% , 5 = 20%, 10 = 10%, ...
-	#save_path = '/home/rmclaughlin/Ryan/SAG-plus/CAMI_I_HIGH/sag_redux/' + str(msag_chunk) + '/'
-	# Build Mock SAGs (for testing only), else extract all SAG contigs and headers
-	test = False # (True for testing only)
-	for sag_file in sag_list:
-		if test == True: # (True for testing only)
-			if isfile(join(mocksag_path, sag_id + '.mockSAG.fasta')):
-				sag_contigs = get_seqs(join(mocksag_path, sag_id + '.mockSAG.fasta'))
-			else:
-				sag_contigs = mock_SAG(sag_file, msag_chunk) # run 2, 3, 5, 10 (50%, 33%, 20%, 10%)
-				with open(join(mocksag_path, sag_id + '.mockSAG.fasta'), 'w') as mock_out:
-					seq_rec_list = ['\n'.join(['>'+rec[0], rec[1]]) for rec in sag_contigs]
-					mock_out.write('\n'.join(seq_rec_list))
-		else:
 
-		
+def main(sag_path, save_path, max_contig_len, min_contig_len, overlap_len, per_comp):
+    max_contig_len = int(max_contig_len)
+    min_contig_len = int(min_contig_len)
+    overlap_len = int(overlap_len)
+    per_comp = int(per_comp)
+    # Find the SAGs!
+    sag_list = get_SAGs(sag_path)
+    # Build subcontiges for SAGs
+    sag_subcontigs = [build_subcontigs(sag, save_path,
+                                               max_contig_len, overlap_len
+                                               ) for sag in sag_list]
+
+    for s in sag_subcontigs:
+        sag_id, sag_headers, sag_subs = s
+        sag_full_len = sum(len(x) for x in sag_subs)
+        sag_per_comp = sag_full_len*(per_comp/100)
+        zip_list = list(zip(sag_headers, [len(x) for x in sag_subs], sag_subs))
+        small_list = [[x[0], x[2]] for x in zip_list if min_contig_len <= x[1] < max_contig_len]
+        big_list = [[x[0], x[2]] for x in zip_list if x[1] >= max_contig_len]
+        random.Random(42).shuffle(small_list)
+        mock_list = []
+        for m in small_list:
+            mock_comp_len = sum(len(z[1]) for z in mock_list)
+            if mock_comp_len < sag_per_comp:
+                mock_list.append(m)
+        if mock_comp_len < sag_per_comp:
+            random.Random(42).shuffle(big_list)
+            for m in big_list:
+                mock_comp_len = sum(len(z[1]) for z in mock_list)
+                if mock_comp_len < sag_per_comp:
+                    mock_list.append(m)
+
+        mock_per_comp = sum(len(z[1]) for z in mock_list)
+        mock_per_min = min(len(z[1]) for z in mock_list)
+        mock_per_max = max(len(z[1]) for z in mock_list)
+        mock_per_mean = sum(len(z[1]) for z in mock_list)/len(mock_list)
+        print(sag_id, sag_full_len, sag_per_comp, len(mock_list), mock_per_comp,
+                mock_per_min, mock_per_max, mock_per_mean
+                )
+
+        with open(os.path.join(save_path, sag_id +
+                  '.mock.' + str(per_comp) + '.fasta'), 'w') as sub_out:
+                sub_rec_list = ['\n'.join(['>'+rec[0], rec[1]])
+                                for rec in mock_list
+                                ]
+                sub_out.write('\n'.join(sub_rec_list) + '\n')
+
+
+
+if __name__ == '__main__':
+    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])

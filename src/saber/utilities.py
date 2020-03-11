@@ -116,10 +116,10 @@ def check_out_dirs(save_path):
     """
     Checks if dirs all exist in save_path, makes them if not.
 
-    :param save_path: directory where all intermediate and final files are saved. 
+    :param save_path: directory where all intermediate and final files are saved.
     :return: A dictionary with the stage dir and the full path.
     """
-    
+
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
@@ -185,7 +185,7 @@ def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
                                 for rec in zip(headers, subs)
                                 ]
                 sub_out.write('\n'.join(sub_rec_list) + '\n')
-    
+
     return (samp_id, headers, subs)
 
 
@@ -196,11 +196,11 @@ def kmer_slide(seq_list, n, o_lap):
         header, seq = seq_tup
         clean_seq = seq.strip('\n').lower()
         sub_list = get_frags(clean_seq, n, o_lap)
-        sub_headers = [header + '_' + str(i) for i, x in 
+        sub_headers = [header + '_' + str(i) for i, x in
                         enumerate(sub_list, start=0)
                         ]
         all_sub_seqs.extend(sub_list)
-        all_sub_headers.extend(sub_headers) 
+        all_sub_headers.extend(sub_headers)
 
     return all_sub_headers, all_sub_seqs
 
@@ -277,7 +277,7 @@ def tetra_cnt(seq_list):
         for tetra in dedup_dict.keys():
             if dedup_dict[tetra] != '':
                 #tetra_prop_dict[tetra] = tmp_dict[tetra] + tmp_dict[dedup_dict[tetra]]
-                t_prop = (tmp_dict[tetra] 
+                t_prop = (tmp_dict[tetra]
                             + tmp_dict[dedup_dict[tetra]]) / total_kmer_cnt
                 tetra_prop_dict[tetra] = t_prop
             else:
