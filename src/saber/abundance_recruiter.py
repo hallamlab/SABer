@@ -4,10 +4,8 @@ from os.path import isfile, basename
 from os.path import join as o_join
 from subprocess import Popen
 from sklearn.preprocessing import normalize
-from samsum import commands, file_parsers
-import samsum.alignment_utils as ss_aln_utils
+from samsum import commands
 
-import sys
 
 def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_list,
                         minhash_df, ss_per_pass=0.51

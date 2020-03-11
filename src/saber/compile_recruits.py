@@ -4,13 +4,12 @@ from os.path import join as o_join
 from os.path import basename
 import pandas as pd
 from subprocess import Popen, PIPE
-from os.path import isfile
 
 
 
 def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs, tetra_df_dict, minhash_df,
                             mg_subcontigs, sag_list
-                             ):
+                             ): # TODO: use logging instead of print
     for tetra_id in tetra_df_dict:
         tetra_df = tetra_df_dict[tetra_id]
         # TODO: Use full contigs instead of subcontigs for co-asm, reduces asm time for Minimus2? CISA?
@@ -34,7 +33,6 @@ def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs,
         for sag_id in set(mh_gmm_merge_df['sag_id']):
             final_rec = o_join(final_path, sag_id + '.' + tetra_id + '.final_recruits.fasta')
 
-            sag_file = sag2path_dict[sag_id]
             sub_merge_df = mh_gmm_merge_df.loc[mh_gmm_merge_df['sag_id'] == sag_id]
             print('[SABer]: Recruited %s contigs from entire analysis for %s' %
                   (sub_merge_df.shape[0], sag_id)
@@ -142,7 +140,7 @@ def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs,
     # TODO: Maybe create a SABer SAG for each sample? Seems like the best way to go.
     #  OR since the ASM is merged from all samples, maybe just cat all samples and
     #  assemble with SABer SAG OR original SAG as ref? Would probably use SPAdes for this.
-    '''
+'''
         # Use SPAdes to co-assemble mSAG and recruits
         # TODO: use SAG as "trusted contigs" and assemble the raw reads recruited from sample(s).
         #  Get this function from Phylo(whatever) from Lulu 16S extraction from metaG's.
@@ -164,9 +162,9 @@ def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs,
         clean_cmd = ['rm', '-rf', o_join(asm_path, sag_id)]
         run_clean = Popen(clean_cmd, stdout=PIPE)
         print(run_clean.communicate()[0].decode())
-    '''
+'''
 
-    '''
+'''
         # Use CISA to integrate the SAG and Recruited contigs
         asm_sag_path = join(asm_path, sag_id)
         if not path.exists(asm_sag_path):
@@ -244,6 +242,4 @@ def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs,
         clean_cmd = ['rm', '-rf', join(asm_path, sag_id)]
         run_clean = Popen(clean_cmd, stdout=PIPE)
         print(run_clean.communicate()[0].decode())
-
-
-    '''
+'''

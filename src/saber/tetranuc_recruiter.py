@@ -4,13 +4,9 @@ import numpy as np
 from os.path import isfile
 from os.path import join as o_join
 import saber.utilities as s_utils
-from sklearn.preprocessing import normalize
-#import umap
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn import svm
 from sklearn.ensemble import IsolationForest
-from functools import reduce
-from os.path import basename
 
 
 
@@ -171,7 +167,7 @@ def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, nu
             clf = svm.OneClassSVM()
             clf.fit(sag_tetra_df.values)
             sag_pred = clf.predict(sag_tetra_df.values)
-            sag_pred_df = pd.DataFrame(data=sag_pred, index=sag_tetra_df.index.values)
+            #sag_pred_df = pd.DataFrame(data=sag_pred, index=sag_tetra_df.index.values)
             mg_pred = clf.predict(mg_tetra_filter_df.values)
             mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_filter_df.index.values)
             svm_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
@@ -268,9 +264,7 @@ def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, nu
     return tetra_df_dict
 
 
-
-
-    '''
+'''
     ##################################
     # build scatterplot to viz the GMM
     sag_xy_df = sag_umap_df.iloc[:,0:2].copy()
@@ -291,4 +285,4 @@ def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, nu
     plt.savefig(sv_plot, bbox_inches="tight")
     plt.clf()
     ##################################
-    '''
+'''

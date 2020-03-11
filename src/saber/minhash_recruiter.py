@@ -54,7 +54,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_subcontigs, mg_subcontigs,
             logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
             pass_list = []
             mg_sig_list = list(mg_sig_list)
-            for j, mg_sig in enumerate(mg_sig_list):
+            for mg_sig in mg_sig_list:
                 jacc_sim = mg_sig.contained_by(sag_sig)
                 mg_nm = mg_sig.name()
                 if jacc_sim >= jacc_threshold:

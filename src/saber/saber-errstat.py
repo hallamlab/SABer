@@ -2,12 +2,9 @@ import pandas as pd
 import os
 import sys
 from os.path import join as joinpath
-from functools import reduce
-import numpy as np
-from collections import Counter
 from os import listdir, makedirs, path
 from Bio import SeqIO
-from sklearn.metrics import auc
+
 
 def calc_err(df):
     # build error type df for each filter separately

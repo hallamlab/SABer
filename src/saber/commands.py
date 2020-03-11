@@ -104,7 +104,7 @@ def recruit(sys_args):
                                        )
     # Collect and join all recruits
     logging.info('[SABer]: Combining All Recruits\n')
-    combine_df = com.run_combine_recruits(save_dirs_dict['final_recruits'], save_dirs_dict['extend_SAGs'],
+    com.run_combine_recruits(save_dirs_dict['final_recruits'], save_dirs_dict['extend_SAGs'],
                                           save_dirs_dict['re_assembled'], save_dirs_dict['checkM'],
                                           mg_contigs, tetra_df_dict, minhash_df, mg_subcontigs, sag_list
                                           )

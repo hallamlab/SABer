@@ -1,6 +1,6 @@
 import pandas as pd
 import sys
-from pathlib import Path
+
 
 input_file = sys.argv[1]
 input_df = pd.read_csv(input_file, header=0, sep='\t')
@@ -31,7 +31,8 @@ amber_tax_df = amber_tax_df[['@@SEQUENCEID', 'BINID', '_TAXID_', '_RANK_', '_TAX
 								]]
 
 with open(input_file.rsplit('.', 1)[0] + '.AMBER.binning', 'w') as a_out:
-	a_out.write('@Version:0.9.1\n@SampleID:CAMI_HIGH\n\n')							
+	a_out.write('@Version:0.9.1\n@SampleID:CAMI_HIGH\n\n')
+
 amber_tax_df.to_csv(input_file.rsplit('.', 1)[0] + '.AMBER.binning', index=False, sep='\t',
 						mode='a')
 
@@ -42,6 +43,6 @@ for bin_id in set(amber_tax_df['BINID']):
 	Path(sv_dir).mkdir(parents=True, exist_ok=True)
 	bin_file = sv_dir + '/' + bin_id + '.' + input_file.rsplit('.', 1)[0] + '.binning'
 	with open(bin_file, 'w') as a_out:
-		a_out.write('@Version:0.9.1\n@SampleID:CAMI_HIGH\n\n')							
+		a_out.write('@Version:0.9.1\n@SampleID:CAMI_HIGH\n\n')
 	sub_amber_tax_df.to_csv(bin_file, index=False, sep='\t', mode='a')
 '''
