@@ -5,7 +5,7 @@ from os.path import join as o_join
 import pandas as pd
 
 def run_minhash_recruiter(sig_path, mhr_path, sag_subcontigs, mg_subcontigs,
-                            jacc_threshold=0.99, mh_per_pass=0.51
+                            jacc_threshold, mh_per_pass
                             ):
     logging.info('[SABer]: Starting MinHash Recruitment Algorithm\n')
     # Calculate/Load MinHash Signatures with SourMash for MG subseqs
