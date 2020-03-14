@@ -40,5 +40,5 @@ cd ..
 ### Install SABer
 ```sh
 python3 setup.py sdist bdist_wheel  
-pip install dist/SABer-0.0.1-py3-none-any.whl  
+pip install dist/SABerML-0.0.1-py3-none-any.whl  
 ```

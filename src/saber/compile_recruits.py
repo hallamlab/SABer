@@ -7,8 +7,8 @@ from subprocess import Popen, PIPE
 
 
 
-def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs, tetra_df_dict, minhash_df,
-                            mg_subcontigs, sag_list
+def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs, tetra_df_dict,
+                         minhash_df, mg_subcontigs, sag_list
                              ): # TODO: use logging instead of print
     for tetra_id in tetra_df_dict:
         tetra_df = tetra_df_dict[tetra_id]

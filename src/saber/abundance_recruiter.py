@@ -166,11 +166,9 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_lis
             join_ss_recruits = set(list(iqr_pass_df.index) + list(mh_cntg_pass_list))
             for md_nm in join_ss_recruits:
                 pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
-
-            logging.info('[SABer]: Recruited %s subcontigs to %s\n' % (len(pass_list), sag_id))
             with open(o_join(abr_path, sag_id + '.abr_recruits.tsv'), 'w') as abr_out:
                 abr_out.write('\n'.join(['\t'.join(x) for x in pass_list]))
-
+        logging.info('[SABer]: Recruited %s subcontigs to %s\n' % (len(pass_list), sag_id))
         ss_pass_list.extend(pass_list)
 
     ss_df = pd.DataFrame(ss_pass_list, columns=['sag_id', 'subcontig_id',

@@ -210,9 +210,11 @@ def get_frags(seq, l_max, o_lap):
         for i in range(0, len(seq), offset):
             if i+l_max < len(seq):
                 frag = seq[i:i+l_max]
+                seq_frags.append(frag)
             else:
-                frag = seq[-l_max:]
-            seq_frags.append(frag)
+                frag = seq[i:]
+                seq_frags.append(frag)
+                break
     else:
         seq_frags.append(seq)
 
