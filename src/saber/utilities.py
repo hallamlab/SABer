@@ -161,6 +161,8 @@ def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
                  )
 
     contigs = get_seqs(in_fasta)
+    # trim out seqs < max_contig_len
+    trim_contigs = [x for x in contigs if len(x[1]) >= int(max_contig_len)]
     # Build sub sequences for all contigs
     if os.path.isfile(os.path.join(subcontig_path, samp_id +
                       '.subcontigs.fasta')
@@ -171,7 +173,7 @@ def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
                                  )
                             ))
     else:
-        headers, subs = kmer_slide(contigs, max_contig_len,
+        headers, subs = kmer_slide(trim_contigs, max_contig_len,
                                             overlap_len
                                             )
         with open(os.path.join(subcontig_path, samp_id +
