@@ -214,7 +214,7 @@ def get_frags(seq, l_max, o_lap):
                 frag = seq[i:i+l_max]
                 seq_frags.append(frag)
             else:
-                frag = seq[i:]
+                frag = seq[-l_max:]
                 seq_frags.append(frag)
                 break
     else:
