@@ -161,8 +161,6 @@ def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
                  )
 
     contigs = get_seqs(in_fasta)
-    # trim out seqs < max_contig_len
-    trim_contigs = [x for x in contigs if len(x[1]) >= int(max_contig_len)]
     # Build sub sequences for all contigs
     if os.path.isfile(os.path.join(subcontig_path, samp_id +
                       '.subcontigs.fasta')
@@ -173,7 +171,7 @@ def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
                                  )
                             ))
     else:
-        headers, subs = kmer_slide(trim_contigs, max_contig_len,
+        headers, subs = kmer_slide(contigs, max_contig_len,
                                             overlap_len
                                             )
         with open(os.path.join(subcontig_path, samp_id +
@@ -192,7 +190,8 @@ def kmer_slide(seq_list, n, o_lap):
     for seq_tup in seq_list:
         header, seq = seq_tup
         clean_seq = seq.strip('\n').lower()
-        sub_list = get_frags(clean_seq, n, o_lap)
+        #sub_list = get_frags(clean_seq, n, o_lap)
+        sub_list = slidingWindow(clean_seq, n, o_lap)
         sub_headers = [header + '_' + str(i) for i, x in
                         enumerate(sub_list, start=0)
                         ]
@@ -217,8 +216,30 @@ def get_frags(seq, l_max, o_lap):
                 frag = seq[-l_max:]
                 seq_frags.append(frag)
                 break
+    #else:
+    #    seq_frags.append(seq)
+
+    return seq_frags
+
+
+def slidingWindow(sequence, winSize, step): # pulled source from https://scipher.wordpress.com/2010/12/02/simple-sliding-window-iterator-in-python/
+    
+    seq_frags = []
+    # Verify the inputs
+    try: it = iter(sequence)
+    except TypeError:
+        raise Exception("**ERROR** sequence must be iterable.")
+    if not ((type(winSize) == type(0)) and (type(step) == type(0))):
+        raise Exception("**ERROR** type(winSize) and type(step) must be int.")
+    if step > winSize:
+        raise Exception("**ERROR** step must not be larger than winSize.")
+    if winSize <= len(sequence):
+        numOfChunks = ((len(sequence)-winSize)//step)+1 
+        for i in range(0,numOfChunks*step,step):
+            seq_frags.append(sequence[i:i+winSize])
+        seq_frags.append(sequence[-winSize:]) # add the remaining tail
     else:
-        seq_frags.append(seq)
+        seq_frags.append(sequence)
 
     return seq_frags
 
