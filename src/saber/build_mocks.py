@@ -136,4 +136,12 @@ def main(sag_path, save_path, max_contig_len, min_contig_len, overlap_len, per_c
 
 
 if __name__ == '__main__':
+    sag_path = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/source_genomes/'
+    save_path = '~/Ryan/test_SABer/mockSAGs/new_mocks/'
+    max_contig_len = 8000
+    min_contig_len = 1500
+    overlap_len = 0
+    per_comp = 40
+
+
     main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
