@@ -19,7 +19,7 @@ cd SABer
 ```
 ### Create conda env
 ```sh
-conda create -n saber_env python=3.5  
+conda create -n saber_env python=3.8  
 conda activate saber_env  
 ```
 ### Install BWA
