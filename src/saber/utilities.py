@@ -174,8 +174,8 @@ def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
                                  )
                             ))
     else:
-        headers, subs = kmer_slide(trim_contigs, max_contig_len,
-                                            overlap_len
+        headers, subs = kmer_slide(trim_contigs, int(max_contig_len),
+                                            int(overlap_len)
                                             )
         with open(os.path.join(subcontig_path, samp_id +
                   '.subcontigs.fasta'), 'w') as sub_out:
@@ -226,7 +226,7 @@ def get_frags(seq, l_max, o_lap):
 
 
 def slidingWindow(sequence, winSize, step): # pulled source from https://scipher.wordpress.com/2010/12/02/simple-sliding-window-iterator-in-python/
-    
+
     seq_frags = []
     # Verify the inputs
     try: it = iter(sequence)
@@ -237,7 +237,7 @@ def slidingWindow(sequence, winSize, step): # pulled source from https://scipher
     if step > winSize:
         raise Exception("**ERROR** step must not be larger than winSize.")
     if winSize <= len(sequence):
-        numOfChunks = ((len(sequence)-winSize)//step)+1 
+        numOfChunks = ((len(sequence)-winSize)//step)+1
         for i in range(0,numOfChunks*step,step):
             seq_frags.append(sequence[i:i+winSize])
         seq_frags.append(sequence[-winSize:]) # add the remaining tail
