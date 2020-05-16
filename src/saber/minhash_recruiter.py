@@ -20,7 +20,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_subcontigs, mg_subcontigs,
         mg_sig_list = []
         for mg_head, seq in zip(mg_headers, mg_subs):
             up_seq = seq.upper()
-            mg_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
+            mg_minhash = sourmash.MinHash(n=0, ksize=51, scaled=1000)
             mg_minhash.add_sequence(up_seq, force=True)
             mg_sig = sourmash.SourmashSignature(mg_minhash, name=mg_head)
             mg_sig_list.append(mg_sig)
@@ -44,7 +44,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_subcontigs, mg_subcontigs,
                                                                 )
             else:
                 logging.info('[SABer]: Building Signature for %s\n' % sag_id)
-                sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
+                sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=1000)
                 for sag_head, sag_subseq in zip(sag_headers, sag_subs):
                     sag_upseq = sag_subseq.upper()
                     sag_minhash.add_sequence(sag_upseq, force=True)
