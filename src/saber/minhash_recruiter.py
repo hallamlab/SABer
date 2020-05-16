@@ -17,9 +17,9 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     #mg_id, mg_headers, mg_subs = mg_subcontigs
     if isfile(o_join(sig_path, mg_id + '.metaG.sig')):  # TODO: MG should only be loaded if required
         logging.info('[SABer]: Loading %s Signatures\n' % mg_id)
-        mg_sig_list = sourmash.signature.load_signatures(o_join(sig_path, mg_id + \
+        mg_sig_list = tuple(sourmash.signature.load_signatures(o_join(sig_path, mg_id + \
                                                                       '.metaG.sig')
-                                                                        )
+                                                                        ))
     else:
         logging.info('[SABer]: Building Signatures for %s\n' % mg_id)
         mg_sig_list = []
@@ -32,6 +32,8 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             mg_sig_list.append(mg_sig)
         with open(o_join(sig_path, mg_id + '.metaG.sig'), 'w') as mg_out:
             sourmash.signature.save_signatures(mg_sig_list, fp=mg_out)
+        mg_sig_list = tuple(mg_sig_list)
+
 
     # Load comparisons OR Compare SAG sigs to MG sigs to find containment
     logging.info('[SABer]: Comparing Signatures of SAGs to MetaG contigs\n')
@@ -61,7 +63,6 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                     sourmash.signature.save_signatures([sag_sig], fp=sags_out)
             logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
             pass_list = []
-            mg_sig_list = list(mg_sig_list)
             for mg_sig in mg_sig_list:
                 jacc_sim = mg_sig.contained_by(sag_sig)
                 mg_nm = mg_sig.name()
