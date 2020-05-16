@@ -75,23 +75,23 @@ def recruit(sys_args):
     sag_list = s_utils.get_SAGs(recruit_s.sag_path)
 
     # Build subcontiges for SAGs and MG
-    sag_subcontigs = [s_utils.build_subcontigs(sag,
+    sag_sub_files = [s_utils.build_subcontigs(sag,
                                                save_dirs_dict['subcontigs'],
                                                recruit_s.max_contig_len,
                                                recruit_s.overlap_len
                                                ) for sag in sag_list
                      ]
-    mg_contigs = s_utils.get_seqs(recruit_s.mg_file)
-    mg_subcontigs = s_utils.build_subcontigs(recruit_s.mg_file,
+    mg_sub_file = s_utils.build_subcontigs(recruit_s.mg_file,
                                              save_dirs_dict['subcontigs'],
                                              recruit_s.max_contig_len,
                                              recruit_s.overlap_len
                                             )
+
     # Run MinHash recruiting algorithm
     logging.info('[SABer]: Starting Kmer Recruitment Step\n')
     minhash_df = mhr.run_minhash_recruiter(save_dirs_dict['signatures'],
     									   save_dirs_dict['minhash_recruits'],
-                                           sag_subcontigs, mg_subcontigs,
+                                           sag_sub_files, mg_sub_file,
                                            recruit_s.jacc_thresh, recruit_s.mh_per_pass
                                            )
     # Abundance Recruit Module
@@ -109,6 +109,7 @@ def recruit(sys_args):
                                        		)
     # Collect and join all recruits
     logging.info('[SABer]: Combining All Recruits\n')
+    mg_contigs = s_utils.get_seqs(recruit_s.mg_file)
     com.run_combine_recruits(save_dirs_dict['final_recruits'], save_dirs_dict['extend_SAGs'],
                              save_dirs_dict['re_assembled'], save_dirs_dict['checkM'],
                              mg_contigs, tetra_df_dict, minhash_df, mg_subcontigs, sag_list

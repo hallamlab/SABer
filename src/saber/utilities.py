@@ -9,6 +9,7 @@ import logging
 from itertools import product, islice
 from collections import Counter
 import pandas as pd
+import screed
 
 
 def is_exe(fpath):
@@ -160,40 +161,41 @@ def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
                  % samp_id
                  )
 
-    # get contigs from fasta file
-    contigs = get_seqs(in_fasta)
-    # remove any that are smaller that the max_contig_len
-    trim_contigs = [x for x in contigs if len(x[1]) >= int(max_contig_len)]
+    sub_file = os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')
+
     # Build sub sequences for all contigs
-    if os.path.isfile(os.path.join(subcontig_path, samp_id +
-                      '.subcontigs.fasta')
-                      ):
-        headers, subs = zip(*get_seqs(
-                            os.path.join(subcontig_path,
-                                 samp_id + '.subcontigs.fasta'
-                                 )
-                            ))
-    else:
-        headers, subs = kmer_slide(trim_contigs, int(max_contig_len),
+    '''
+    if os.path.exists(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')) == True:
+        contigs = get_seqs(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta'))
+        headers, subs = zip(*[contigs[k].name, contigs[k].sequence for k in contigs.keys()])
+        headers = tuple(headers)
+        subs = tuple(subs)
+    '''
+    #else:
+    if os.path.exists(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')) == False:
+        # get contigs from fasta file
+        contigs = get_seqs(in_fasta)
+        # remove any that are smaller that the max_contig_len
+        #trim_contigs = [x for x in contigs if len(x[1]) >= int(max_contig_len)]
+        headers, subs = kmer_slide(contigs, int(max_contig_len),
                                             int(overlap_len)
                                             )
-        with open(os.path.join(subcontig_path, samp_id +
-                  '.subcontigs.fasta'), 'w') as sub_out:
-                sub_rec_list = ['\n'.join(['>'+rec[0], rec[1]])
-                                for rec in zip(headers, subs)
-                                ]
-                sub_out.write('\n'.join(sub_rec_list) + '\n')
+        with open(sub_file, 'w') as sub_out:
+                sub_out.write('\n'.join(['\n'.join(['>'+rec[0], rec[1]]) for rec in
+                                zip(headers, subs)]) + '\n'
+                             )
 
-    return (samp_id, headers, subs)
+    return samp_id, sub_file
+    #return (samp_id, headers, subs)
 
 
-def kmer_slide(seq_list, n, o_lap):
+def kmer_slide(scd_db, n, o_lap):
     all_sub_seqs = []
     all_sub_headers = []
-    for seq_tup in seq_list:
-        header, seq = seq_tup
-        clean_seq = seq.strip('\n').lower()
-        #sub_list = get_frags(clean_seq, n, o_lap)
+    for k in scd_db.keys():
+        rec = scd_db[k]
+        header, seq = rec.name, rec.sequence
+        clean_seq = str(seq).upper()
         sub_list = slidingWindow(clean_seq, n, o_lap)
         sub_headers = [header + '_' + str(i) for i, x in
                         enumerate(sub_list, start=0)
@@ -201,7 +203,8 @@ def kmer_slide(seq_list, n, o_lap):
         all_sub_seqs.extend(sub_list)
         all_sub_headers.extend(sub_headers)
 
-    return all_sub_headers, all_sub_seqs
+
+    return tuple(all_sub_headers), tuple(all_sub_seqs)
 
 
 def get_frags(seq, l_max, o_lap):
@@ -248,6 +251,11 @@ def slidingWindow(sequence, winSize, step): # pulled source from https://scipher
 
 
 def get_seqs(fasta_file):
+
+    if os.path.exists(fasta_file + '_screed') == False:
+        screed.make_db(fasta_file)
+    fadb = screed.ScreedDB(fasta_file)
+
     sag_contigs = []
     with open(fasta_file, 'r') as fasta_in:
         for record in SeqIO.parse(fasta_in, 'fasta'): # TODO: replace biopython with base python
@@ -257,7 +265,7 @@ def get_seqs(fasta_file):
             if f_seq != '':
                 sag_contigs.append((f_id, f_seq))
 
-    return sag_contigs
+    return fadb
 
 
 def get_kmer(seq, n):
@@ -274,7 +282,7 @@ def get_kmer(seq, n):
 
 def tetra_cnt(seq_list):
     # Dict of all tetramers
-    tetra_cnt_dict = {''.join(x):[] for x in product('atgc', repeat=4)}
+    tetra_cnt_dict = {''.join(x):[] for x in product('ATGC', repeat=4)}
     # count up all tetramers and also populate the tetra dict
     for seq in seq_list:
         tmp_dict = {k: 0 for k, v in tetra_cnt_dict.items()}

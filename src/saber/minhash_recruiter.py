@@ -3,13 +3,18 @@ import sourmash
 from os.path import isfile
 from os.path import join as o_join
 import pandas as pd
+import saber.utilities as s_utils
 
-def run_minhash_recruiter(sig_path, mhr_path, sag_subcontigs, mg_subcontigs,
+
+def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                             jacc_threshold, mh_per_pass
                             ):
     logging.info('[SABer]: Starting MinHash Recruitment Algorithm\n')
     # Calculate/Load MinHash Signatures with SourMash for MG subseqs
-    mg_id, mg_headers, mg_subs = mg_subcontigs
+    mg_id = mg_sub_file[0]
+    logging.info('[SABer]: Loading subcontigs for %s\n' % mg_id)
+    mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
+    #mg_id, mg_headers, mg_subs = mg_subcontigs
     if isfile(o_join(sig_path, mg_id + '.metaG.sig')):  # TODO: MG should only be loaded if required
         logging.info('[SABer]: Loading %s Signatures\n' % mg_id)
         mg_sig_list = sourmash.signature.load_signatures(o_join(sig_path, mg_id + \
@@ -18,10 +23,11 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_subcontigs, mg_subcontigs,
     else:
         logging.info('[SABer]: Building Signatures for %s\n' % mg_id)
         mg_sig_list = []
-        for mg_head, seq in zip(mg_headers, mg_subs):
-            up_seq = seq.upper()
+        for mg_key in mg_subcontigs.keys():
+            mg_head = mg_subcontigs[mg_key].name
+            mg_seq = str(mg_subcontigs[mg_key].sequence)
             mg_minhash = sourmash.MinHash(n=0, ksize=51, scaled=1000)
-            mg_minhash.add_sequence(up_seq, force=True)
+            mg_minhash.add_sequence(mg_seq, force=True)
             mg_sig = sourmash.SourmashSignature(mg_minhash, name=mg_head)
             mg_sig_list.append(mg_sig)
         with open(o_join(sig_path, mg_id + '.metaG.sig'), 'w') as mg_out:
@@ -30,7 +36,8 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_subcontigs, mg_subcontigs,
     # Load comparisons OR Compare SAG sigs to MG sigs to find containment
     logging.info('[SABer]: Comparing Signatures of SAGs to MetaG contigs\n')
     minhash_pass_list = []
-    for sag_id, sag_headers, sag_subs in sag_subcontigs:
+    for sag_id, sag_file  in sag_sub_files:
+        sag_subcontigs = s_utils.get_seqs(sag_file)
         if isfile(o_join(mhr_path, sag_id + '.mhr_recruits.tsv')):
             logging.info('[SABer]: Loading %s and MetaG signature recruit list\n' % sag_id)
             with open(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), 'r') as mhr_in:
@@ -45,9 +52,10 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_subcontigs, mg_subcontigs,
             else:
                 logging.info('[SABer]: Building Signature for %s\n' % sag_id)
                 sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=1000)
-                for sag_head, sag_subseq in zip(sag_headers, sag_subs):
-                    sag_upseq = sag_subseq.upper()
-                    sag_minhash.add_sequence(sag_upseq, force=True)
+                for sg_key in sag_subcontigs.keys():
+                    sag_head = sag_subcontigs[sg_key].name,
+                    sag_subseq = str(sag_subcontigs[sg_key].sequence)
+                    sag_minhash.add_sequence(sag_subseq, force=True)
                 sag_sig = sourmash.SourmashSignature(sag_minhash, name=sag_id)
                 with open(o_join(sig_path, sag_id + '.SAG.sig'), 'w') as sags_out:
                     sourmash.signature.save_signatures([sag_sig], fp=sags_out)
