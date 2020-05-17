@@ -18,7 +18,7 @@ def build_signature(p):
 
 
 def compare_sigs(p):
-    sag_id, sag_file, mhr_path, sig_path, mg_sig_list = p
+    sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_threshold = p
     sag_subcontigs = s_utils.get_seqs(sag_file)
     if isfile(o_join(mhr_path, sag_id + '.mhr_recruits.tsv')):
         #logging.info('[SABer]: Loading %s and MetaG signature recruit list\n' % sag_id)
@@ -99,7 +99,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     for i, sag_rec in enumerate(sag_sub_files):
         sag_id, sag_file = sag_rec
         logging.info('\r[SABer]: Building jacc-pool: {0:.0%} done'.format(i/len(sag_sub_files)))
-        arg_list.append([sag_id, sag_file, mhr_path, sig_path, mg_sig_list])
+        arg_list.append([sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_threshold])
     logging.info('\n')
     results = pool.imap_unordered(compare_sigs, arg_list)
     logging.info('\r[SABer]: Executing jacc-pool:')
