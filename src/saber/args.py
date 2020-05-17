@@ -75,4 +75,8 @@ class SABerArgumentParser(argparse.ArgumentParser):
                                  help="Proportion of subcontigs required to pass "
                                       "tetranucleotide filter [0.01]."
                                  )
+        self.optopt.add_argument("-t", "--num_threads", required=False, default=1,
+                                 dest="nthreads",
+                                 help="Number of threads [1]."
+                                 )
         return

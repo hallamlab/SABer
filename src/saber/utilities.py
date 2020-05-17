@@ -195,14 +195,14 @@ def kmer_slide(scd_db, n, o_lap):
     for k in scd_db.keys():
         rec = scd_db[k]
         header, seq = rec.name, rec.sequence
-        clean_seq = str(seq).upper()
-        sub_list = slidingWindow(clean_seq, n, o_lap)
-        sub_headers = [header + '_' + str(i) for i, x in
-                        enumerate(sub_list, start=0)
-                        ]
-        all_sub_seqs.extend(sub_list)
-        all_sub_headers.extend(sub_headers)
-
+        if len(str(rec.sequence)) >= int(o_lap):
+            clean_seq = str(seq).upper()
+            sub_list = slidingWindow(clean_seq, n, o_lap)
+            sub_headers = [header + '_' + str(i) for i, x in
+                            enumerate(sub_list, start=0)
+                            ]
+            all_sub_seqs.extend(sub_list)
+            all_sub_headers.extend(sub_headers)
 
     return tuple(all_sub_headers), tuple(all_sub_seqs)
 
@@ -255,15 +255,6 @@ def get_seqs(fasta_file):
     if os.path.exists(fasta_file + '_screed') == False:
         screed.make_db(fasta_file)
     fadb = screed.ScreedDB(fasta_file)
-
-    sag_contigs = []
-    with open(fasta_file, 'r') as fasta_in:
-        for record in SeqIO.parse(fasta_in, 'fasta'): # TODO: replace biopython with base python
-            f_id = record.id
-            f_description = record.description
-            f_seq = str(record.seq)
-            if f_seq != '':
-                sag_contigs.append((f_id, f_seq))
 
     return fadb
 

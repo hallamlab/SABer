@@ -69,6 +69,7 @@ def recruit(sys_args):
     recruit_s.abund_per_pass = args.abund_per_pass
     recruit_s.gmm_per_pass = args.gmm_per_pass
     recruit_s.mh_per_pass = args.mh_per_pass
+    recruit_s.nthreads = int(args.nthreads)
     # Build save dir structure
     save_dirs_dict = s_utils.check_out_dirs(recruit_s.save_path)
     # Find the SAGs!
@@ -92,7 +93,8 @@ def recruit(sys_args):
     minhash_df = mhr.run_minhash_recruiter(save_dirs_dict['signatures'],
     									   save_dirs_dict['minhash_recruits'],
                                            sag_sub_files, mg_sub_file,
-                                           recruit_s.jacc_thresh, recruit_s.mh_per_pass
+                                           recruit_s.jacc_thresh, recruit_s.mh_per_pass,
+                                           recruit_s.nthreads
                                            )
     # Abundance Recruit Module
     logging.info('[SABer]: Starting Abundance Recruitment Step\n')
