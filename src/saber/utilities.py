@@ -157,10 +157,6 @@ def get_SAGs(sag_path):
 def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
     basename = os.path.basename(in_fasta)
     samp_id = basename.rsplit('.', 1)[0]
-    logging.info('[SABer]: Loading/Building subcontigs for %s\n'
-                 % samp_id
-                 )
-
     sub_file = os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')
 
     # Build sub sequences for all contigs
