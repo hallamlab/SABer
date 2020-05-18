@@ -77,18 +77,16 @@ def recruit(sys_args):
 
     # Build subcontiges for SAGs and MG
     logging.info('[SABer]: Loading/Building subcontigs\n') # TODO: add logging to track this
-    sag_sub_files = [s_utils.build_subcontigs(sag,
+    sag_sub_files = s_utils.build_subcontigs(sag_list,
                                                save_dirs_dict['subcontigs'],
                                                recruit_s.max_contig_len,
                                                recruit_s.overlap_len
-                                               ) for sag in sag_list
-                     ]
-    mg_sub_file = s_utils.build_subcontigs(recruit_s.mg_file,
+                                               )
+    mg_sub_file = s_utils.build_subcontigs([recruit_s.mg_file],
                                              save_dirs_dict['subcontigs'],
                                              recruit_s.max_contig_len,
                                              recruit_s.overlap_len
-                                            )
-
+                                            )[0]
     # Run MinHash recruiting algorithm
     logging.info('[SABer]: Starting Kmer Recruitment Step\n')
     minhash_df = mhr.run_minhash_recruiter(save_dirs_dict['signatures'],
@@ -100,14 +98,14 @@ def recruit(sys_args):
     # Abundance Recruit Module
     logging.info('[SABer]: Starting Abundance Recruitment Step\n')
     abund_df = abr.run_abund_recruiter(save_dirs_dict['subcontigs'],
-    								   save_dirs_dict['abund_recruits'], mg_subcontigs,
+    								   save_dirs_dict['abund_recruits'], mg_sub_file,
                                        recruit_s.mg_raw_file_list, minhash_df,
                                        recruit_s.abund_per_pass
                                        )
     # Tetranucleotide Hz Recruit Module
     logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
     tetra_df_dict = tra.run_tetra_recruiter(save_dirs_dict['tetra_recruits'],
-    										sag_subcontigs, mg_subcontigs, abund_df,
+    										sag_sub_files, mg_sub_file, abund_df,
                                        		recruit_s.gmm_per_pass
                                        		)
     # Collect and join all recruits
@@ -115,7 +113,7 @@ def recruit(sys_args):
     mg_contigs = s_utils.get_seqs(recruit_s.mg_file)
     com.run_combine_recruits(save_dirs_dict['final_recruits'], save_dirs_dict['extend_SAGs'],
                              save_dirs_dict['re_assembled'], save_dirs_dict['checkM'],
-                             mg_contigs, tetra_df_dict, minhash_df, mg_subcontigs, sag_list
+                             recruit_s.mg_file, tetra_df_dict, minhash_df, sag_list
                              )
     # Re-assemble SAG with MG recruits
 

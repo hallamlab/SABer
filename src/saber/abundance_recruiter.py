@@ -5,12 +5,19 @@ from os.path import join as o_join
 from subprocess import Popen
 from sklearn.preprocessing import normalize
 from samsum import commands
+import saber.utilities as s_utils
 
 
-def run_abund_recruiter(subcontig_path, abr_path, mg_subcontigs, mg_raw_file_list,
+def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                         minhash_df, ss_per_pass
                         ):
-    mg_id, mg_headers = mg_subcontigs[0], mg_subcontigs[1]
+
+    mg_id = mg_sub_file[0]
+    mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
+    mg_headers = tuple(mg_subcontigs.keys())
+
+    #mg_id, mg_headers = mg_subcontigs[0], mg_subcontigs[1]
+
     logging.info('[SABer]: Starting Abundance Recruitment Algorithm\n')
     logging.info('[SABer]: Checking for abundance table for %s\n' % mg_id)
     if isfile(o_join(abr_path, mg_id + '.samsum_merged.tsv')):

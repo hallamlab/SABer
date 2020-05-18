@@ -7,16 +7,23 @@ import saber.utilities as s_utils
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn import svm
 from sklearn.ensemble import IsolationForest
+import saber.utilities as s_utils
 
 
 
-def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, gmm_per_pass):
+def run_tetra_recruiter(tra_path, sag_subcontigs, mg_sub_file, rpkm_max_df, gmm_per_pass):
     # TODO: 1. Think about using Minimum Description Length (MDL) instead of AIC/BIC
     #        2. [Normalized Maximum Likelihood or Fish Information Approximation]
     #        3. Can TetraNuc Hz be calc'ed for each sample? Does that improve things?
     #            (think about http://merenlab.org/2020/01/02/visualizing-metagenomic-bins/#introduction)
 
-    mg_id, mg_headers, mg_subs = mg_subcontigs
+    mg_id = mg_sub_file[0]
+    mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
+    mg_headers = tuple(mg_subcontigs.keys())
+
+    mg_subs = tuple([r.seq for r in mg_subcontigs.itervalues()])
+    #mg_id, mg_headers, mg_subs = mg_subcontigs
+
     # Build/Load tetramers for SAGs and MG subset by ara recruits
     if isfile(o_join(tra_path, mg_id + '.tetras.tsv')):
         logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % mg_id)
@@ -36,7 +43,13 @@ def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, gm
     svm_total_pass_list = []
     iso_total_pass_list= []
     comb_total_pass_list = []
-    for sag_id, sag_headers, sag_subs in sag_subcontigs:
+    #for sag_id, sag_headers, sag_subs in sag_subcontigs:
+    for i, sag_rec in enumerate(sag_sub_files):
+        sag_id, sag_file = sag_rec
+        sag_subcontigs = s_utils.get_seqs(sag_file)
+        sag_headers= tuple(sag_subcontigs.keys())
+        sag_subs = tuple([r.seq for r in sag_subcontigs.itervalues()])
+
         if (isfile(o_join(tra_path, sag_id + '.gmm_recruits.tsv')) &
             isfile(o_join(tra_path, sag_id + '.svm_recruits.tsv')) &
             isfile(o_join(tra_path, sag_id + '.iso_recruits.tsv')) &
@@ -230,7 +243,8 @@ def run_tetra_recruiter(tra_path, sag_subcontigs, mg_subcontigs, rpkm_max_df, gm
 
     for tetra_id in tetra_df_dict:
         tetra_df = tetra_df_dict[tetra_id]
-        mg_id, mg_headers, mg_subs = mg_subcontigs
+        #mg_id, mg_headers, mg_subs = mg_subcontigs
+
         # Count # of subcontigs recruited to each SAG
         gmm_cnt_df = tetra_df.groupby(['sag_id', 'contig_id']).count().reset_index()
         gmm_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']

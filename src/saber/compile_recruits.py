@@ -4,12 +4,16 @@ from os.path import join as o_join
 from os.path import basename
 import pandas as pd
 from subprocess import Popen, PIPE
+import saber.utilities as s_utils
 
 
 
-def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_contigs, tetra_df_dict,
-                         minhash_df, mg_subcontigs, sag_list
+def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_file, tetra_df_dict,
+                         minhash_df, sag_list
                              ): # TODO: use logging instead of print
+
+    mg_contigs = tuple([(r.name, r.seq) for r in s_utils.get_seqs(mg_file).itervalues()])
+
     for tetra_id in tetra_df_dict:
         tetra_df = tetra_df_dict[tetra_id]
         # TODO: Use full contigs instead of subcontigs for co-asm, reduces asm time for Minimus2? CISA?

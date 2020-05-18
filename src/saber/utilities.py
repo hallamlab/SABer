@@ -9,7 +9,7 @@ import logging
 from itertools import product, islice
 from collections import Counter
 import pandas as pd
-import screed
+import pyfastx
 
 
 def is_exe(fpath):
@@ -154,35 +154,30 @@ def get_SAGs(sag_path):
     return sag_list
 
 
-def build_subcontigs(in_fasta, subcontig_path, max_contig_len, overlap_len):
-    basename = os.path.basename(in_fasta)
-    samp_id = basename.rsplit('.', 1)[0]
-    sub_file = os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')
+def build_subcontigs(in_fasta_list, subcontig_path, max_contig_len, overlap_len):
 
-    # Build sub sequences for all contigs
-    '''
-    if os.path.exists(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')) == True:
-        contigs = get_seqs(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta'))
-        headers, subs = zip(*[contigs[k].name, contigs[k].sequence for k in contigs.keys()])
-        headers = tuple(headers)
-        subs = tuple(subs)
-    '''
-    #else:
-    if os.path.exists(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')) == False:
-        # get contigs from fasta file
-        contigs = get_seqs(in_fasta)
-        # remove any that are smaller that the max_contig_len
-        #trim_contigs = [x for x in contigs if len(x[1]) >= int(max_contig_len)]
-        headers, subs = kmer_slide(contigs, int(max_contig_len),
-                                            int(overlap_len)
-                                            )
-        with open(sub_file, 'w') as sub_out:
-                sub_out.write('\n'.join(['\n'.join(['>'+rec[0], rec[1]]) for rec in
-                                zip(headers, subs)]) + '\n'
-                             )
-
-    return samp_id, sub_file
-    #return (samp_id, headers, subs)
+    sub_list = []
+    for i, in_fasta in enumerate(in_fasta_list):
+        basename = os.path.basename(in_fasta)
+        samp_id = basename.rsplit('.', 1)[0]
+        sub_file = os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')
+        if os.path.exists(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')) == False:
+            # get contigs from fasta file
+            contigs = get_seqs(in_fasta)
+            # remove any that are smaller that the max_contig_len
+            #trim_contigs = [x for x in contigs if len(x[1]) >= int(max_contig_len)]
+            headers, subs = kmer_slide(contigs, int(max_contig_len),
+                                                int(overlap_len)
+                                                )
+            with open(sub_file, 'w') as sub_out:
+                    sub_out.write('\n'.join(['\n'.join(['>'+rec[0], rec[1]]) for rec in
+                                    zip(headers, subs)]) + '\n'
+                                 )
+        sub_list.append((samp_id, sub_file))
+        logging.info('\r[SABer]: Loading/Building subcontigs: {} done'.format(i+1))
+    logging.info('\n')
+    sub_list = tuple(sub_list)
+    return sub_list
 
 
 def kmer_slide(scd_db, n, o_lap):
@@ -190,8 +185,8 @@ def kmer_slide(scd_db, n, o_lap):
     all_sub_headers = []
     for k in scd_db.keys():
         rec = scd_db[k]
-        header, seq = rec.name, rec.sequence
-        if len(str(rec.sequence)) >= int(o_lap):
+        header, seq = rec.name, rec.seq
+        if len(str(rec.seq)) >= int(o_lap):
             clean_seq = str(seq).upper()
             sub_list = slidingWindow(clean_seq, n, o_lap)
             sub_headers = [header + '_' + str(i) for i, x in
@@ -248,11 +243,9 @@ def slidingWindow(sequence, winSize, step): # pulled source from https://scipher
 
 def get_seqs(fasta_file):
 
-    if os.path.exists(fasta_file + '_screed') == False:
-        screed.make_db(fasta_file)
-    fadb = screed.ScreedDB(fasta_file)
+    fasta = pyfastx.Fasta(fasta_file)
 
-    return fadb
+    return fasta
 
 
 def get_kmer(seq, n):
