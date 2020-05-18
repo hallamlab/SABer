@@ -100,7 +100,7 @@ def recruit(sys_args):
     abund_df = abr.run_abund_recruiter(save_dirs_dict['subcontigs'],
     								   save_dirs_dict['abund_recruits'], mg_sub_file,
                                        recruit_s.mg_raw_file_list, minhash_df,
-                                       recruit_s.abund_per_pass
+                                       recruit_s.abund_per_pass, recruit_s.nthreads
                                        )
     # Tetranucleotide Hz Recruit Module
     logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')

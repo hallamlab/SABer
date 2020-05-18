@@ -9,7 +9,7 @@ import saber.utilities as s_utils
 
 
 def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
-                        minhash_df, ss_per_pass
+                        minhash_df, ss_per_pass, nthreads
                         ):
 
     mg_id = mg_sub_file[0]
@@ -34,7 +34,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         if False in (isfile(f) for f in check_ind_list):
             # Use BWA to build an index for metagenome assembly
             logging.info('[SABer]: Creating index with BWA\n')
-            bwa_cmd = ['bwa', 'index', mg_sub_path] #TODO: how to get install path for executables?
+            bwa_cmd = ['bwa', 'index', '-b', '500000000', mg_sub_path] #TODO: how to get install path for executables?
             with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
                 with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
                     run_bwa = Popen(bwa_cmd, stdout=stdout_file,
@@ -52,13 +52,13 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                 logging.info('[SABer]: Raw reads in FWD and REV file...\n')
                 pe1 = split_line[0]
                 pe2	= split_line[1]
-                mem_cmd = ['bwa', 'mem', '-t', '8', '-p',
+                mem_cmd = ['bwa', 'mem', '-t', nthreads, '-p',
                            o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
                            ] #TODO: add support for specifying number of threads
             else: # if the fastq is interleaved
                 logging.info('[SABer]: Raw reads in interleaved file...\n')
                 pe1 = split_line[0]
-                mem_cmd = ['bwa', 'mem', '-t', '8', '-p',
+                mem_cmd = ['bwa', 'mem', '-t', nthreads, '-p',
                            o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
                            ] #TODO: how to get install path for executables?
             pe_basename = basename(pe1)
