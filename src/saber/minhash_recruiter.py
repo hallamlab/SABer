@@ -5,7 +5,6 @@ from os.path import join as o_join
 import pandas as pd
 import saber.utilities as s_utils
 import multiprocessing
-import sys
 import ray
 
 
@@ -129,7 +128,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             logging.info('\r[SABer]: Comparison {0:.0%} complete'.format(i/len(build_list)))
         logging.info('\n')
 
-        ray_results = [v for r_list in ray.get(futures) for v in r]
+        ray_results = [v for r_list in ray.get(futures) for v in r_list]
         minhash_pass_list.extent(ray_results)
 
     '''
@@ -160,7 +159,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                                                           'contig_id'
                                                           ])
 
-    logging.info('[SABer]: Compiling all MinHash Recruits\n'.format(b))
+    logging.info('[SABer]: Compiling all MinHash Recruits\n')
     # Count # of subcontigs recruited to each SAG via samsum
     mh_cnt_df = minhash_df.groupby(['sag_id', 'contig_id']).count().reset_index()
     mh_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']

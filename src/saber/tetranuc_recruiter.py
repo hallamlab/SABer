@@ -7,11 +7,9 @@ import saber.utilities as s_utils
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn import svm
 from sklearn.ensemble import IsolationForest
-import saber.utilities as s_utils
 
 
-
-def run_tetra_recruiter(tra_path, sag_subcontigs, mg_sub_file, rpkm_max_df, gmm_per_pass):
+def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_per_pass):
     # TODO: 1. Think about using Minimum Description Length (MDL) instead of AIC/BIC
     #        2. [Normalized Maximum Likelihood or Fish Information Approximation]
     #        3. Can TetraNuc Hz be calc'ed for each sample? Does that improve things?
