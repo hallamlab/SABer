@@ -52,13 +52,13 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                 logging.info('[SABer]: Raw reads in FWD and REV file...\n')
                 pe1 = split_line[0]
                 pe2	= split_line[1]
-                mem_cmd = ['bwa', 'mem', '-t', nthreads, '-p',
+                mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
                            o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
                            ] #TODO: add support for specifying number of threads
             else: # if the fastq is interleaved
                 logging.info('[SABer]: Raw reads in interleaved file...\n')
                 pe1 = split_line[0]
-                mem_cmd = ['bwa', 'mem', '-t', nthreads, '-p',
+                mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
                            o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
                            ] #TODO: how to get install path for executables?
             pe_basename = basename(pe1)
