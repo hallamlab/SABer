@@ -6,11 +6,11 @@ import pandas as pd
 import saber.utilities as s_utils
 import multiprocessing
 import ray
-
+import sys
 
 def build_signature(p):
     header, seq = p
-    mg_minhash = sourmash.MinHash(n=0, ksize=51, scaled=1000)
+    mg_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
     mg_minhash.add_sequence(str(seq), force=True)
     mg_sig = sourmash.SourmashSignature(mg_minhash, name=header)
 
@@ -33,7 +33,7 @@ def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_thresho
                                                             )
         else:
             logging.info('[SABer]: Building Signature for %s\n' % sag_id)
-            sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=1000)
+            sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
             for sg_head in sag_subcontigs:
                 sag_subseq = str(sag_subcontigs[sg_head].seq)
                 sag_minhash.add_sequence(sag_subseq, force=True)
@@ -64,7 +64,6 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     logging.info('[SABer]: Loading subcontigs for %s\n' % mg_id)
     mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
     mg_headers = tuple(mg_subcontigs.keys())
-
     #mg_id, mg_headers, mg_subs = mg_subcontigs
     if isfile(o_join(sig_path, mg_id + '.metaG.sig')):  # TODO: MG should only be loaded if required
         logging.info('[SABer]: Loading %s Signatures\n' % mg_id)
@@ -131,34 +130,9 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         ray_results = [v for r_list in ray.get(futures) for v in r_list]
         minhash_pass_list.extent(ray_results)
 
-    '''
-    pool = multiprocessing.Pool(processes=nthreads)
-    arg_list = []
-    minhash_pass_list = []
-    for i, sag_rec in enumerate(sag_sub_files):
-        sag_id, sag_file = sag_rec
-        if isfile(o_join(mhr_path, sag_id + '.mhr_recruits.tsv')):
-            logging.info('[SABer]: Loading %s and MetaG signature recruit list\n' % sag_id)
-            with open(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), 'r') as mhr_in:
-                pass_list = [x.rstrip('\n').split('\t') for x in mhr_in.readlines()]
-                minhash_pass_list.append(tuple(pass_list))
-        else:
-            #logging.info('\r[SABer]: Building jacc-pool: {0:.0%} done'.format(i/len(sag_sub_files)))
-            arg_list.append([sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_threshold])
-    logging.info('\n')
-    results = pool.imap_unordered(compare_sigs, arg_list)
-    #logging.info('\r[SABer]: Executing jacc-pool:')
-    for i, pass_list in enumerate(results):
-        #logging.info('\r[SABer]: Executing jacc-pool: {0:.0%} done'.format(i/len(arg_list)))
-        minhash_pass_list.extend(pass_list)
-    logging.info('\n')
-    pool.close()
-    pool.join()
-    '''
     minhash_df = pd.DataFrame(minhash_pass_list, columns=['sag_id', 'subcontig_id',
                                                           'contig_id'
                                                           ])
-
     logging.info('[SABer]: Compiling all MinHash Recruits\n')
     # Count # of subcontigs recruited to each SAG via samsum
     mh_cnt_df = minhash_df.groupby(['sag_id', 'contig_id']).count().reset_index()
