@@ -63,12 +63,12 @@ def recruit(sys_args):
     recruit_s.mg_file = args.mg_file
     recruit_s.mg_raw_file_list = args.mg_raw_file_list
     recruit_s.save_path = args.save_path
-    recruit_s.max_contig_len = args.max_contig_len
-    recruit_s.overlap_len = args.overlap_len
-    recruit_s.jacc_thresh = args.jacc_thresh
-    recruit_s.abund_per_pass = args.abund_per_pass
-    recruit_s.gmm_per_pass = args.gmm_per_pass
-    recruit_s.mh_per_pass = args.mh_per_pass
+    recruit_s.max_contig_len = int(args.max_contig_len)
+    recruit_s.overlap_len = int(args.overlap_len)
+    recruit_s.jacc_thresh = float(args.jacc_thresh)
+    recruit_s.abund_per_pass = float(args.abund_per_pass)
+    recruit_s.gmm_per_pass = float(args.gmm_per_pass)
+    recruit_s.mh_per_pass = float(args.mh_per_pass)
     recruit_s.nthreads = int(args.nthreads)
     # Build save dir structure
     save_dirs_dict = s_utils.check_out_dirs(recruit_s.save_path)

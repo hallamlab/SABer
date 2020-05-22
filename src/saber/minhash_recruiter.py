@@ -43,7 +43,7 @@ def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_thresho
         logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
         pass_list = []
         for mg_sig in mg_sig_list:
-            jacc_sim = mg_sig.contained_by(sag_sig)
+            jacc_sim = mg_sig.similarity(sag_sig)
             mg_nm = mg_sig.name()
             if jacc_sim >= jacc_threshold:
                 pass_list.append([sag_id, mg_nm, mg_nm.rsplit('_', 1)[0]])

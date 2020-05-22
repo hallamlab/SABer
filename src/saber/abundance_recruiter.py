@@ -122,7 +122,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         logging.info('[SABer]: Calulating/Loading abundance stats for %s\n' % sag_id)
         if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
             with open(o_join(abr_path, sag_id + '.abr_recruits.tsv'), 'r') as abr_in:
-                pass_list = [x.rstrip('\n').split('\t') for x in abr_in.readlines()]
+                pass_list = tuple([x.rstrip('\n').split('\t') for x in abr_in.readlines()])
         else:
             sag_mh_pass_df = minhash_df[minhash_df['sag_id'] == sag_id]
             mh_cntg_pass_list = set(sag_mh_pass_df['subcontig_id'])
@@ -135,18 +135,18 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
 
             mg_ss_pass_stat_df = mg_ss_pass_df.mean().reset_index()
             mg_ss_pass_stat_df.columns = ['sample_id', 'mean']
-            mg_ss_pass_stat_df['std'] = list(mg_ss_pass_df.std())
-            mg_ss_pass_stat_df['var'] = list(mg_ss_pass_df.var())
-            mg_ss_pass_stat_df['skew'] = list(mg_ss_pass_df.skew())
-            mg_ss_pass_stat_df['kurt'] = list(mg_ss_pass_df.kurt())
-            mg_ss_pass_stat_df['IQ_25'] = list(mg_ss_pass_df.quantile(0.25))
-            mg_ss_pass_stat_df['IQ_75'] = list(mg_ss_pass_df.quantile(0.75))
-            mg_ss_pass_stat_df['IQ_10'] = list(mg_ss_pass_df.quantile(0.10))
-            mg_ss_pass_stat_df['IQ_90'] = list(mg_ss_pass_df.quantile(0.90))
-            mg_ss_pass_stat_df['IQ_05'] = list(mg_ss_pass_df.quantile(0.05))
-            mg_ss_pass_stat_df['IQ_95'] = list(mg_ss_pass_df.quantile(0.95))
-            mg_ss_pass_stat_df['IQ_01'] = list(mg_ss_pass_df.quantile(0.01))
-            mg_ss_pass_stat_df['IQ_99'] = list(mg_ss_pass_df.quantile(0.99))
+            mg_ss_pass_stat_df['std'] = tuple(mg_ss_pass_df.std())
+            mg_ss_pass_stat_df['var'] = tuple(mg_ss_pass_df.var())
+            mg_ss_pass_stat_df['skew'] = tuple(mg_ss_pass_df.skew())
+            mg_ss_pass_stat_df['kurt'] = tuple(mg_ss_pass_df.kurt())
+            mg_ss_pass_stat_df['IQ_25'] = tuple(mg_ss_pass_df.quantile(0.25))
+            mg_ss_pass_stat_df['IQ_75'] = tuple(mg_ss_pass_df.quantile(0.75))
+            mg_ss_pass_stat_df['IQ_10'] = tuple(mg_ss_pass_df.quantile(0.10))
+            mg_ss_pass_stat_df['IQ_90'] = tuple(mg_ss_pass_df.quantile(0.90))
+            mg_ss_pass_stat_df['IQ_05'] = tuple(mg_ss_pass_df.quantile(0.05))
+            mg_ss_pass_stat_df['IQ_95'] = tuple(mg_ss_pass_df.quantile(0.95))
+            mg_ss_pass_stat_df['IQ_01'] = tuple(mg_ss_pass_df.quantile(0.01))
+            mg_ss_pass_stat_df['IQ_99'] = tuple(mg_ss_pass_df.quantile(0.99))
             mg_ss_pass_stat_df['IQR'] = mg_ss_pass_stat_df['IQ_75'] - \
                                           mg_ss_pass_stat_df['IQ_25']
             # calc Tukey Fences
@@ -170,13 +170,13 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                                               ]
 
             pass_list = []
-            join_ss_recruits = set(list(iqr_pass_df.index) + list(mh_cntg_pass_list))
+            join_ss_recruits = set(tuple(iqr_pass_df.index) + tuple(mh_cntg_pass_list))
             for md_nm in join_ss_recruits:
                 pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
             with open(o_join(abr_path, sag_id + '.abr_recruits.tsv'), 'w') as abr_out:
                 abr_out.write('\n'.join(['\t'.join(x) for x in pass_list]))
         logging.info('[SABer]: Recruited %s subcontigs to %s\n' % (len(pass_list), sag_id))
-        ss_pass_list.extend(pass_list)
+        ss_pass_list.extend(tuple(pass_list))
 
     ss_df = pd.DataFrame(ss_pass_list, columns=['sag_id', 'subcontig_id',
                                                     'contig_id'
@@ -207,7 +207,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     ss_max_only_df = ss_recruit_max_df.loc[ss_recruit_max_df['percent_recruited'] >=
                                                ss_recruit_max_df['percent_max']
                                                ]
-    ss_max_df = ss_df[ss_df['contig_id'].isin(list(ss_max_only_df['contig_id']))]
+    ss_max_df = ss_df[ss_df['contig_id'].isin(tuple(ss_max_only_df['contig_id']))]
 
     ss_max_df.to_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), sep='\t',
                         index=False

@@ -19,7 +19,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
     mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
     mg_headers = tuple(mg_subcontigs.keys())
 
-    mg_subs = tuple([r.seq for r in mg_subcontigs.itervalues()])
+    mg_subs = tuple([r.seq for r in mg_subcontigs])
     #mg_id, mg_headers, mg_subs = mg_subcontigs
 
     # Build/Load tetramers for SAGs and MG subset by ara recruits
