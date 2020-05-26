@@ -128,7 +128,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         logging.info('\n')
 
         ray_results = [v for r_list in ray.get(futures) for v in r_list]
-        minhash_pass_list.extent(ray_results)
+        minhash_pass_list.extend(ray_results)
 
     minhash_df = pd.DataFrame(minhash_pass_list, columns=['sag_id', 'subcontig_id',
                                                           'contig_id'
