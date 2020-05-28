@@ -8,6 +8,30 @@ from samsum import commands
 import saber.utilities as s_utils
 
 
+@ray.remote
+def calc_OVL(val):
+    m1, m2, std1, std2 = val
+    ovl = NormalDist(mu=m1, sigma=std1).overlap(NormalDist(mu=m2, sigma=std2))
+
+    return ovl
+
+
+@ray.remote
+def run_ovl_analysis(p):
+    i, s_df, recruit_contigs_df = p
+    ava_df = pd.merge(recruit_contigs_df, s_df, on='key').drop('key',axis=1)
+    ava_df.columns = ['recruit_id', 'r_mu', 'r_sigma', 'query_id', 'q_mu', 'q_sigma']
+    ava_filter_df = ava_df.loc[((ava_df['r_sigma'] != 0.0) & (ava_df['q_sigma'] != 0.0))]
+    ava_filter_df['ovl'] = [calc_OVL(x) for x in
+                  zip(ava_filter_df['r_mu'], ava_filter_df['q_mu'],
+                  ava_filter_df['r_sigma'], ava_filter_df['q_sigma'])
+                  ]
+    ava_final_df = ava_filter_df.loc[ava_filter_df['ovl'] >= 0.9]
+    dedup_df = ava_final_df.drop_duplicates(subset='query_id', keep='first')
+
+    return dedup_df
+
+
 def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                         minhash_df, ss_per_pass, nthreads
                         ):
@@ -28,13 +52,13 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     else:
         logging.info('[SABer]: Building %s abundance table\n' % mg_id)
         mg_sub_path = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
-        # is is indexed?
+        # is it indexed?
         index_ext_list = ['amb', 'ann', 'bwt', 'pac', 'sa']
         check_ind_list = ['.'.join([mg_sub_path, x]) for x in index_ext_list]
         if False in (isfile(f) for f in check_ind_list):
             # Use BWA to build an index for metagenome assembly
             logging.info('[SABer]: Creating index with BWA\n')
-            bwa_cmd = ['bwa', 'index', '-b', '500000000', mg_sub_path] #TODO: how to get install path for executables?
+            bwa_cmd = ['bwa', 'index', '-b', '500000000', mg_sub_path]
             with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
                 with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
                     run_bwa = Popen(bwa_cmd, stdout=stdout_file,
@@ -71,7 +95,33 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                     with open(o_join(abr_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
                         run_mem = Popen(mem_cmd, stdout=sam_file, stderr=stderr_file)
                         run_mem.communicate()
+            # build bam file
+            mg_bam_out = o_join(abr_path, pe_id + '.bam')
+            if isfile(mg_bam_out) == False:
+                logging.info('[SABer]: Converting SAM to BAM with SamTools\n')
+                bam_cmd = ['samtools', 'view', '-S', '-b', mg_sam_out, '>', mg_bam_out]
+                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                    run_bam = Popen(bam_cmd, stderr=stderr_file)
+                    run_bam.communicate()
+            # sort bam file
+            mg_sort_out = o_join(abr_path, pe_id + '.sorted.bam')
+            if isfile(mg_sort_out) == False:
+                logging.info('[SABer]: Sort BAM with SamTools\n')
+                sort_cmd = ['samtools', 'sort', mg_bam_out, '-o', mg_sort_out]
+                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                    run_sort = Popen(sort_cmd, stderr=stderr_file)
+                    run_sort.communicate()
+           # run coverm on sorted bam
+            mg_covm_out = o_join(abr_path, pe_id + '.metabat.tsv')
+            if isfile(mg_covm_out) == False:
+                logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
+                covm_cmd = ['coverm', 'contig', '-t', str(nthreads), '-b', mg_sort_out, '-m',
+                            'metabat', '>', mg_covm_out]
+                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                    run_covm = Popen(covm_cmd, stderr=stderr_file)
+                    run_covm.communicate()
 
+        '''
             logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)
             mg_input = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
             sam_input = o_join(abr_path, pe_id + '.sam')
@@ -104,6 +154,9 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                                                               'weight_total', 'fpkm', 'tpm'
                                                               ])
         mg_ss_df.to_csv(o_join(abr_path, mg_id + '.samsum_merged.tsv'), sep='\t', index=False)
+        '''
+
+    sys.exit()
 
     # extract TPM and pivot for MG
     mg_ss_trim_df = mg_ss_df[['subcontig_id', 'sample_index', 'tpm']].dropna(how='any')
