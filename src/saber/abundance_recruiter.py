@@ -6,7 +6,8 @@ from subprocess import Popen
 from sklearn.preprocessing import normalize
 from samsum import commands
 import saber.utilities as s_utils
-
+import ray
+import sys
 
 @ray.remote
 def calc_OVL(val):
@@ -99,15 +100,16 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
             mg_bam_out = o_join(abr_path, pe_id + '.bam')
             if isfile(mg_bam_out) == False:
                 logging.info('[SABer]: Converting SAM to BAM with SamTools\n')
-                bam_cmd = ['samtools', 'view', '-S', '-b', mg_sam_out, '>', mg_bam_out]
-                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
-                    run_bam = Popen(bam_cmd, stderr=stderr_file)
-                    run_bam.communicate()
+                bam_cmd = ['samtools', 'view', '-S', '-b', '-@', str(nthreads), mg_sam_out]
+                with open(mg_bam_out, 'w') as bam_file:
+                    with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                        run_bam = Popen(bam_cmd, stdout=bam_file, stderr=stderr_file)
+                        run_bam.communicate()
             # sort bam file
             mg_sort_out = o_join(abr_path, pe_id + '.sorted.bam')
             if isfile(mg_sort_out) == False:
                 logging.info('[SABer]: Sort BAM with SamTools\n')
-                sort_cmd = ['samtools', 'sort', mg_bam_out, '-o', mg_sort_out]
+                sort_cmd = ['samtools', 'sort', '-@', str(nthreads), mg_bam_out, '-o', mg_sort_out]
                 with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
                     run_sort = Popen(sort_cmd, stderr=stderr_file)
                     run_sort.communicate()
@@ -116,10 +118,11 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
             if isfile(mg_covm_out) == False:
                 logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
                 covm_cmd = ['coverm', 'contig', '-t', str(nthreads), '-b', mg_sort_out, '-m',
-                            'metabat', '>', mg_covm_out]
-                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
-                    run_covm = Popen(covm_cmd, stderr=stderr_file)
-                    run_covm.communicate()
+                            'metabat']
+                with open(mg_covm_out, 'w') as covm_file:
+                    with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                        run_covm = Popen(covm_cmd, stdout=covm_file, stderr=stderr_file)
+                        run_covm.communicate()
 
         '''
             logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)
