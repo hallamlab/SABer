@@ -42,7 +42,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     mg_headers = tuple(mg_subcontigs.keys())
 
     #mg_id, mg_headers = mg_subcontigs[0], mg_subcontigs[1]
-
+    '''
     logging.info('[SABer]: Starting Abundance Recruitment Algorithm\n')
     logging.info('[SABer]: Checking for abundance table for %s\n' % mg_id)
     if isfile(o_join(abr_path, mg_id + '.samsum_merged.tsv')):
@@ -51,78 +51,79 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                                sep='\t', header=0
                                )
     else:
-        logging.info('[SABer]: Building %s abundance table\n' % mg_id)
-        mg_sub_path = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
-        # is it indexed?
-        index_ext_list = ['amb', 'ann', 'bwt', 'pac', 'sa']
-        check_ind_list = ['.'.join([mg_sub_path, x]) for x in index_ext_list]
-        if False in (isfile(f) for f in check_ind_list):
-            # Use BWA to build an index for metagenome assembly
-            logging.info('[SABer]: Creating index with BWA\n')
-            bwa_cmd = ['bwa', 'index', '-b', '500000000', mg_sub_path]
-            with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
-                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
-                    run_bwa = Popen(bwa_cmd, stdout=stdout_file,
-                                    stderr=stderr_file
-                                    )
-                    run_bwa.communicate()
+    '''
+    logging.info('[SABer]: Building %s abundance table\n' % mg_id)
+    mg_sub_path = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
+    # is it indexed?
+    index_ext_list = ['amb', 'ann', 'bwt', 'pac', 'sa']
+    check_ind_list = ['.'.join([mg_sub_path, x]) for x in index_ext_list]
+    if False in (isfile(f) for f in check_ind_list):
+        # Use BWA to build an index for metagenome assembly
+        logging.info('[SABer]: Creating index with BWA\n')
+        bwa_cmd = ['bwa', 'index', '-b', '500000000', mg_sub_path]
+        with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
+            with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                run_bwa = Popen(bwa_cmd, stdout=stdout_file,
+                                stderr=stderr_file
+                                )
+                run_bwa.communicate()
 
-        # Process raw metagenomes to calculate abundances
-        with open(mg_raw_file_list, 'r') as raw_fa_in:
-            raw_data = raw_fa_in.readlines()
-        ss_output_list = []
-        for line in raw_data:
-            split_line = line.strip('\n').split('\t')
-            if len(split_line) == 2:
-                logging.info('[SABer]: Raw reads in FWD and REV file...\n')
-                pe1 = split_line[0]
-                pe2	= split_line[1]
-                mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
-                           o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
-                           ] #TODO: add support for specifying number of threads
-            else: # if the fastq is interleaved
-                logging.info('[SABer]: Raw reads in interleaved file...\n')
-                pe1 = split_line[0]
-                mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
-                           o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
-                           ] #TODO: how to get install path for executables?
-            pe_basename = basename(pe1)
-            pe_id = pe_basename.split('.')[0]
-            # BWA sam file exists?
-            mg_sam_out = o_join(abr_path, pe_id + '.sam')
-            if isfile(mg_sam_out) == False:
-                logging.info('[SABer]: Running BWA mem on %s\n' % pe_id)
-                with open(mg_sam_out, 'w') as sam_file:
-                    with open(o_join(abr_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
-                        run_mem = Popen(mem_cmd, stdout=sam_file, stderr=stderr_file)
-                        run_mem.communicate()
-            # build bam file
-            mg_bam_out = o_join(abr_path, pe_id + '.bam')
-            if isfile(mg_bam_out) == False:
-                logging.info('[SABer]: Converting SAM to BAM with SamTools\n')
-                bam_cmd = ['samtools', 'view', '-S', '-b', '-@', str(nthreads), mg_sam_out]
-                with open(mg_bam_out, 'w') as bam_file:
-                    with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
-                        run_bam = Popen(bam_cmd, stdout=bam_file, stderr=stderr_file)
-                        run_bam.communicate()
-            # sort bam file
-            mg_sort_out = o_join(abr_path, pe_id + '.sorted.bam')
-            if isfile(mg_sort_out) == False:
-                logging.info('[SABer]: Sort BAM with SamTools\n')
-                sort_cmd = ['samtools', 'sort', '-@', str(nthreads), mg_bam_out, '-o', mg_sort_out]
+    # Process raw metagenomes to calculate abundances
+    with open(mg_raw_file_list, 'r') as raw_fa_in:
+        raw_data = raw_fa_in.readlines()
+    ss_output_list = []
+    for line in raw_data:
+        split_line = line.strip('\n').split('\t')
+        if len(split_line) == 2:
+            logging.info('[SABer]: Raw reads in FWD and REV file...\n')
+            pe1 = split_line[0]
+            pe2	= split_line[1]
+            mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
+                       o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
+                       ] #TODO: add support for specifying number of threads
+        else: # if the fastq is interleaved
+            logging.info('[SABer]: Raw reads in interleaved file...\n')
+            pe1 = split_line[0]
+            mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
+                       o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
+                       ] #TODO: how to get install path for executables?
+        pe_basename = basename(pe1)
+        pe_id = pe_basename.split('.')[0]
+        # BWA sam file exists?
+        mg_sam_out = o_join(abr_path, pe_id + '.sam')
+        if isfile(mg_sam_out) == False:
+            logging.info('[SABer]: Running BWA mem on %s\n' % pe_id)
+            with open(mg_sam_out, 'w') as sam_file:
+                with open(o_join(abr_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
+                    run_mem = Popen(mem_cmd, stdout=sam_file, stderr=stderr_file)
+                    run_mem.communicate()
+        # build bam file
+        mg_bam_out = o_join(abr_path, pe_id + '.bam')
+        if isfile(mg_bam_out) == False:
+            logging.info('[SABer]: Converting SAM to BAM with SamTools\n')
+            bam_cmd = ['samtools', 'view', '-S', '-b', '-@', str(nthreads), mg_sam_out]
+            with open(mg_bam_out, 'w') as bam_file:
                 with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
-                    run_sort = Popen(sort_cmd, stderr=stderr_file)
-                    run_sort.communicate()
-           # run coverm on sorted bam
-            mg_covm_out = o_join(abr_path, pe_id + '.metabat.tsv')
-            if isfile(mg_covm_out) == False:
-                logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
-                covm_cmd = ['coverm', 'contig', '-t', str(nthreads), '-b', mg_sort_out, '-m',
-                            'metabat']
-                with open(mg_covm_out, 'w') as covm_file:
-                    with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
-                        run_covm = Popen(covm_cmd, stdout=covm_file, stderr=stderr_file)
-                        run_covm.communicate()
+                    run_bam = Popen(bam_cmd, stdout=bam_file, stderr=stderr_file)
+                    run_bam.communicate()
+        # sort bam file
+        mg_sort_out = o_join(abr_path, pe_id + '.sorted.bam')
+        if isfile(mg_sort_out) == False:
+            logging.info('[SABer]: Sort BAM with SamTools\n')
+            sort_cmd = ['samtools', 'sort', '-@', str(nthreads), mg_bam_out, '-o', mg_sort_out]
+            with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                run_sort = Popen(sort_cmd, stderr=stderr_file)
+                run_sort.communicate()
+       # run coverm on sorted bam
+        mg_covm_out = o_join(abr_path, pe_id + '.metabat.tsv')
+        if isfile(mg_covm_out) == False:
+            logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
+            covm_cmd = ['coverm', 'contig', '-t', str(nthreads), '-b', mg_sort_out, '-m',
+                        'metabat']
+            with open(mg_covm_out, 'w') as covm_file:
+                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                    run_covm = Popen(covm_cmd, stdout=covm_file, stderr=stderr_file)
+                    run_covm.communicate()
 
         '''
             logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)

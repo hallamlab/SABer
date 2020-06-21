@@ -74,7 +74,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         logging.info('[SABer]: Building Signatures for %s\n' % mg_id)
         pool = multiprocessing.Pool(processes=nthreads) # TODO: convert to Ray
         arg_list = []
-        for i, mg_head in enumerate(mg_subcontigs):
+        for i, mg_head in enumerate(mg_headers):
             logging.info('\r[SABer]: Building multi-pool: {0:.0%} done'.format(i/len(mg_subcontigs)))
             arg_list.append([mg_head, str(mg_subcontigs[mg_head].seq)])
         logging.info('\n')
