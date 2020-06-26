@@ -15,6 +15,7 @@ from scipy.stats import norm
 import numpy as np
 import os
 from psutil import virtual_memory
+from tqdm import tqdm
 
 
 def calc_OVL(val):
@@ -212,8 +213,9 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         overall_recruit_list = []
         max_mem = int(virtual_memory().total*0.25)
         ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
-        for input_file in covm_output_list:
-            print("Starting analysis of {}".format(input_file))
+        logging.info("Starting OV coefficient analysis")
+        for input_file in tqdm(covm_output_list):
+            #print("Starting analysis of {}".format(input_file))
             input_df = pd.read_csv(input_file, header=0, sep='\t')
             input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
                                 'AvgDepth', 'variance'
@@ -233,16 +235,16 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
             futures = []
             for i, s_df in enumerate(split_nr_dfs):
                 futures.append(run_ovl_analysis.remote(s_df, r_recruit_contigs_df))
-                logging.info('\r[SABer]: OVL comparison {0:.0%} complete'.format(
-                                                                        i/len(split_nr_dfs)
-                                                                        ))
-            logging.info('\n')
+                #logging.info('\r[SABer]: OVL comparison {0:.0%} complete'.format(
+                #                                                        i/len(split_nr_dfs)
+                #                                                        ))
+            #logging.info('\n')
 
             ray_results = [r_df for r_df in ray.get(futures)]
             merge_df = pd.concat(ray_results)
             uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
             overall_recruit_list.extend(list(uniq_df['query_id']))
-            print("Finished")
+            #print("Finished")
         ray.shutdown()
 
         '''
