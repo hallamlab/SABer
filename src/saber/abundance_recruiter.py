@@ -1,6 +1,6 @@
 import logging
 import pandas as pd
-from os.path import isfile, basename
+from os.path import isfile, basename, getsize
 from os.path import join as o_join
 from subprocess import Popen
 from sklearn.preprocessing import normalize
@@ -8,8 +8,15 @@ from samsum import commands
 import saber.utilities as s_utils
 import ray
 import sys
+from statistics import NormalDist
+import multiprocessing
+pd.options.mode.chained_assignment = None
+from scipy.stats import norm
+import numpy as np
+import os
+from psutil import virtual_memory
 
-@ray.remote
+
 def calc_OVL(val):
     m1, m2, std1, std2 = val
     ovl = NormalDist(mu=m1, sigma=std1).overlap(NormalDist(mu=m2, sigma=std2))
@@ -18,8 +25,7 @@ def calc_OVL(val):
 
 
 @ray.remote
-def run_ovl_analysis(p):
-    i, s_df, recruit_contigs_df = p
+def run_ovl_analysis(s_df, recruit_contigs_df):
     ava_df = pd.merge(recruit_contigs_df, s_df, on='key').drop('key',axis=1)
     ava_df.columns = ['recruit_id', 'r_mu', 'r_sigma', 'query_id', 'q_mu', 'q_sigma']
     ava_filter_df = ava_df.loc[((ava_df['r_sigma'] != 0.0) & (ava_df['q_sigma'] != 0.0))]
@@ -27,14 +33,14 @@ def run_ovl_analysis(p):
                   zip(ava_filter_df['r_mu'], ava_filter_df['q_mu'],
                   ava_filter_df['r_sigma'], ava_filter_df['q_sigma'])
                   ]
-    ava_final_df = ava_filter_df.loc[ava_filter_df['ovl'] >= 0.9]
+    ava_final_df = ava_filter_df.loc[ava_filter_df['ovl'] >= 0.99]
     dedup_df = ava_final_df.drop_duplicates(subset='query_id', keep='first')
 
     return dedup_df
 
 
 def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
-                        minhash_df, ss_per_pass, nthreads
+                        minhash_df, covm_per_pass, nthreads
                         ):
 
     mg_id = mg_sub_file[0]
@@ -60,7 +66,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     if False in (isfile(f) for f in check_ind_list):
         # Use BWA to build an index for metagenome assembly
         logging.info('[SABer]: Creating index with BWA\n')
-        bwa_cmd = ['bwa', 'index', '-b', '500000000', mg_sub_path]
+        bwa_cmd = ['bwa', 'index', mg_sub_path]
         with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
             with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
                 run_bwa = Popen(bwa_cmd, stdout=stdout_file,
@@ -71,7 +77,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     # Process raw metagenomes to calculate abundances
     with open(mg_raw_file_list, 'r') as raw_fa_in:
         raw_data = raw_fa_in.readlines()
-    ss_output_list = []
+    covm_output_list = []
     for line in raw_data:
         split_line = line.strip('\n').split('\t')
         if len(split_line) == 2:
@@ -116,7 +122,11 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                 run_sort.communicate()
        # run coverm on sorted bam
         mg_covm_out = o_join(abr_path, pe_id + '.metabat.tsv')
-        if isfile(mg_covm_out) == False:
+        try:
+            covm_size = getsize(mg_covm_out)
+        except:
+            covm_size = -1
+        if covm_size <= 0: #isfile(mg_covm_out) == False:
             logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
             covm_cmd = ['coverm', 'contig', '-t', str(nthreads), '-b', mg_sort_out, '-m',
                         'metabat']
@@ -124,6 +134,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                 with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
                     run_covm = Popen(covm_cmd, stdout=covm_file, stderr=stderr_file)
                     run_covm.communicate()
+        covm_output_list.append(mg_covm_out)
 
         '''
             logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)
@@ -160,8 +171,126 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         mg_ss_df.to_csv(o_join(abr_path, mg_id + '.samsum_merged.tsv'), sep='\t', index=False)
         '''
 
-    sys.exit()
+    '''
+    for mhr_file in mhr_files_list:
+        # hackin to get BINID
+        if 'evo_' in mhr_file:
+            bin_id = '.'.join(mhr_file.split('.', 2)[0:2])
+        else:
+            mhr_spl = mhr_file.split('.', 1)[0]
+            if mhr_spl.find('_'):
+                bin_id = '_'.join(mhr_spl.split('_', 2)[0:2])
+            else:
+                bin_id = mhr_spl
+        print(bin_id)
 
+        recruit_df = pd.read_csv(os.path.join(mhr_path, mhr_file), header=None,
+                                 names=['sag_id', 'subcontig_id', 'contig_id'],
+                                 sep='\t'
+                                 )
+
+        sag_id = recruit_df['sag_id'].iloc[0]
+    '''
+    covm_pass_dfs = []
+    for sag_id in set(minhash_df['sag_id']):
+        # subset df for sag_id
+        sag_mh_pass_df = minhash_df[minhash_df['sag_id'] == sag_id]
+
+        '''
+        # subset mapping file using bin_id
+        submap_df = mapping_df.loc[mapping_df['BINID'] == bin_id]
+        submap_list = list(submap_df['@@SEQUENCEID'])
+
+        files_list = ['metabat_tables/RH_S001__insert_270.metabat.tsv',
+                      'metabat_tables/RH_S002__insert_270.metabat.tsv',
+                      'metabat_tables/RH_S003__insert_270.metabat.tsv',
+                      'metabat_tables/RH_S004__insert_270.metabat.tsv',
+                      'metabat_tables/RH_S005__insert_270.metabat.tsv'
+                      ]
+        '''
+
+        overall_recruit_list = []
+        max_mem = int(virtual_memory().total*0.25)
+        ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
+        for input_file in covm_output_list:
+            print("Starting analysis of {}".format(input_file))
+            input_df = pd.read_csv(input_file, header=0, sep='\t')
+            input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
+                                'AvgDepth', 'variance'
+                               ]
+            input_df['stdev'] = input_df['variance']**(1/2)
+
+            recruit_contigs_df = input_df[['contigName', 'totalAvgDepth', 'stdev']].loc[
+                                            input_df['contigName'].isin(
+                                            list(sag_mh_pass_df['subcontig_id']))
+                                            ]
+            nonrecruit_contigs_df = input_df[['contigName', 'totalAvgDepth', 'stdev']]
+
+            recruit_contigs_df['key'] = 1
+            nonrecruit_contigs_df['key'] = 1
+            split_nr_dfs = np.array_split(nonrecruit_contigs_df, 100, axis=0)
+            r_recruit_contigs_df = ray.put(recruit_contigs_df)
+            futures = []
+            for i, s_df in enumerate(split_nr_dfs):
+                futures.append(run_ovl_analysis.remote(s_df, r_recruit_contigs_df))
+                logging.info('\r[SABer]: OVL comparison {0:.0%} complete'.format(
+                                                                        i/len(split_nr_dfs)
+                                                                        ))
+            logging.info('\n')
+
+            ray_results = [r_df for r_df in ray.get(futures)]
+            merge_df = pd.concat(ray_results)
+            uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
+            overall_recruit_list.extend(list(uniq_df['query_id']))
+            print("Finished")
+        ray.shutdown()
+
+        '''
+            split_nr_dfs = np.array_split(nonrecruit_contigs_df, 100, axis=0)
+            merge_list = []
+            num_cores = multiprocessing.cpu_count()
+            print("Building multiprocessing pool")
+            pool = multiprocessing.Pool(processes=num_cores)
+            arg_list = [[i, s_df, recruit_contigs_df] for i, s_df in enumerate(split_nr_dfs)]
+            results = pool.imap_unordered(run_ovl_analysis, arg_list)
+            print("Executing pool")
+            merge_list = []
+            for i, o_df in enumerate(results):
+                sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
+                merge_list.append(o_df)
+            pool.close()
+            pool.join()
+
+            print("\nMerging results")
+            merge_df = pd.concat(merge_list)
+            uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
+            overall_recruit_list.extend(list(uniq_df['query_id']))
+            print("Finished")
+        '''
+
+        uniq_recruit_dict = dict.fromkeys(overall_recruit_list, 0)
+        for r in overall_recruit_list:
+            uniq_recruit_dict[r] += 1
+
+        final_pass_list = []
+        for i in uniq_recruit_dict.items():
+            k, v = i
+            if (int(v) == int(len(covm_output_list))):
+                final_pass_list.append([sag_id, k, k.rsplit('_', 1)[0]])
+        final_pass_df = pd.DataFrame(final_pass_list,
+                                     columns=['sag_id', 'subcontig_id', 'contig_id']
+                                     )
+        final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
+                             header=False, index=False, sep='\t'
+                             )
+        print("There are {} total subcontigs, {} contigs".format(
+              len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
+              )
+        covm_pass_dfs.append(final_pass_df)
+
+    covm_df = pd.concat(covm_pass_dfs)
+
+    '''
     # extract TPM and pivot for MG
     mg_ss_trim_df = mg_ss_df[['subcontig_id', 'sample_index', 'tpm']].dropna(how='any')
     mg_ss_piv_df = pd.pivot_table(mg_ss_trim_df, values='tpm', index='subcontig_id',
@@ -238,36 +367,39 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     ss_df = pd.DataFrame(ss_pass_list, columns=['sag_id', 'subcontig_id',
                                                     'contig_id'
                                                     ])
+    '''
     # Count # of subcontigs recruited to each SAG via samsum
-    ss_cnt_df = ss_df.groupby(['sag_id', 'contig_id']).count().reset_index()
-    ss_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
+    covm_cnt_df = covm_df.groupby(['sag_id', 'contig_id']).count().reset_index()
+    covm_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
     # Build subcontig count for each MG contig
     mg_contig_list = [x.rsplit('_', 1)[0] for x in mg_headers]
     mg_tot_df = pd.DataFrame(zip(mg_contig_list, mg_headers),
                              columns=['contig_id', 'subcontig_id'])
     mg_tot_cnt_df = mg_tot_df.groupby(['contig_id']).count().reset_index()
     mg_tot_cnt_df.columns = ['contig_id', 'subcontig_total']
-    ss_recruit_df = ss_cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
-    ss_recruit_df['percent_recruited'] = ss_recruit_df['subcontig_recruits'] / \
-                                           ss_recruit_df['subcontig_total']
-    ss_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
+    covm_recruit_df = covm_cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
+    covm_recruit_df['percent_recruited'] = covm_recruit_df['subcontig_recruits'] / \
+                                           covm_recruit_df['subcontig_total']
+    covm_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
     # Only pass contigs that have the magjority of subcontigs recruited (>= 51%)
-    ss_recruit_filter_df = ss_recruit_df.loc[ss_recruit_df['percent_recruited'] >=
-                                                 float(ss_per_pass)
+    covm_recruit_filter_df = covm_recruit_df.loc[covm_recruit_df['percent_recruited'] >=
+                                                 float(covm_per_pass)
                                                  ]
-    mg_contig_per_max_df = ss_recruit_filter_df.groupby(['contig_id'])[
+    mg_contig_per_max_df = covm_recruit_filter_df.groupby(['contig_id'])[
         'percent_recruited'].max().reset_index()
     mg_contig_per_max_df.columns = ['contig_id', 'percent_max']
-    ss_recruit_max_df = ss_recruit_filter_df.merge(mg_contig_per_max_df, how='left',
+    covm_recruit_max_df = covm_recruit_filter_df.merge(mg_contig_per_max_df, how='left',
                                                        on='contig_id')
     # Now pass contigs that have the maximum recruit % of subcontigs
-    ss_max_only_df = ss_recruit_max_df.loc[ss_recruit_max_df['percent_recruited'] >=
-                                               ss_recruit_max_df['percent_max']
+    covm_max_only_df = covm_recruit_max_df.loc[covm_recruit_max_df['percent_recruited'] >=
+                                               covm_recruit_max_df['percent_max']
                                                ]
-    ss_max_df = ss_df[ss_df['contig_id'].isin(tuple(ss_max_only_df['contig_id']))]
+    covm_max_df = covm_df[covm_df['contig_id'].isin(tuple(covm_max_only_df['contig_id']))]
 
-    ss_max_df.to_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), sep='\t',
+    covm_max_df.to_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), sep='\t',
                         index=False
                         )
 
-    return ss_max_df
+    sys.exit()
+
+    return covm_max_df

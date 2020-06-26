@@ -7,6 +7,9 @@ import saber.utilities as s_utils
 import multiprocessing
 import ray
 import sys
+from psutil import virtual_memory
+import numpy as np
+
 
 def build_signature(p):
     header, seq = p
@@ -20,39 +23,40 @@ def build_signature(p):
 @ray.remote
 def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_threshold):
     sag_subcontigs = s_utils.get_seqs(sag_file)
-    if isfile(o_join(mhr_path, sag_id + '.mhr_recruits.tsv')):
-        logging.info('[SABer]: Loading %s and MetaG signature recruit list\n' % sag_id)
-        with open(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), 'r') as mhr_in:
-            pass_list = [x.rstrip('\n').split('\t') for x in mhr_in.readlines()]
-    else:
-        # Calculate\Load MinHash Signatures with SourMash for SAG subseqs
-        if isfile(o_join(sig_path, sag_id + '.SAG.sig')):
-            logging.info('[SABer]: Loading Signature for %s\n' % sag_id)
-            sag_sig = sourmash.signature.load_one_signature(o_join(sig_path,
-                                                                 sag_id + '.SAG.sig')
-                                                            )
-        else:
-            logging.info('[SABer]: Building Signature for %s\n' % sag_id)
-            sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
-            for sg_head in sag_subcontigs:
-                sag_subseq = str(sag_subcontigs[sg_head].seq)
-                sag_minhash.add_sequence(sag_subseq, force=True)
-            sag_sig = sourmash.SourmashSignature(sag_minhash, name=sag_id)
-            with open(o_join(sig_path, sag_id + '.SAG.sig'), 'w') as sags_out:
-                sourmash.signature.save_signatures([sag_sig], fp=sags_out)
-        logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
-        pass_list = []
-        for mg_sig in mg_sig_list:
-            jacc_sim = mg_sig.similarity(sag_sig)
-            mg_nm = mg_sig.name()
-            if jacc_sim >= jacc_threshold:
-                pass_list.append([sag_id, mg_nm, mg_nm.rsplit('_', 1)[0]])
+    sag_headers = tuple(sag_subcontigs.keys())
 
-        with open(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), 'w') as mhr_out:
-            mhr_out.write('\n'.join(['\t'.join(x) for x in pass_list]))
+    #if isfile(o_join(mhr_path, sag_id + '.mhr_recruits.tsv')):
+    #    logging.info('[SABer]: Loading %s and MetaG signature recruit list\n' % sag_id)
+    #    with open(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), 'r') as mhr_in:
+    #        pass_list = [x.rstrip('\n').split('\t') for x in mhr_in.readlines()]
+    #else:
+    # Calculate\Load MinHash Signatures with SourMash for SAG subseqs
+    if isfile(o_join(sig_path, sag_id + '.SAG.sig')):
+        logging.info('[SABer]: Loading Signature for %s\n' % sag_id)
+        sag_sig = sourmash.signature.load_one_signature(o_join(sig_path,
+                                                             sag_id + '.SAG.sig')
+                                                        )
+    else:
+        logging.info('[SABer]: Building Signature for %s\n' % sag_id)
+        sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
+        for sg_head in sag_headers:
+            sag_subseq = str(sag_subcontigs[sg_head].seq)
+            sag_minhash.add_sequence(sag_subseq, force=True)
+        sag_sig = sourmash.SourmashSignature(sag_minhash, name=sag_id)
+        with open(o_join(sig_path, sag_id + '.SAG.sig'), 'w') as sags_out:
+            sourmash.signature.save_signatures([sag_sig], fp=sags_out)
+
+    logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
+    pass_list = []
+    for mg_sig in mg_sig_list:
+        jacc_sim = mg_sig.similarity(sag_sig)
+        mg_nm = mg_sig.name()
+        if jacc_sim >= jacc_threshold:
+            pass_list.append([sag_id, mg_nm, mg_nm.rsplit('_', 1)[0]])
+
     pass_list = tuple(pass_list)
 
-    return pass_list
+    return (sag_id, pass_list)
 
 
 def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
@@ -114,20 +118,42 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     logging.info('\n')
     if b != 0:
         logging.info('[SABer]: Building/Comparing {} SAG signatures\n'.format(b))
-        ray.init(num_cpus=nthreads)
-        r_mg_sig_list = ray.put(mg_sig_list)
+        logging.info('[SABer]: Initializing Ray cluster and Loading shared data\n'.format(b))
+        max_mem = int(virtual_memory().total*0.25)
+        ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
+        #r_mg_sig_list = ray.put(mg_sig_list)
+        split_mg_sig_list = [ray.put(x) for x in np.array_split(mg_sig_list, nthreads, axis=0)]
         r_mhr_path = ray.put(mhr_path)
         r_jacc_threshold = ray.put(jacc_threshold)
+        ray_results = {}
         futures = []
+        exec_len = len(build_list) + len(split_mg_sig_list)
         for i, sag_rec in enumerate(build_list):
             sag_id, sag_file = sag_rec
-            futures.append(compare_sigs.remote(sag_id, sag_file, r_mhr_path, sig_path,
-                                                r_mg_sig_list, r_jacc_threshold
-                                                ))
-            logging.info('\r[SABer]: Comparison {0:.0%} complete'.format(i/len(build_list)))
+            ray_results[sag_id] = []
+            for j, mg_sig_sub_list in enumerate(split_mg_sig_list):
+                futures.append(compare_sigs.remote(sag_id, sag_file, r_mhr_path, sig_path,
+                                                    mg_sig_sub_list, r_jacc_threshold
+                                                    ))
+                c = i + j
+                logging.info('\r[SABer]: Building execute list: {0:.0%} complete'.format(c/exec_len))
         logging.info('\n')
+        for i, f in enumerate(ray.get(futures)):
+            logging.info('\r[SABer]: Comparison {0:.0%} complete'.format(i/len(futures)))
+            ray_results[f[0]].extend(f[1])
+        logging.info('\n')
+        ray.shutdown()
+        #for g in get_futures:
+        #    ray_results[g[0]].extend(g[1])
+        #    logging.info('\r[SABer]: Comparison {0:.0%} complete'.format(i/len(build_list)))
+        #logging.info('\n')
 
-        ray_results = [v for r_list in ray.get(futures) for v in r_list]
+        for k in ray_results.keys():
+            print(k)
+            sag_rec_list = futures[k]
+            with open(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), 'w') as mhr_out:
+                mhr_out.write('\n'.join(['\t'.join(x) for x in sag_rec_list]))
+
         minhash_pass_list.extend(ray_results)
 
     minhash_df = pd.DataFrame(minhash_pass_list, columns=['sag_id', 'subcontig_id',
