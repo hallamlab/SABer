@@ -16,28 +16,79 @@ import numpy as np
 import os
 from psutil import virtual_memory
 from tqdm import tqdm
+import scipy.stats
+import itertools
+import swifter
 
 
-def calc_OVL(val):
-    m1, m2, std1, std2 = val
+def calc_OVL(m1, m2, std1, std2):
+
     ovl = NormalDist(mu=m1, sigma=std1).overlap(NormalDist(mu=m2, sigma=std2))
 
     return ovl
 
 
-@ray.remote
-def run_ovl_analysis(s_df, recruit_contigs_df):
-    ava_df = pd.merge(recruit_contigs_df, s_df, on='key').drop('key',axis=1)
-    ava_df.columns = ['recruit_id', 'r_mu', 'r_sigma', 'query_id', 'q_mu', 'q_sigma']
-    ava_filter_df = ava_df.loc[((ava_df['r_sigma'] != 0.0) & (ava_df['q_sigma'] != 0.0))]
-    ava_filter_df['ovl'] = [calc_OVL(x) for x in
-                  zip(ava_filter_df['r_mu'], ava_filter_df['q_mu'],
-                  ava_filter_df['r_sigma'], ava_filter_df['q_sigma'])
-                  ]
-    ava_final_df = ava_filter_df.loc[ava_filter_df['ovl'] >= 0.99]
-    dedup_df = ava_final_df.drop_duplicates(subset='query_id', keep='first')
+def jensen_shannon_distance(val):
+    """
+    method to compute the Jenson-Shannon Distance
+    between two probability distributions
+    """
 
-    return dedup_df
+    m1, m2, std1, std2 = val
+    r1 = norm.rvs(loc=m1, scale=std1, size=10000)
+    r2 = norm.rvs(loc=m2, scale=std2, size=10000)
+    # convert the vectors into numpy arrays in case that they aren't
+    p = np.array(r1)
+    q = np.array(r2)
+    # calculate m
+    m = (p + q) / 2
+    # compute Jensen Shannon Divergence
+    divergence = (scipy.stats.entropy(p, m) + scipy.stats.entropy(q, m)) / 2
+    # compute the Jensen Shannon Distance
+    distance = np.sqrt(divergence)
+    inv_dist = 1 - distance
+
+    return inv_dist
+
+
+@ray.remote
+def run_ovl_analysis(recruit_row, query_df):
+    '''
+    pairwise_df = pd.merge(recruit_contig_df, query_contig_df, on='key').drop('key',axis=1)
+    pairwise_df.columns = ['recruit_id', 'recruit_mu', 'recruit_sigma', 'query_id',
+                            'query_mu', 'query_sigma'
+                            ]
+    '''
+    query_sub_df = query_df.loc[((query_df['totalAvgDepth'] >= recruit_row['lower'])
+                                & (query_df['totalAvgDepth'] <= recruit_row['upper'])
+                                )]
+    query_sub_df['ovl'] = query_sub_df.swifter.apply(lambda row: calc_OVL(recruit_row['totalAvgDepth'],
+                                                recruit_row['stdev'], row['totalAvgDepth'],
+                                                row['stdev']), axis=1
+                                                )
+    ovl_contig_tup = tuple(query_sub_df['contigName'].loc[query_sub_df['ovl'] >= 0.90])
+    #ovl90_df = query_sub_df.loc[query_sub_df['ovl'] >= 0.90]
+
+    return ovl_contig_tup
+
+
+
+@ray.remote
+def run_ovl_analysis_OLD(recruit_df, query_df):
+
+    ava_df = pd.merge(recruit_df, query_df, on='key').drop('key',axis=1)
+    ava_df.columns = ['recruit_id', 'r_mu', 'r_sigma', 'query_id', 'q_mu', 'q_sigma']
+    ovl_list = []
+    zip_list = list(zip(ava_df['r_mu'], ava_df['q_mu'],
+                        ava_df['r_sigma'], ava_df['q_sigma']))
+    for x in zip_list:
+        ovl_list.append(calc_OVL(x[0], x[1], x[2], x[3]))
+    ava_df['ovl'] = ovl_list
+    ava_df = ava_df.loc[ava_df['ovl'] >= 0.90]
+    ovl_contig_tup = tuple(set(ava_df['query_id']))
+
+    return ovl_contig_tup
+
 
 
 def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
@@ -192,8 +243,11 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
 
         sag_id = recruit_df['sag_id'].iloc[0]
     '''
+    max_mem = int(virtual_memory().total*0.25)
+    ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
+    logging.info('[SABer]: Initializing Ray cluster and Loading shared data\n')
     covm_pass_dfs = []
-    for sag_id in set(minhash_df['sag_id']):
+    for sag_id in tqdm(set(minhash_df['sag_id'])):
         # subset df for sag_id
         sag_mh_pass_df = minhash_df[minhash_df['sag_id'] == sag_id]
 
@@ -211,11 +265,10 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         '''
 
         overall_recruit_list = []
-        max_mem = int(virtual_memory().total*0.25)
-        ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
-        logging.info("Starting OV coefficient analysis")
-        for input_file in tqdm(covm_output_list):
-            #print("Starting analysis of {}".format(input_file))
+
+        '''
+        covm_split_dict = {}
+        for i, input_file in enumerate(covm_output_list):
             input_df = pd.read_csv(input_file, header=0, sep='\t')
             input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
                                 'AvgDepth', 'variance'
@@ -227,25 +280,95 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                                             list(sag_mh_pass_df['subcontig_id']))
                                             ]
             nonrecruit_contigs_df = input_df[['contigName', 'totalAvgDepth', 'stdev']]
-
             recruit_contigs_df['key'] = 1
             nonrecruit_contigs_df['key'] = 1
-            split_nr_dfs = np.array_split(nonrecruit_contigs_df, 100, axis=0)
+
+            split_nr_dfs = [ray.put(x) for x in
+                            np.array_split(nonrecruit_contigs_df, nthreads, axis=0)
+                            ]
             r_recruit_contigs_df = ray.put(recruit_contigs_df)
+            covm_split_dict[i] = split_nr_dfs
+        '''
+        logging.info("Starting OV coefficient analysis\n")
+        for input_file in tqdm(covm_output_list):
+            input_df = pd.read_csv(input_file, header=0, sep='\t')
+            input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
+                                'AvgDepth', 'variance'
+                               ]
+            input_df['stdev'] = input_df['variance']**(1/2)
+            filter_df = input_df.loc[input_df['stdev'] != 0.0]
+            #filter_df['SD1'] = 0.674 * filter_df['stdev']
+            filter_df['upper'] = filter_df['totalAvgDepth'] + filter_df['stdev']
+            filter_df['lower'] = filter_df['totalAvgDepth'] - filter_df['stdev']
+            filter_df['key'] = 1
+
+            recruit_contigs_df = filter_df.loc[filter_df['contigName'].isin(
+                                            list(sag_mh_pass_df['subcontig_id']))
+                                            ]
+
+            r_max_sd1 = recruit_contigs_df['upper'].max()
+            r_min_sd1 = recruit_contigs_df['lower'].min()
+
+            nonrecruit_filter_df = filter_df.loc[
+                                        ((filter_df['totalAvgDepth'] >= r_min_sd1)
+                                        & (filter_df['totalAvgDepth'] <= r_max_sd1)
+                                        & ~filter_df['contigName'].isin(
+                                            recruit_contigs_df['contigName']
+                                            ))]
+            '''
+            recruit_contigs_df = recruit_contigs_df[['contigName', 'totalAvgDepth', 'stdev',
+                                                        'upper', 'lower', 'key'
+                                                        ]]
+            nonrecruit_filter_df = nonrecruit_filter_df[['contigName', 'totalAvgDepth',
+                                                            'stdev', 'upper', 'lower', 'key'
+                                                            ]]
+            '''
+            recruit_contigs_df = recruit_contigs_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
+            nonrecruit_filter_df = nonrecruit_filter_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
+            '''
+            pairwise_df = pd.merge(recruit_contigs_df, nonrecruit_filter_df, on='key').drop('key',axis=1)
+            print(pairwise_df.columns)
+            print(pairwise_df.head())
+            sys.exit()
+            pairwise_df.columns = ['recruit_id', 'recruit_mu', 'recruit_sigma', 'query_id',
+                                    'query_mu', 'query_sigma'
+                                    ]
+            pairwise_df['mu_diff'] = (pairwise_df['recruit_mu'] - pairwise_df['query_mu']).abs()
+            pairwise_df['recruit_SD1'] = 0.674 * pairwise_df['recruit_sigma']
+            pairwise_df['query_SD1'] = 0.674 * pairwise_df['query_sigma']
+            pairwise_df = pairwise_df.loc[
+                                    ((pairwise_df['recruit_SD1'] >= pairwise_df['mu_diff'])
+                                    & (pairwise_df['query_SD1'] >= pairwise_df['mu_diff'])
+                                    )]
+            print(pairwise_df.head())
+            print(pairwise_filter_df.head())
+            print(pairwise_df.shape)
+            print(pairwise_filter_df.shape)
+            '''
+            #r_nonrec_df = ray.put(nonrecruit_filter_df)
+
+            split_nr_dfs = np.array_split(nonrecruit_filter_df, nthreads*10, axis=0)
             futures = []
             for i, s_df in enumerate(split_nr_dfs):
-                futures.append(run_ovl_analysis.remote(s_df, r_recruit_contigs_df))
-                #logging.info('\r[SABer]: OVL comparison {0:.0%} complete'.format(
-                #                                                        i/len(split_nr_dfs)
-                #                                                        ))
-            #logging.info('\n')
+            #for e, iter_row in enumerate(recruit_contigs_df.iterrows()):
+                #i, row = iter_row
+                #ovl_results = run_ovl_analysis(row, nonrecruit_filter_df)
+                #print(ovl_results.head())
+                #futures.append(run_ovl_analysis.remote(row, r_nonrec_df))
+                futures.append(run_ovl_analysis_OLD.remote(recruit_contigs_df, s_df))
+                #ovl_results = run_ovl_analysis_OLD(recruit_contigs_df, s_df)
 
-            ray_results = [r_df for r_df in ray.get(futures)]
-            merge_df = pd.concat(ray_results)
-            uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
-            overall_recruit_list.extend(list(uniq_df['query_id']))
-            #print("Finished")
-        ray.shutdown()
+            ray_results = []
+            for f in tqdm(futures):
+                ray_results.append(ray.get(f))
+            #ray_results = ray.get(futures)
+            [overall_recruit_list.extend(f) for f in ray_results]
+            overall_recruit_list = list(set(overall_recruit_list))
+            #merge_df = pd.concat(ray_results)
+            #merge_df = pd.concat(futures)
+            #uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
+            #overall_recruit_list.extend(list(uniq_df['query_id']))
+
 
         '''
             split_nr_dfs = np.array_split(nonrecruit_contigs_df, 100, axis=0)
@@ -291,7 +414,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         covm_pass_dfs.append(final_pass_df)
 
     covm_df = pd.concat(covm_pass_dfs)
-
+    ray.shutdown()
     '''
     # extract TPM and pivot for MG
     mg_ss_trim_df = mg_ss_df[['subcontig_id', 'sample_index', 'tpm']].dropna(how='any')

@@ -114,7 +114,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     logging.info('\n')
     if b != 0:
         logging.info('[SABer]: Building/Comparing {} SAG signatures\n'.format(b))
-        logging.info('[SABer]: Initializing Ray cluster and Loading shared data\n'.format(b))
+        logging.info('[SABer]: Initializing Ray cluster and Loading shared data\n')
         max_mem = int(virtual_memory().total*0.25)
         ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
         split_mg_sig_list = [ray.put(x) for x in np.array_split(mg_sig_list, nthreads, axis=0)]
