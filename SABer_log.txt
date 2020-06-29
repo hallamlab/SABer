@@ -1,69 +1,69 @@
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 [SABer]: File specified, processing 1021_AE_run134.final.scaffolds.gt1kb.6449.synSAG.fasta
 
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 [SABer]: Loading/Building subcontigs
 
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 [SABer]: Loading/Building subcontigs: 1 done
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 
 
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 [SABer]: Loading/Building subcontigs: 1 done
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 
 
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 [SABer]: Starting Kmer Recruitment Step
 
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 [SABer]: MinHash Recruitment Algorithm
 
-28/06 11:58:23 INFO:
+28/06 16:24:50 INFO:
 [SABer]: Loading subcontigs for CAMI_high_GoldStandardAssembly
 
-28/06 11:58:24 INFO:
+28/06 16:24:51 INFO:
 [SABer]: Loading CAMI_high_GoldStandardAssembly Signatures
 
-28/06 11:59:19 INFO:
+28/06 16:25:46 INFO:
 [SABer]: Comparing Signatures of SAGs to MetaG contigs
 
-28/06 11:59:19 INFO:
+28/06 16:25:46 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 1/0 done
-28/06 11:59:19 INFO:
+28/06 16:25:46 INFO:
 
 
-28/06 11:59:19 INFO:
+28/06 16:25:46 INFO:
 [SABer]: Compiling all MinHash Recruits
 
-28/06 11:59:20 INFO:
+28/06 16:25:47 INFO:
 [SABer]: MinHash Recruitment Algorithm Complete
 
-28/06 11:59:22 INFO:
+28/06 16:25:49 INFO:
 [SABer]: Starting Abundance Recruitment Step
 
-28/06 11:59:23 INFO:
+28/06 16:25:50 INFO:
 [SABer]: Building CAMI_high_GoldStandardAssembly abundance table
 
-28/06 11:59:23 INFO:
+28/06 16:25:50 INFO:
 [SABer]: Raw reads in interleaved file...
 
-28/06 11:59:23 INFO:
+28/06 16:25:50 INFO:
 [SABer]: Raw reads in interleaved file...
 
-28/06 11:59:23 INFO:
+28/06 16:25:50 INFO:
 [SABer]: Raw reads in interleaved file...
 
-28/06 11:59:23 INFO:
+28/06 16:25:50 INFO:
 [SABer]: Raw reads in interleaved file...
 
-28/06 11:59:23 INFO:
+28/06 16:25:50 INFO:
 [SABer]: Raw reads in interleaved file...
 
-28/06 11:59:24 INFO:
+28/06 16:25:51 INFO:
 [SABer]: Initializing Ray cluster and Loading shared data
 
-28/06 11:59:24 INFO:
+28/06 16:25:51 INFO:
 Starting OV coefficient analysis
 

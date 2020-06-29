@@ -78,13 +78,17 @@ def run_ovl_analysis_OLD(recruit_df, query_df):
 
     ava_df = pd.merge(recruit_df, query_df, on='key').drop('key',axis=1)
     ava_df.columns = ['recruit_id', 'r_mu', 'r_sigma', 'query_id', 'q_mu', 'q_sigma']
+    ava_df['mu_diff'] = (ava_df['r_mu'] - ava_df['q_mu']).abs()
+    ava_df = ava_df.loc[(((ava_df['r_sigma']/4) >= ava_df['mu_diff'])
+                        & ((ava_df['q_sigma']/4) >= ava_df['mu_diff'])
+                        )]
     ovl_list = []
     zip_list = list(zip(ava_df['r_mu'], ava_df['q_mu'],
                         ava_df['r_sigma'], ava_df['q_sigma']))
     for x in zip_list:
         ovl_list.append(calc_OVL(x[0], x[1], x[2], x[3]))
     ava_df['ovl'] = ovl_list
-    ava_df = ava_df.loc[ava_df['ovl'] >= 0.90]
+    ava_df = ava_df.loc[ava_df['ovl'] >= 0.95]
     ovl_contig_tup = tuple(set(ava_df['query_id']))
 
     return ovl_contig_tup
@@ -360,10 +364,10 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
 
             ray_results = []
             for f in tqdm(futures):
-                ray_results.append(ray.get(f))
+                ray_results.extend(ray.get(f))
+            ray_set_list = list(set(ray_results))
             #ray_results = ray.get(futures)
-            [overall_recruit_list.extend(f) for f in ray_results]
-            overall_recruit_list = list(set(overall_recruit_list))
+            overall_recruit_list.extend(ray_set_list)
             #merge_df = pd.concat(ray_results)
             #merge_df = pd.concat(futures)
             #uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
