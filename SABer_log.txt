@@ -1,75 +1,78 @@
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 [SABer]: File specified, processing evo_1220_W.027.11378.synSAG.fasta
 
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 [SABer]: Loading/Building subcontigs
 
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 [SABer]: Loading/Building subcontigs: 1 done
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 
 
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 [SABer]: Loading/Building subcontigs: 1 done
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 
 
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 [SABer]: Starting Kmer Recruitment Step
 
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 [SABer]: MinHash Recruitment Algorithm
 
-30/06 20:53:37 INFO:
+01/07 07:25:01 INFO:
 [SABer]: Loading subcontigs for CAMI_high_GoldStandardAssembly
 
-30/06 20:53:38 INFO:
+01/07 07:25:02 INFO:
 [SABer]: Loading CAMI_high_GoldStandardAssembly Signatures
 
-30/06 20:54:35 INFO:
+01/07 07:26:00 INFO:
 [SABer]: Comparing Signatures of SAGs to MetaG contigs
 
-30/06 20:54:35 INFO:
+01/07 07:26:00 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 1/0 done
-30/06 20:54:35 INFO:
+01/07 07:26:00 INFO:
 
 
-30/06 20:54:35 INFO:
+01/07 07:26:00 INFO:
 [SABer]: Compiling all MinHash Recruits
 
-30/06 20:54:36 INFO:
+01/07 07:26:01 INFO:
 [SABer]: MinHash Recruitment Algorithm Complete
 
-30/06 20:54:39 INFO:
+01/07 07:26:04 INFO:
 [SABer]: Starting Abundance Recruitment Step
 
-30/06 20:54:39 INFO:
+01/07 07:26:05 INFO:
 [SABer]: Building CAMI_high_GoldStandardAssembly abundance table
 
-30/06 20:54:39 INFO:
+01/07 07:26:05 INFO:
 [SABer]: Raw reads in interleaved file...
 
-30/06 20:54:39 INFO:
+01/07 07:26:05 INFO:
 [SABer]: Raw reads in interleaved file...
 
-30/06 20:54:39 INFO:
+01/07 07:26:05 INFO:
 [SABer]: Raw reads in interleaved file...
 
-30/06 20:54:39 INFO:
+01/07 07:26:05 INFO:
 [SABer]: Raw reads in interleaved file...
 
-30/06 20:54:39 INFO:
+01/07 07:26:05 INFO:
 [SABer]: Raw reads in interleaved file...
 
-30/06 20:54:40 INFO:
+01/07 07:26:06 INFO:
 [SABer]: Initializing Ray cluster and Loading shared data
 
-30/06 20:54:40 INFO:
+01/07 07:26:06 INFO:
 [SABer]: Loading Abundance Recruits for  evo_1220_W.027.11378.synSAG
 
-30/06 20:54:44 INFO:
+01/07 07:26:09 INFO:
 [SABer]: Starting Tetranucleotide Recruitment Step
 
-30/06 20:57:17 INFO:
-[SABer]: Calculating tetramer Hz matrix for CAMI_high_GoldStandardAssembly
+01/07 07:26:54 INFO:
+[SABer]: Loading tetramer Hz matrix for CAMI_high_GoldStandardAssembly
+
+01/07 07:26:55 INFO:
+[SABer]: Loading tetramer Hz matrix for evo_1220_W.027.11378.synSAG
 

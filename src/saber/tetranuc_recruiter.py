@@ -7,7 +7,7 @@ import saber.utilities as s_utils
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn import svm
 from sklearn.ensemble import IsolationForest
-
+import sys
 
 def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_per_pass):
     # TODO: 1. Think about using Minimum Description Length (MDL) instead of AIC/BIC
@@ -46,7 +46,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
         sag_id, sag_file = sag_rec
         sag_subcontigs = s_utils.get_seqs(sag_file)
         sag_headers= tuple(sag_subcontigs.keys())
-        sag_subs = tuple([r.seq for r in sag_subcontigs.itervalues()])
+        sag_subs = tuple([r.seq for r in sag_subcontigs])
 
         if (isfile(o_join(tra_path, sag_id + '.gmm_recruits.tsv')) &
             isfile(o_join(tra_path, sag_id + '.svm_recruits.tsv')) &
@@ -73,7 +73,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
                 sag_tetra_df['contig_id'] = sag_headers
                 sag_tetra_df.set_index('contig_id', inplace=True)
                 sag_tetra_df.to_csv(o_join(tra_path, sag_id + '.tetras.tsv'), sep='\t')
-
+            sys.exit()
             # Concat SAGs amd MG for GMM
             mg_rpkm_contig_list = list(rpkm_max_df.loc[rpkm_max_df['sag_id'] == sag_id
                                                        ]['subcontig_id'].values
