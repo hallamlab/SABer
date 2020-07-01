@@ -252,171 +252,179 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     logging.info('[SABer]: Initializing Ray cluster and Loading shared data\n')
     covm_pass_dfs = []
     for sag_id in tqdm(set(minhash_df['sag_id'])):
-        # subset df for sag_id
-        sag_mh_pass_df = minhash_df[minhash_df['sag_id'] == sag_id]
+        if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
+            logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
+            final_pass_df = pd.read_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
+                                        header=None,
+                                        names=['sag_id', 'subcontig_id', 'contig_id'],
+                                        sep='\t'
+                                        )
+            covm_pass_dfs.append(final_pass_df)
+        else:
+            # subset df for sag_id
+            sag_mh_pass_df = minhash_df[minhash_df['sag_id'] == sag_id]
 
-        '''
-        # subset mapping file using bin_id
-        submap_df = mapping_df.loc[mapping_df['BINID'] == bin_id]
-        submap_list = list(submap_df['@@SEQUENCEID'])
-
-        files_list = ['metabat_tables/RH_S001__insert_270.metabat.tsv',
-                      'metabat_tables/RH_S002__insert_270.metabat.tsv',
-                      'metabat_tables/RH_S003__insert_270.metabat.tsv',
-                      'metabat_tables/RH_S004__insert_270.metabat.tsv',
-                      'metabat_tables/RH_S005__insert_270.metabat.tsv'
-                      ]
-        '''
-
-        overall_recruit_list = []
-
-        '''
-        covm_split_dict = {}
-        for i, input_file in enumerate(covm_output_list):
-            input_df = pd.read_csv(input_file, header=0, sep='\t')
-            input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
-                                'AvgDepth', 'variance'
-                               ]
-            input_df['stdev'] = input_df['variance']**(1/2)
-
-            recruit_contigs_df = input_df[['contigName', 'totalAvgDepth', 'stdev']].loc[
-                                            input_df['contigName'].isin(
-                                            list(sag_mh_pass_df['subcontig_id']))
-                                            ]
-            nonrecruit_contigs_df = input_df[['contigName', 'totalAvgDepth', 'stdev']]
-            recruit_contigs_df['key'] = 1
-            nonrecruit_contigs_df['key'] = 1
-
-            split_nr_dfs = [ray.put(x) for x in
-                            np.array_split(nonrecruit_contigs_df, nthreads, axis=0)
-                            ]
-            r_recruit_contigs_df = ray.put(recruit_contigs_df)
-            covm_split_dict[i] = split_nr_dfs
-        '''
-        logging.info("Starting OV coefficient analysis\n")
-        for input_file in tqdm(covm_output_list):
-            input_df = pd.read_csv(input_file, header=0, sep='\t')
-            input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
-                                'AvgDepth', 'variance'
-                               ]
-            input_df['stdev'] = input_df['variance']**(1/2)
-            filter_df = input_df.loc[input_df['stdev'] != 0.0]
-            #filter_df['SD1'] = 0.674 * filter_df['stdev']
-            filter_df['upper'] = filter_df['totalAvgDepth'] + filter_df['stdev']
-            filter_df['lower'] = filter_df['totalAvgDepth'] - filter_df['stdev']
-            filter_df['key'] = 1
-
-            recruit_contigs_df = filter_df.loc[filter_df['contigName'].isin(
-                                            list(sag_mh_pass_df['subcontig_id']))
-                                            ]
-
-            r_max_sd1 = recruit_contigs_df['upper'].max()
-            r_min_sd1 = recruit_contigs_df['lower'].min()
-
-            nonrecruit_filter_df = filter_df.loc[
-                                        ((filter_df['totalAvgDepth'] >= r_min_sd1)
-                                        & (filter_df['totalAvgDepth'] <= r_max_sd1)
-                                        & ~filter_df['contigName'].isin(
-                                            recruit_contigs_df['contigName']
-                                            ))]
             '''
-            recruit_contigs_df = recruit_contigs_df[['contigName', 'totalAvgDepth', 'stdev',
-                                                        'upper', 'lower', 'key'
-                                                        ]]
-            nonrecruit_filter_df = nonrecruit_filter_df[['contigName', 'totalAvgDepth',
-                                                            'stdev', 'upper', 'lower', 'key'
+            # subset mapping file using bin_id
+            submap_df = mapping_df.loc[mapping_df['BINID'] == bin_id]
+            submap_list = list(submap_df['@@SEQUENCEID'])
+
+            files_list = ['metabat_tables/RH_S001__insert_270.metabat.tsv',
+                          'metabat_tables/RH_S002__insert_270.metabat.tsv',
+                          'metabat_tables/RH_S003__insert_270.metabat.tsv',
+                          'metabat_tables/RH_S004__insert_270.metabat.tsv',
+                          'metabat_tables/RH_S005__insert_270.metabat.tsv'
+                          ]
+            '''
+
+            overall_recruit_list = []
+
+            '''
+            covm_split_dict = {}
+            for i, input_file in enumerate(covm_output_list):
+                input_df = pd.read_csv(input_file, header=0, sep='\t')
+                input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
+                                    'AvgDepth', 'variance'
+                                   ]
+                input_df['stdev'] = input_df['variance']**(1/2)
+
+                recruit_contigs_df = input_df[['contigName', 'totalAvgDepth', 'stdev']].loc[
+                                                input_df['contigName'].isin(
+                                                list(sag_mh_pass_df['subcontig_id']))
+                                                ]
+                nonrecruit_contigs_df = input_df[['contigName', 'totalAvgDepth', 'stdev']]
+                recruit_contigs_df['key'] = 1
+                nonrecruit_contigs_df['key'] = 1
+
+                split_nr_dfs = [ray.put(x) for x in
+                                np.array_split(nonrecruit_contigs_df, nthreads, axis=0)
+                                ]
+                r_recruit_contigs_df = ray.put(recruit_contigs_df)
+                covm_split_dict[i] = split_nr_dfs
+            '''
+            logging.info("Starting OV coefficient analysis\n")
+            for input_file in tqdm(covm_output_list):
+                input_df = pd.read_csv(input_file, header=0, sep='\t')
+                input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
+                                    'AvgDepth', 'variance'
+                                   ]
+                input_df['stdev'] = input_df['variance']**(1/2)
+                filter_df = input_df.loc[input_df['stdev'] != 0.0]
+                #filter_df['SD1'] = 0.674 * filter_df['stdev']
+                filter_df['upper'] = filter_df['totalAvgDepth'] + filter_df['stdev']
+                filter_df['lower'] = filter_df['totalAvgDepth'] - filter_df['stdev']
+                filter_df['key'] = 1
+
+                recruit_contigs_df = filter_df.loc[filter_df['contigName'].isin(
+                                                list(sag_mh_pass_df['subcontig_id']))
+                                                ]
+
+                r_max_sd1 = recruit_contigs_df['upper'].max()
+                r_min_sd1 = recruit_contigs_df['lower'].min()
+
+                nonrecruit_filter_df = filter_df.loc[
+                                            ((filter_df['totalAvgDepth'] >= r_min_sd1)
+                                            & (filter_df['totalAvgDepth'] <= r_max_sd1)
+                                            & ~filter_df['contigName'].isin(
+                                                recruit_contigs_df['contigName']
+                                                ))]
+                '''
+                recruit_contigs_df = recruit_contigs_df[['contigName', 'totalAvgDepth', 'stdev',
+                                                            'upper', 'lower', 'key'
                                                             ]]
+                nonrecruit_filter_df = nonrecruit_filter_df[['contigName', 'totalAvgDepth',
+                                                                'stdev', 'upper', 'lower', 'key'
+                                                                ]]
+                '''
+                recruit_contigs_df = recruit_contigs_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
+                nonrecruit_filter_df = nonrecruit_filter_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
+                '''
+                pairwise_df = pd.merge(recruit_contigs_df, nonrecruit_filter_df, on='key').drop('key',axis=1)
+                print(pairwise_df.columns)
+                print(pairwise_df.head())
+                sys.exit()
+                pairwise_df.columns = ['recruit_id', 'recruit_mu', 'recruit_sigma', 'query_id',
+                                        'query_mu', 'query_sigma'
+                                        ]
+                pairwise_df['mu_diff'] = (pairwise_df['recruit_mu'] - pairwise_df['query_mu']).abs()
+                pairwise_df['recruit_SD1'] = 0.674 * pairwise_df['recruit_sigma']
+                pairwise_df['query_SD1'] = 0.674 * pairwise_df['query_sigma']
+                pairwise_df = pairwise_df.loc[
+                                        ((pairwise_df['recruit_SD1'] >= pairwise_df['mu_diff'])
+                                        & (pairwise_df['query_SD1'] >= pairwise_df['mu_diff'])
+                                        )]
+                print(pairwise_df.head())
+                print(pairwise_filter_df.head())
+                print(pairwise_df.shape)
+                print(pairwise_filter_df.shape)
+                '''
+                #r_nonrec_df = ray.put(nonrecruit_filter_df)
+
+                split_nr_dfs = np.array_split(nonrecruit_filter_df, nthreads*10, axis=0)
+                futures = []
+                for i, s_df in enumerate(split_nr_dfs):
+                #for e, iter_row in enumerate(recruit_contigs_df.iterrows()):
+                    #i, row = iter_row
+                    #ovl_results = run_ovl_analysis(row, nonrecruit_filter_df)
+                    #print(ovl_results.head())
+                    #futures.append(run_ovl_analysis.remote(row, r_nonrec_df))
+                    futures.append(run_ovl_analysis_OLD.remote(recruit_contigs_df, s_df))
+                    #ovl_results = run_ovl_analysis_OLD(recruit_contigs_df, s_df)
+
+                ray_results = []
+                for f in tqdm(futures):
+                    ray_results.extend(ray.get(f))
+                ray_set_list = list(set(ray_results))
+                #ray_results = ray.get(futures)
+                overall_recruit_list.extend(ray_set_list)
+                #merge_df = pd.concat(ray_results)
+                #merge_df = pd.concat(futures)
+                #uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
+                #overall_recruit_list.extend(list(uniq_df['query_id']))
+
+
             '''
-            recruit_contigs_df = recruit_contigs_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
-            nonrecruit_filter_df = nonrecruit_filter_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
+                split_nr_dfs = np.array_split(nonrecruit_contigs_df, 100, axis=0)
+                merge_list = []
+                num_cores = multiprocessing.cpu_count()
+                print("Building multiprocessing pool")
+                pool = multiprocessing.Pool(processes=num_cores)
+                arg_list = [[i, s_df, recruit_contigs_df] for i, s_df in enumerate(split_nr_dfs)]
+                results = pool.imap_unordered(run_ovl_analysis, arg_list)
+                print("Executing pool")
+                merge_list = []
+                for i, o_df in enumerate(results):
+                    sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
+                    merge_list.append(o_df)
+                pool.close()
+                pool.join()
+
+                print("\nMerging results")
+                merge_df = pd.concat(merge_list)
+                uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
+                overall_recruit_list.extend(list(uniq_df['query_id']))
+                print("Finished")
             '''
-            pairwise_df = pd.merge(recruit_contigs_df, nonrecruit_filter_df, on='key').drop('key',axis=1)
-            print(pairwise_df.columns)
-            print(pairwise_df.head())
-            sys.exit()
-            pairwise_df.columns = ['recruit_id', 'recruit_mu', 'recruit_sigma', 'query_id',
-                                    'query_mu', 'query_sigma'
-                                    ]
-            pairwise_df['mu_diff'] = (pairwise_df['recruit_mu'] - pairwise_df['query_mu']).abs()
-            pairwise_df['recruit_SD1'] = 0.674 * pairwise_df['recruit_sigma']
-            pairwise_df['query_SD1'] = 0.674 * pairwise_df['query_sigma']
-            pairwise_df = pairwise_df.loc[
-                                    ((pairwise_df['recruit_SD1'] >= pairwise_df['mu_diff'])
-                                    & (pairwise_df['query_SD1'] >= pairwise_df['mu_diff'])
-                                    )]
-            print(pairwise_df.head())
-            print(pairwise_filter_df.head())
-            print(pairwise_df.shape)
-            print(pairwise_filter_df.shape)
-            '''
-            #r_nonrec_df = ray.put(nonrecruit_filter_df)
 
-            split_nr_dfs = np.array_split(nonrecruit_filter_df, nthreads*10, axis=0)
-            futures = []
-            for i, s_df in enumerate(split_nr_dfs):
-            #for e, iter_row in enumerate(recruit_contigs_df.iterrows()):
-                #i, row = iter_row
-                #ovl_results = run_ovl_analysis(row, nonrecruit_filter_df)
-                #print(ovl_results.head())
-                #futures.append(run_ovl_analysis.remote(row, r_nonrec_df))
-                futures.append(run_ovl_analysis_OLD.remote(recruit_contigs_df, s_df))
-                #ovl_results = run_ovl_analysis_OLD(recruit_contigs_df, s_df)
+            uniq_recruit_dict = dict.fromkeys(overall_recruit_list, 0)
+            for r in overall_recruit_list:
+                uniq_recruit_dict[r] += 1
 
-            ray_results = []
-            for f in tqdm(futures):
-                ray_results.extend(ray.get(f))
-            ray_set_list = list(set(ray_results))
-            #ray_results = ray.get(futures)
-            overall_recruit_list.extend(ray_set_list)
-            #merge_df = pd.concat(ray_results)
-            #merge_df = pd.concat(futures)
-            #uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
-            #overall_recruit_list.extend(list(uniq_df['query_id']))
-
-
-        '''
-            split_nr_dfs = np.array_split(nonrecruit_contigs_df, 100, axis=0)
-            merge_list = []
-            num_cores = multiprocessing.cpu_count()
-            print("Building multiprocessing pool")
-            pool = multiprocessing.Pool(processes=num_cores)
-            arg_list = [[i, s_df, recruit_contigs_df] for i, s_df in enumerate(split_nr_dfs)]
-            results = pool.imap_unordered(run_ovl_analysis, arg_list)
-            print("Executing pool")
-            merge_list = []
-            for i, o_df in enumerate(results):
-                sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
-                merge_list.append(o_df)
-            pool.close()
-            pool.join()
-
-            print("\nMerging results")
-            merge_df = pd.concat(merge_list)
-            uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
-            overall_recruit_list.extend(list(uniq_df['query_id']))
-            print("Finished")
-        '''
-
-        uniq_recruit_dict = dict.fromkeys(overall_recruit_list, 0)
-        for r in overall_recruit_list:
-            uniq_recruit_dict[r] += 1
-
-        final_pass_list = []
-        for i in uniq_recruit_dict.items():
-            k, v = i
-            if (int(v) == int(len(covm_output_list))):
-                final_pass_list.append([sag_id, k, k.rsplit('_', 1)[0]])
-        final_pass_df = pd.DataFrame(final_pass_list,
-                                     columns=['sag_id', 'subcontig_id', 'contig_id']
-                                     )
-        final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
-                             header=False, index=False, sep='\t'
-                             )
-        print("There are {} total subcontigs, {} contigs".format(
-              len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
-              )
-        covm_pass_dfs.append(final_pass_df)
-
+            final_pass_list = []
+            for i in uniq_recruit_dict.items():
+                k, v = i
+                if (int(v) == int(len(covm_output_list))):
+                    final_pass_list.append([sag_id, k, k.rsplit('_', 1)[0]])
+            final_pass_df = pd.DataFrame(final_pass_list,
+                                         columns=['sag_id', 'subcontig_id', 'contig_id']
+                                         )
+            final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
+                                 header=False, index=False, sep='\t'
+                                 )
+            print("There are {} total subcontigs, {} contigs".format(
+                  len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
+                  )
+            covm_pass_dfs.append(final_pass_df)
     covm_df = pd.concat(covm_pass_dfs)
     ray.shutdown()
     '''
@@ -529,6 +537,5 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                         index=False
                         )
 
-    sys.exit()
 
     return covm_max_df
