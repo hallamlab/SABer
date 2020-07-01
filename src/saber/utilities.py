@@ -261,7 +261,7 @@ def get_kmer(seq, n):
 
 def tetra_cnt(seq_list):
     # Dict of all tetramers
-    tetra_cnt_dict = {''.join(x):[] for x in product('ATGC', repeat=4)}
+    tetra_cnt_dict = {''.join(x):[] for x in product('atgc', repeat=4)}
     # count up all tetramers and also populate the tetra dict
     for seq in seq_list:
         tmp_dict = {k: 0 for k, v in tetra_cnt_dict.items()}

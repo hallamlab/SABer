@@ -30,7 +30,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
                                   )
     else:
         logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % mg_id)
-        mg_tetra_df = pd.DataFrame.from_dict(s_utils.tetra_cnt(mg_subs))
+        mg_tetra_df = s_utils.tetra_cnt(mg_subs)
         mg_tetra_df['contig_id'] = mg_headers
         mg_tetra_df.set_index('contig_id', inplace=True)
         mg_tetra_df.to_csv(o_join(tra_path, mg_id + '.tetras.tsv'),
@@ -69,7 +69,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
                                            sep='\t', index_col=0, header=0)
             else:
                 logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % sag_id)
-                sag_tetra_df = pd.DataFrame.from_dict(s_utils.tetra_cnt(sag_subs))
+                sag_tetra_df = s_utils.tetra_cnt(sag_subs)
                 sag_tetra_df['contig_id'] = sag_headers
                 sag_tetra_df.set_index('contig_id', inplace=True)
                 sag_tetra_df.to_csv(o_join(tra_path, sag_id + '.tetras.tsv'), sep='\t')
