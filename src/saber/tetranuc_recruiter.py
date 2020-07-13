@@ -73,7 +73,6 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
                 sag_tetra_df['contig_id'] = sag_headers
                 sag_tetra_df.set_index('contig_id', inplace=True)
                 sag_tetra_df.to_csv(o_join(tra_path, sag_id + '.tetras.tsv'), sep='\t')
-            sys.exit()
             # Concat SAGs amd MG for GMM
             mg_rpkm_contig_list = list(rpkm_max_df.loc[rpkm_max_df['sag_id'] == sag_id
                                                        ]['subcontig_id'].values

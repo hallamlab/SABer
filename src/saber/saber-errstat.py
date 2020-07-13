@@ -114,8 +114,8 @@ src_metag_cnt_dict = cnt_contig_bp(src_metag_file)
 # Add to tax DF
 tax_mg_df['bp_cnt'] = [src_metag_cnt_dict[x] for x in tax_mg_df['@@SEQUENCEID']]
 
-
-src_genome_path = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/source_genomes/'
+'''
+src_genome_path = '/home/rmclaughlin/Ryan/test_SABer/SAG_models/build_synsags/synthetic_SAGs'
 mocksag_path = sys.argv[2]
 # list all source genomes
 src_genome_list = [joinpath(src_genome_path, f) for f in listdir(src_genome_path)
@@ -132,31 +132,34 @@ src_mock_list = src_genome_list + mocksag_list
 # count total bp's for each src and mock fasta
 fa_bp_cnt_list = []
 for fa_file in src_mock_list:
-    if '.mockSAG.fasta' in fa_file:
-        f_id = fa_file.split('/')[-1].split('.mockSAG.fasta')[0]
-        f_type = 'mockSAG'
+    if '.synSAG.fasta' in fa_file:
+        f_id = fa_file.split('/')[-1].split('.synSAG.fasta')[0]
+        f_type = 'synSAG'
     else:
         f_id = fa_file.split('/')[-1].rsplit('.', 1)[0]
         f_type = 'src_genome'
     fa_file, fa_bp_cnt = cnt_total_bp(fa_file)
+    print(f_id, f_type, fa_bp_cnt)
     fa_bp_cnt_list.append([f_id, f_type, fa_bp_cnt])
 fa_bp_cnt_df = pd.DataFrame(fa_bp_cnt_list, columns=['sag_id', 'data_type', 'tot_bp_cnt'])
+
 unstack_cnt_df = fa_bp_cnt_df.set_index(['sag_id', 'data_type']).unstack(level=-1).reset_index()
-unstack_cnt_df.columns = ['sag_id', 'mockSAG_tot', 'src_genome_tot']
+unstack_cnt_df.columns = ['sag_id', 'synSAG_tot', 'src_genome_tot']
 # calc basic stats for src and mock
 src_mock_err_list = []
 for ind, row in unstack_cnt_df.iterrows():
+    print(ind)
     sag_id = row['sag_id']
-    mockSAG_tot = row['mockSAG_tot']
+    mockSAG_tot = row['synSAG_tot']
     src_genome_tot = row['src_genome_tot']
-    data_type_list = ['mockSAG', 'src_genome']
+    data_type_list = ['synSAG', 'src_genome']
     for dt in data_type_list:
         algorithm = dt
         for level in ['domain', 'phylum', 'class', 'order',
                         'family', 'genus', 'species', 'strain', 'exact'
                         ]:
             s_m_err_list = [sag_id, algorithm, level, 0, 0, 0, 0]
-            if dt == 'mockSAG':
+            if dt == 'synSAG':
                 s_m_err_list[3] += mockSAG_tot # 'TruePos'
                 s_m_err_list[4] += 0 # 'FalsePos'
                 s_m_err_list[5] += src_genome_tot - mockSAG_tot # 'FalseNeg'
@@ -168,9 +171,23 @@ src_mock_err_df = pd.DataFrame(src_mock_err_list, columns=['sag_id', 'algorithm'
                                                     'FalseNeg', 'TrueNeg'
                                                     ])
 
+print(src_mock_err_df.head())
+src_mock_err_df.to_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdout/' + \
+                        'final_recruits/src_mock_df.tsv',
+                        index=False, sep='\t'
+                        )
+sys.exit()
+'''
+src_mock_err_df = pd.read_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdout/' + \
+                                'final_recruits/src_mock_df.tsv',
+                                sep='\t', header=0
+                                )
+print(src_mock_err_df.head())
 
 # MinHash
-mh_file = joinpath(files_path, 'minhash_recruits/CAMI_high_GoldStandardAssembly.mhr_trimmed_recruits.tsv')
+mh_file = joinpath(files_path, 'minhash_recruits/' + \
+                'CAMI_high_GoldStandardAssembly.mhr_trimmed_recruits.tsv'
+                )
 mh_concat_df = pd.read_csv(mh_file, sep='\t', header=0)
 
 # TPM
@@ -195,7 +212,6 @@ svm_concat_df = pd.read_csv(svm_file, sep='\t', header=0)
 svm_concat_df['subcontig_id'] = None
 svm_concat_df = svm_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
-'''
 # Tetra Isolation Forest
 iso_file = joinpath(files_path,
     'tetra_recruits/CAMI_high_GoldStandardAssembly.iso.tra_trimmed_recruits.tsv'
@@ -203,7 +219,6 @@ iso_file = joinpath(files_path,
 iso_concat_df = pd.read_csv(iso_file, sep='\t', header=0)
 iso_concat_df['subcontig_id'] = None
 iso_concat_df = iso_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
-'''
 
 # Tetra Combined
 comb_file = joinpath(files_path,
@@ -231,7 +246,6 @@ svm_final_df = pd.read_csv(svm_final_file, sep='\t', header=0,# index_col=0,
 svm_final_df['subcontig_id'] = None
 svm_final_df = svm_final_df[['sag_id', 'subcontig_id', 'contig_id']]
 
-'''
 # ISO Final Recruits
 iso_final_file = joinpath(files_path, 'final_recruits/iso.final_recruits.tsv')
 print('loading ISO combined files')
@@ -240,7 +254,6 @@ iso_final_df = pd.read_csv(iso_final_file, sep='\t', header=0,# index_col=0,
                             )
 iso_final_df['subcontig_id'] = None
 iso_final_df = iso_final_df[['sag_id', 'subcontig_id', 'contig_id']]
-'''
 
 # Combined Final Recruits
 comb_final_file = joinpath(files_path, 'final_recruits/comb.final_recruits.tsv')
@@ -258,7 +271,7 @@ extSAG_file_list = [x for x in os.listdir(extSAG_path)
                     if '.extended_SAG.fasta' in x
                     ]
 print('loading extended SAG files')
-'''
+
 alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
             'iso':'iso_extend', 'comb':'comb_extend'
             }
@@ -266,7 +279,7 @@ alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
 alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
             'comb':'comb_extend'
             }
-
+'''
 for extSAG_file in extSAG_file_list:
     file_path = os.path.join(extSAG_path, extSAG_file)
     with open(file_path, 'r') as file_in:
@@ -289,19 +302,19 @@ mh_concat_df['algorithm'] = 'MinHash'
 tpm_concat_df['algorithm'] = 'TPM'
 gmm_concat_df['algorithm'] = 'tetra_gmm'
 svm_concat_df['algorithm'] = 'tetra_svm'
-#iso_concat_df['algorithm'] = 'tetra_iso'
+iso_concat_df['algorithm'] = 'tetra_iso'
 comb_concat_df['algorithm'] = 'tetra_comb'
 gmm_final_df['algorithm'] = 'gmm_combined'
 svm_final_df['algorithm'] = 'svm_combined'
-#iso_final_df['algorithm'] = 'iso_combined'
+iso_final_df['algorithm'] = 'iso_combined'
 comb_final_df['algorithm'] = 'comb_combined'
 
 final_concat_df = pd.concat([mh_concat_df, tpm_concat_df,
                             gmm_concat_df, svm_concat_df,
-                            #iso_concat_df,
+                            iso_concat_df,
                             comb_concat_df,
                             gmm_final_df, svm_final_df,
-                            #iso_final_df,
+                            iso_final_df,
                             comb_final_df,
                             exSAG_concat_df
                             ])
@@ -316,7 +329,6 @@ final_tax_df = final_group_df.merge(tax_mg_df, left_on='contig_id', right_on='@@
 sag_cnt_dict = final_tax_df.groupby('sag_id')['sag_id'].count().to_dict()
 
 error_list = []
-'''
 algo_list = ['MinHash', 'TPM', 'tetra_gmm', 'tetra_svm', 'tetra_iso', 'tetra_comb',
                 'gmm_combined', 'svm_combined', 'iso_combined', 'comb_combined',
                 'gmm_extend', 'svm_extend', 'iso_extend', 'comb_extend'
@@ -326,7 +338,7 @@ algo_list = ['MinHash', 'TPM', 'tetra_gmm', 'tetra_svm', 'tetra_comb',
                 'gmm_combined', 'svm_combined', 'comb_combined',
                 'gmm_extend', 'svm_extend', 'comb_extend'
                 ]
-
+'''
 level_list = ['domain', 'phylum', 'class', 'order', 'family',
                 'genus', 'species', 'strain', 'CAMI_genomeID'
                 ]
