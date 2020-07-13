@@ -1,9 +1,42 @@
-13/07 12:31:39 INFO:
+13/07 12:41:15 INFO:
 [SABer]: Starting Tetranucleotide Recruitment Step
 
-13/07 12:32:43 INFO:
+13/07 12:42:18 INFO:
 [SABer]: Loading tetramer Hz matrix for CAMI_high_GoldStandardAssembly
 
-13/07 12:33:37 INFO:
-[SABer]: Loading  evo_1220_W.027.11378.synSAG tetramer Hz recruit list
+13/07 12:43:03 INFO:
+[SABer]: Loading tetramer Hz matrix for evo_1220_W.027.11378.synSAG
+
+13/07 12:43:04 INFO:
+[SABer]: Calculating AIC/BIC for GMM components
+
+13/07 12:43:10 INFO:
+[SABer]: Min AIC/BIC at 1/1, respectively
+
+13/07 12:43:10 INFO:
+[SABer]: Using BIC as guide for GMM components
+
+13/07 12:43:10 INFO:
+[SABer]: Training GMM on SAG tetras
+
+13/07 12:43:10 INFO:
+[SABer]: GMM Converged: True
+
+13/07 12:43:11 INFO:
+[SABer]: Training OCSVM on SAG tetras
+
+13/07 12:43:16 INFO:
+[SABer]: Training Isolation Forest on SAG tetras
+
+13/07 12:43:58 INFO:
+[SABer]: Recruited 12290 subcontigs to evo_1220_W.027.11378.synSAG with GMM
+
+13/07 12:43:58 INFO:
+[SABer]: Recruited 2543 subcontigs to evo_1220_W.027.11378.synSAG with SVM
+
+13/07 12:43:58 INFO:
+[SABer]: Recruited 48788 subcontigs to evo_1220_W.027.11378.synSAG with Isolation Forest
+
+13/07 12:43:58 INFO:
+[SABer]: Recruited 2452 subcontigs to evo_1220_W.027.11378.synSAG with combined methods
 

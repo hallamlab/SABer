@@ -26043,3 +26043,300 @@ Starting OV coefficient analysis
 13/07 12:35:22 INFO:
 Starting OV coefficient analysis
 
+13/07 12:37:08 INFO:
+[SABer]: Loading Abundance Recruits for  1048855.gt1kb.2433.synSAG
+
+13/07 12:37:08 INFO:
+[SABer]: Loading Abundance Recruits for  1287_CM_run206.final.scaffolds.gt1kb.3091.synSAG
+
+13/07 12:37:09 INFO:
+[SABer]: Loading Abundance Recruits for  1021_R_run134.final.scaffolds.gt1kb.494.synSAG
+
+13/07 12:37:09 INFO:
+[SABer]: Loading Abundance Recruits for  1036653.gt1kb.1063.synSAG
+
+13/07 12:37:09 INFO:
+[SABer]: Loading Abundance Recruits for  1285_CD_run189.final.scaffolds.gt1kb.9269.synSAG
+
+13/07 12:37:10 INFO:
+[SABer]: Loading Abundance Recruits for  1021_BA_run134.final.scaffolds.gt1kb.8154.synSAG
+
+13/07 12:37:10 INFO:
+[SABer]: Loading Abundance Recruits for  1286_A_run191.final.scaffolds.gt1kb.12348.synSAG
+
+13/07 12:37:10 INFO:
+[SABer]: Loading Abundance Recruits for  1049044.gt1kb.2812.synSAG
+
+13/07 12:37:10 INFO:
+[SABer]: Loading Abundance Recruits for  1036689.gt1kb.2285.synSAG
+
+13/07 12:37:11 INFO:
+Starting OV coefficient analysis
+
+13/07 12:42:41 INFO:
+Starting OV coefficient analysis
+
+13/07 12:44:09 INFO:
+[SABer]: Loading Abundance Recruits for  1036659.gt1kb.4281.synSAG
+
+13/07 12:44:09 INFO:
+[SABer]: Loading Abundance Recruits for  1021_AC_run134.final.scaffolds.gt1kb.4918.synSAG
+
+13/07 12:44:09 INFO:
+[SABer]: Loading Abundance Recruits for  1285_AW_run189_run193.final.scaffolds.gt1kb.10265.synSAG
+
+13/07 12:44:10 INFO:
+[SABer]: Loading Abundance Recruits for  1048918.gt1kb.4413.synSAG
+
+13/07 12:44:10 INFO:
+[SABer]: Loading Abundance Recruits for  1021_AN_run134_run137WDH_run147.final.scaffolds.gt1kb.4881.synSAG
+
+13/07 12:44:10 INFO:
+[SABer]: Loading Abundance Recruits for  1036797.gt1kb.9134.synSAG
+
+13/07 12:44:10 INFO:
+[SABer]: Loading Abundance Recruits for  1365_G_run201.final.scaffolds.gt1kb.3483.synSAG
+
+13/07 12:44:10 INFO:
+[SABer]: Loading Abundance Recruits for  1287_BU_run192.final.scaffolds.gt1kb.9444.synSAG
+
+13/07 12:44:11 INFO:
+[SABer]: Loading Abundance Recruits for  1285_BL_run189.final.scaffolds.gt1kb.12449.synSAG
+
+13/07 12:44:11 INFO:
+Starting OV coefficient analysis
+
+13/07 12:46:04 INFO:
+[SABer]: Loading Abundance Recruits for  1036692.gt1kb.80.synSAG
+
+13/07 12:46:05 INFO:
+[SABer]: Loading Abundance Recruits for  1220_CD_run172_run176_run188.final.scaffolds.gt1kb.6628.synSAG
+
+13/07 12:46:05 INFO:
+[SABer]: Loading Abundance Recruits for  evo_1220_W.027.1687.synSAG
+
+13/07 12:46:05 INFO:
+[SABer]: Loading Abundance Recruits for  1030857.gt1kb.10065.synSAG
+
+13/07 12:46:06 INFO:
+Starting OV coefficient analysis
+
+13/07 12:47:15 INFO:
+[SABer]: Loading Abundance Recruits for  evo_1030827.033.2300.synSAG
+
+13/07 12:47:16 INFO:
+[SABer]: Loading Abundance Recruits for  1048918.gt1kb.11594.synSAG
+
+13/07 12:47:16 INFO:
+[SABer]: Loading Abundance Recruits for  1030797.gt1kb.1548.synSAG
+
+13/07 12:47:17 INFO:
+[SABer]: Loading Abundance Recruits for  1220_N_run172_run176_run188.final.scaffolds.gt1kb.2227.synSAG
+
+13/07 12:47:18 INFO:
+Starting OV coefficient analysis
+
+13/07 12:49:36 INFO:
+[SABer]: Loading Abundance Recruits for  1285_BY_run189.final.scaffolds.gt1kb.308.synSAG
+
+13/07 12:49:37 INFO:
+[SABer]: Loading Abundance Recruits for  1036650.gt1kb.10889.synSAG
+
+13/07 12:49:37 INFO:
+[SABer]: Loading Abundance Recruits for  1139_BO_run158_run162.final.scaffolds.gt1kb.3000.synSAG
+
+13/07 12:49:37 INFO:
+[SABer]: Loading Abundance Recruits for  1285_N_run188.final.scaffolds.gt1kb.12123.synSAG
+
+13/07 12:49:38 INFO:
+[SABer]: Loading Abundance Recruits for  1285_AV_run189_run193.final.scaffolds.gt1kb.9205.synSAG
+
+13/07 12:49:38 INFO:
+[SABer]: Loading Abundance Recruits for  1048933.gt1kb.6876.synSAG
+
+13/07 12:49:38 INFO:
+[SABer]: Loading Abundance Recruits for  1036605.gt1kb.4814.synSAG
+
+13/07 12:49:38 INFO:
+[SABer]: Loading Abundance Recruits for  1220_BA_run172_run176_run188.final.scaffolds.gt1kb.11079.synSAG
+
+13/07 12:49:38 INFO:
+[SABer]: Loading Abundance Recruits for  1286_CH_run191.final.scaffolds.gt1kb.4513.synSAG
+
+13/07 12:49:38 INFO:
+[SABer]: Loading Abundance Recruits for  evo_1220_W.003.11582.synSAG
+
+13/07 12:49:39 INFO:
+[SABer]: Loading Abundance Recruits for  1285_BJ_run189.final.scaffolds.gt1kb.4464.synSAG
+
+13/07 12:49:39 INFO:
+[SABer]: Loading Abundance Recruits for  1048891.gt1kb.4457.synSAG
+
+13/07 12:49:39 INFO:
+[SABer]: Loading Abundance Recruits for  evo_1048963.038.12008.synSAG
+
+13/07 12:49:39 INFO:
+[SABer]: Loading Abundance Recruits for  1021_Y_run134.final.scaffolds.gt1kb.9004.synSAG
+
+13/07 12:49:39 INFO:
+[SABer]: Loading Abundance Recruits for  1287_B_run192.final.scaffolds.gt1kb.1393.synSAG
+
+13/07 12:49:40 INFO:
+[SABer]: Loading Abundance Recruits for  1286_CE_run191.final.scaffolds.gt1kb.8141.synSAG
+
+13/07 12:49:40 INFO:
+[SABer]: Loading Abundance Recruits for  1286_CJ_run191.final.scaffolds.gt1kb.10302.synSAG
+
+13/07 12:49:40 INFO:
+[SABer]: Loading Abundance Recruits for  1220_AI_run172_run176.final.scaffolds.gt1kb.11031.synSAG
+
+13/07 12:49:40 INFO:
+[SABer]: Loading Abundance Recruits for  1220_G_run172.final.scaffolds.gt1kb.4417.synSAG
+
+13/07 12:49:41 INFO:
+Starting OV coefficient analysis
+
+13/07 12:50:11 INFO:
+[SABer]: Loading Abundance Recruits for  1048774.gt1kb.3375.synSAG
+
+13/07 12:50:11 INFO:
+Starting OV coefficient analysis
+
+13/07 12:50:28 INFO:
+[SABer]: Loading Abundance Recruits for  1030857.gt1kb.10885.synSAG
+
+13/07 12:50:28 INFO:
+[SABer]: Loading Abundance Recruits for  1139_CK_run158_run162.final.scaffolds.gt1kb.11277.synSAG
+
+13/07 12:50:29 INFO:
+[SABer]: Loading Abundance Recruits for  1035924.gt1kb.11169.synSAG
+
+13/07 12:50:29 INFO:
+[SABer]: Loading Abundance Recruits for  1286_AB_run191_run197.final.scaffolds.gt1kb.7152.synSAG
+
+13/07 12:50:29 INFO:
+[SABer]: Loading Abundance Recruits for  1286_M_run191_run197.final.scaffolds.gt1kb.9981.synSAG
+
+13/07 12:50:29 INFO:
+[SABer]: Loading Abundance Recruits for  1285_CD_run189.final.scaffolds.gt1kb.10054.synSAG
+
+13/07 12:50:29 INFO:
+[SABer]: Loading Abundance Recruits for  1036545.gt1kb.2436.synSAG
+
+13/07 12:50:29 INFO:
+[SABer]: Loading Abundance Recruits for  evo_1052956.019.806.synSAG
+
+13/07 12:50:30 INFO:
+[SABer]: Loading Abundance Recruits for  1220_AU_run172_run176_run188.final.scaffolds.gt1kb.6870.synSAG
+
+13/07 12:50:30 INFO:
+Starting OV coefficient analysis
+
+13/07 12:50:51 INFO:
+Starting OV coefficient analysis
+
+13/07 12:55:34 INFO:
+[SABer]: Loading Abundance Recruits for  1053046.gt1kb.2061.synSAG
+
+13/07 12:55:34 INFO:
+[SABer]: Loading Abundance Recruits for  1035915.gt1kb.4292.synSAG
+
+13/07 12:55:35 INFO:
+[SABer]: Loading Abundance Recruits for  1285_I_run188_run192.final.scaffolds.gt1kb.8468.synSAG
+
+13/07 12:55:35 INFO:
+[SABer]: Loading Abundance Recruits for  1021_AI_run134.final.scaffolds.gt1kb.7154.synSAG
+
+13/07 12:55:35 INFO:
+[SABer]: Loading Abundance Recruits for  1287_CL_run206.final.scaffolds.gt1kb.7735.synSAG
+
+13/07 12:55:36 INFO:
+Starting OV coefficient analysis
+
+13/07 12:57:03 INFO:
+Starting OV coefficient analysis
+
+13/07 12:57:23 INFO:
+[SABer]: Loading Abundance Recruits for  1220_AV_run172_run176_run188.final.scaffolds.gt1kb.12451.synSAG
+
+13/07 12:57:24 INFO:
+[SABer]: Loading Abundance Recruits for  1021_H_run134.final.scaffolds.gt1kb.5744.synSAG
+
+13/07 12:57:24 INFO:
+[SABer]: Loading Abundance Recruits for  1139_G_run158_run162.final.scaffolds.gt1kb.10025.synSAG
+
+13/07 12:57:24 INFO:
+[SABer]: Loading Abundance Recruits for  1030821.gt1kb.11458.synSAG
+
+13/07 12:57:24 INFO:
+[SABer]: Loading Abundance Recruits for  evo_1048975.026.8622.synSAG
+
+13/07 12:57:25 INFO:
+[SABer]: Loading Abundance Recruits for  1139_BO_run158_run162.final.scaffolds.gt1kb.3113.synSAG
+
+13/07 12:57:25 INFO:
+Starting OV coefficient analysis
+
+13/07 12:57:40 INFO:
+Starting OV coefficient analysis
+
+13/07 13:03:19 INFO:
+[SABer]: Loading Abundance Recruits for  1285_BZ_run189.final.scaffolds.gt1kb.385.synSAG
+
+13/07 13:03:20 INFO:
+[SABer]: Loading Abundance Recruits for  1139_R_run158_run162.final.scaffolds.gt1kb.12219.synSAG
+
+13/07 13:03:20 INFO:
+[SABer]: Loading Abundance Recruits for  1048975.gt1kb.8070.synSAG
+
+13/07 13:03:20 INFO:
+[SABer]: Loading Abundance Recruits for  1220_BP_run172_run176.final.scaffolds.gt1kb.4508.synSAG
+
+13/07 13:03:21 INFO:
+[SABer]: Loading Abundance Recruits for  1048657.gt1kb.9421.synSAG
+
+13/07 13:03:22 INFO:
+Starting OV coefficient analysis
+
+13/07 13:04:00 INFO:
+[SABer]: Loading Abundance Recruits for  evo_1052956.019.10852.synSAG
+
+13/07 13:04:01 INFO:
+[SABer]: Loading Abundance Recruits for  1049059.gt1kb.11995.synSAG
+
+13/07 13:04:01 INFO:
+[SABer]: Loading Abundance Recruits for  1285_AY_run189.final.scaffolds.gt1kb.2085.synSAG
+
+13/07 13:04:01 INFO:
+[SABer]: Loading Abundance Recruits for  1036719.gt1kb.6128.synSAG
+
+13/07 13:04:01 INFO:
+[SABer]: Loading Abundance Recruits for  1286_BQ_run191.final.scaffolds.gt1kb.8648.synSAG
+
+13/07 13:04:02 INFO:
+[SABer]: Loading Abundance Recruits for  1285_Z_run188_run192.final.scaffolds.gt1kb.381.synSAG
+
+13/07 13:04:02 INFO:
+[SABer]: Loading Abundance Recruits for  1036725.gt1kb.1815.synSAG
+
+13/07 13:04:02 INFO:
+[SABer]: Loading Abundance Recruits for  1286_BC_run191_run197.final.scaffolds.gt1kb.11666.synSAG
+
+13/07 13:04:02 INFO:
+[SABer]: Loading Abundance Recruits for  1139_BN_run158_run162.final.scaffolds.gt1kb.1360.synSAG
+
+13/07 13:04:03 INFO:
+[SABer]: Loading Abundance Recruits for  1036677.gt1kb.301.synSAG
+
+13/07 13:04:03 INFO:
+[SABer]: Loading Abundance Recruits for  1048891.gt1kb.1753.synSAG
+
+13/07 13:04:03 INFO:
+[SABer]: Loading Abundance Recruits for  1021_S_run134.final.scaffolds.gt1kb.9465.synSAG
+
+13/07 13:04:03 INFO:
+[SABer]: Loading Abundance Recruits for  1036545.gt1kb.4693.synSAG
+
+13/07 13:04:04 INFO:
+Starting OV coefficient analysis
+
