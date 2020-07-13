@@ -1,15 +1,31 @@
 import logging
+import saber.logger as s_log
 import pandas as pd
 import numpy as np
-from os.path import isfile
+from os.path import isfile, basename
 from os.path import join as o_join
 import saber.utilities as s_utils
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn import svm
 from sklearn.ensemble import IsolationForest
 import sys
+import argparse
+
 
 def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_per_pass):
+    """Returns dataframe of subcontigs recruited via tetranucleotide Hz
+
+    Parameters:
+    tra_path (str): string of global path to tetrenucleotide output directory
+    sag_sub_files (list): list containing sublists with two values: [sag_id, sag_path]
+                          where sag_id (str) is a unique ID for a SAG and sag_path is
+                          the global path the the SAG subcontig fasta file
+    mg_sub_file (list): list containing two values: mg_id and mg_file. (same as sag_sub_files)
+    rpkm_max_df (df): dataframe containing the abundance recruits from the previous step.
+    gmm_per_pass (float): percent of agreement for subcontig classification to pass the complete
+                          contig (default is 0.01)
+
+    """
     # TODO: 1. Think about using Minimum Description Length (MDL) instead of AIC/BIC
     #        2. [Normalized Maximum Likelihood or Fish Information Approximation]
     #        3. Can TetraNuc Hz be calc'ed for each sample? Does that improve things?
@@ -18,9 +34,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
     mg_id = mg_sub_file[0]
     mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
     mg_headers = tuple(mg_subcontigs.keys())
-
     mg_subs = tuple([r.seq for r in mg_subcontigs])
-    #mg_id, mg_headers, mg_subs = mg_subcontigs
 
     # Build/Load tetramers for SAGs and MG subset by ara recruits
     if isfile(o_join(tra_path, mg_id + '.tetras.tsv')):
@@ -170,7 +184,6 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
                 logging.info('[SABer]: Warning: No recruits found...\n')
                 gmm_pass_list = []
 
-
             logging.info('[SABer]: Training OCSVM on SAG tetras\n')
             # fit OCSVM
             clf = svm.OneClassSVM()
@@ -274,25 +287,47 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
     return tetra_df_dict
 
 
-'''
-    ##################################
-    # build scatterplot to viz the GMM
-    sag_xy_df = sag_umap_df.iloc[:,0:2].copy()
-    mg_xy_df = mg_umap_df.iloc[:,0:2].copy()
-    sag_xy_df['isSAG'] = 'SAG'
-    mg_xy_df['isSAG'] = ['Tetra-Recruit' if x in list(gmm_pass_df.index.values)
-                            else 'MG' for x in mg_xy_df.index.values
-                            ]
-    recruits_xy_df = mg_xy_df[mg_xy_df['isSAG'] == 'Tetra-Recruit']
-    mg_xy_df = mg_xy_df[mg_xy_df['isSAG'] == 'MG']
-    xy_df = pd.concat([mg_xy_df, sag_xy_df, recruits_xy_df])
-    xy_df.to_csv(join(tra_path, sag_id + '.GMM_plot.tsv'), sep='\t')
-    sv_plot = join(tra_path, sag_id + '.GMM_plot.png')
-    ax = sns.scatterplot(x='pc1', y='pc2', data=xy_df, hue='isSAG',
-                            alpha=0.4, edgecolor='none')
-    plt.gca().set_aspect('equal', 'datalim')
-    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    plt.savefig(sv_plot, bbox_inches="tight")
-    plt.clf()
-    ##################################
-'''
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='uses tetrenucleotide Hz to recruit metaG reads to SAGs')
+    parser.add_argument(
+        '--tetra_path', help='path to tetrenucleotide output directory',
+        required=True
+        )
+    parser.add_argument(
+        '--sag_sub_file',
+        help='path to SAG subcontigs file', required=True
+        )
+    parser.add_argument(
+        '--mg_sub_file',
+        help='path to metagenome subcontigs file', required=True
+        )
+    parser.add_argument(
+        '--abund_df',
+        help='path to output dataframe from abundance recruiter', required=True
+        )
+    parser.add_argument(
+        '--per_pass',
+        help='pass percentage of subcontigs to pass complete contig', required=True,
+        default='0.01'
+        )
+    parser.add_argument("-v", "--verbose", action="store_true", default=False,
+                        help="Prints a more verbose runtime log"
+                        )
+    args = parser.parse_args()
+    # set args
+    tra_path = args.tetra_path
+    sag_sub_file = args.sag_sub_file
+    mg_sub_file = args.mg_sub_file
+    abund_recruit_file = args.abund_df
+    per_pass = float(args.per_pass)
+
+    s_log.prep_logging("tetra_log.txt", args.verbose)
+    sag_id = basename(sag_sub_file).rsplit('.', 2)[0]
+    mg_id = basename(mg_sub_file).rsplit('.', 2)[0]
+    abund_recruit_df = pd.read_csv(abund_recruit_file, header=0, sep='\t')
+    logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
+    run_tetra_recruiter(tra_path, [[sag_id, sag_sub_file]], [mg_id, mg_sub_file],
+                        abund_recruit_df, per_pass)
+

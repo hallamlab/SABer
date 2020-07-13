@@ -1,0 +1,9 @@
+13/07 12:31:39 INFO:
+[SABer]: Starting Tetranucleotide Recruitment Step
+
+13/07 12:32:43 INFO:
+[SABer]: Loading tetramer Hz matrix for CAMI_high_GoldStandardAssembly
+
+13/07 12:33:37 INFO:
+[SABer]: Loading  evo_1220_W.027.11378.synSAG tetramer Hz recruit list
+
