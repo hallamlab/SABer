@@ -24,11 +24,13 @@ def build_signature(p):
 
 
 @ray.remote
-def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_threshold):
+def compare_sigs(sag_id, sag_sig, mhr_path, sig_path, mg_sig_list, jacc_threshold):
+
     #sag_subcontigs = s_utils.get_seqs(sag_file)
     #sag_headers = tuple(sag_subcontigs.keys())
 
     # Calculate\Load MinHash Signatures with SourMash for SAG subseqs
+    '''
     if isfile(o_join(sig_path, sag_id + '.SAG.sig')):
         logging.info('[SABer]: Loading Signature for %s\n' % sag_id)
         sag_sig = sourmash.signature.load_one_signature(o_join(sig_path,
@@ -46,7 +48,8 @@ def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_thresho
         sag_sig = sourmash.signature.load_one_signature(o_join(sig_path,
                                                              sag_id + '.SAG.sig')
                                                         )
-        '''
+    '''
+    '''
         sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
         for sg_head in sag_headers:
             sag_subseq = str(sag_subcontigs[sg_head].seq)
@@ -54,7 +57,7 @@ def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_thresho
         sag_sig = sourmash.SourmashSignature(sag_minhash, name=sag_id)
         with open(o_join(sig_path, sag_id + '.SAG.sig'), 'w') as sags_out:
             sourmash.signature.save_signatures([sag_sig], fp=sags_out)
-        '''
+    '''
     logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
     pass_list = []
     for mg_sig in mg_sig_list:
@@ -62,7 +65,6 @@ def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_thresho
         mg_nm = mg_sig.name()
         if jacc_sim >= jacc_threshold:
             pass_list.append([sag_id, mg_nm, mg_nm.rsplit('_', 1)[0]])
-
     pass_list = tuple(pass_list)
 
     return pass_list
@@ -137,9 +139,27 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         for sag_rec in tqdm(build_list):
             sag_id, sag_file = sag_rec
             #logging.info('[SABer]: Analyzing {} signature\n'.format(sag_id))
+            #logging.info('[SABer]: Building Signature for %s\n' % sag_id)
+            if isfile(o_join(sig_path, sag_id + '.SAG.sig')):
+                logging.info('[SABer]: Loading Signature for %s\n' % sag_id)
+                sag_sig = sourmash.signature.load_one_signature(o_join(sig_path,
+                                                                     sag_id + '.SAG.sig')
+                                                                )
+            else:
+                sm_cmd = ['sourmash', 'compute', '-k', '51', '-n', '0', '--scaled', '100',
+                            sag_file, '-o', o_join(sig_path, sag_id + '.SAG.sig')
+                                ]
+                with open(o_join(sig_path, sag_id + '.out.txt'), 'w') as sm_out:
+                        with open(o_join(sig_path, sag_id + '.err.txt'), 'w') as stderr_file:
+                            run_sm = Popen(sm_cmd, stdout=sm_out, stderr=stderr_file)
+                            run_sm.communicate()
+                sag_sig = sourmash.signature.load_one_signature(o_join(sig_path,
+                                                                     sag_id + '.SAG.sig')
+                                                                )
+            r_sag_sig = ray.put(sag_sig)
             futures = []
             for mg_sig_sub_list in split_mg_sig_list:
-                futures.append(compare_sigs.remote(sag_id, sag_file, r_mhr_path, sig_path,
+                futures.append(compare_sigs.remote(sag_id, r_sag_sig, r_mhr_path, sig_path,
                                                     mg_sig_sub_list, r_jacc_threshold
                                                     ))
                 #logging.info('\r[SABer]: Building execute list: {0:.0%} complete'.format((j+1)/len(split_mg_sig_list)))
