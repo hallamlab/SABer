@@ -11,7 +11,7 @@ from psutil import virtual_memory
 import numpy as np
 from tqdm import tqdm
 from subprocess import Popen
-
+import time
 
 
 def build_signature(p):
@@ -23,7 +23,7 @@ def build_signature(p):
     return mg_sig
 
 
-@ray.remote
+@ray.remote(num_cpus=1)
 def compare_sigs(sag_id, sag_sig, mhr_path, sig_path, mg_sig_list, jacc_threshold):
 
     #sag_subcontigs = s_utils.get_seqs(sag_file)
@@ -132,6 +132,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         logging.info('[SABer]: Initializing Ray cluster and Loading shared data\n')
         max_mem = int(virtual_memory().total*0.25)
         ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
+        time.sleep(60)
         split_mg_sig_list = [ray.put(x) for x in np.array_split(mg_sig_list, nthreads, axis=0)]
         r_mhr_path = ray.put(mhr_path)
         r_jacc_threshold = ray.put(jacc_threshold)

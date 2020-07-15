@@ -19,6 +19,7 @@ from tqdm import tqdm
 import scipy.stats
 import itertools
 import swifter
+import time
 
 
 def calc_OVL(m1, m2, std1, std2):
@@ -51,7 +52,7 @@ def jensen_shannon_distance(val):
     return inv_dist
 
 
-@ray.remote
+@ray.remote(num_cpus=1)
 def run_ovl_analysis(recruit_row, query_df):
     '''
     pairwise_df = pd.merge(recruit_contig_df, query_contig_df, on='key').drop('key',axis=1)
@@ -73,7 +74,7 @@ def run_ovl_analysis(recruit_row, query_df):
 
 
 
-@ray.remote
+@ray.remote(num_cpus=1)
 def run_ovl_analysis_OLD(recruit_df, query_df):
 
     ava_df = pd.merge(recruit_df, query_df, on='key').drop('key',axis=1)
@@ -249,6 +250,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     '''
     max_mem = int(virtual_memory().total*0.25)
     ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
+    time.sleep(60)
     logging.info('[SABer]: Initializing Ray cluster and Loading shared data\n')
     covm_pass_dfs = []
     for sag_id in tqdm(set(minhash_df['sag_id'])):
