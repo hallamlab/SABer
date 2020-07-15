@@ -4,6 +4,7 @@ import sys
 from os.path import join as joinpath
 from os import listdir, makedirs, path
 from Bio import SeqIO
+pd.set_option('display.max_columns', None)
 
 
 def calc_err(df):
@@ -114,8 +115,7 @@ src_metag_cnt_dict = cnt_contig_bp(src_metag_file)
 # Add to tax DF
 tax_mg_df['bp_cnt'] = [src_metag_cnt_dict[x] for x in tax_mg_df['@@SEQUENCEID']]
 
-'''
-src_genome_path = '/home/rmclaughlin/Ryan/test_SABer/SAG_models/build_synsags/synthetic_SAGs'
+src_genome_path = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/source_genomes'
 mocksag_path = sys.argv[2]
 # list all source genomes
 src_genome_list = [joinpath(src_genome_path, f) for f in listdir(src_genome_path)
@@ -126,29 +126,41 @@ src_genome_list = [joinpath(src_genome_path, f) for f in listdir(src_genome_path
 mocksag_list = [joinpath(mocksag_path, f) for f in listdir(mocksag_path)
             if (f.split('.')[-1] == 'fasta')
                 ]
-
 src_mock_list = src_genome_list + mocksag_list
 
 # count total bp's for each src and mock fasta
 fa_bp_cnt_list = []
-for fa_file in src_mock_list:
-    if '.synSAG.fasta' in fa_file:
-        f_id = fa_file.split('/')[-1].split('.synSAG.fasta')[0]
-        f_type = 'synSAG'
-    else:
-        f_id = fa_file.split('/')[-1].rsplit('.', 1)[0]
-        f_type = 'src_genome'
+for fa_file in mocksag_list:
+    f_id = fa_file.split('/')[-1].rsplit('.', 3)[0]
+    u_id = fa_file.split('/')[-1].split('.synSAG.fasta')[0]
+    f_type = 'synSAG'
+    fa_file, fa_bp_cnt = cnt_total_bp(fa_file)
+    print(f_id, u_id, f_type, fa_bp_cnt)
+    fa_bp_cnt_list.append([f_id, u_id, f_type, fa_bp_cnt])
+
+src_bp_cnt_list = []
+for fa_file in src_genome_list:
+    f_id = fa_file.split('/')[-1].rsplit('.', 1)[0]
+    f_type = 'src_genome'
     fa_file, fa_bp_cnt = cnt_total_bp(fa_file)
     print(f_id, f_type, fa_bp_cnt)
-    fa_bp_cnt_list.append([f_id, f_type, fa_bp_cnt])
-fa_bp_cnt_df = pd.DataFrame(fa_bp_cnt_list, columns=['sag_id', 'data_type', 'tot_bp_cnt'])
+    src_bp_cnt_list.append([f_id, f_type, fa_bp_cnt])
 
-unstack_cnt_df = fa_bp_cnt_df.set_index(['sag_id', 'data_type']).unstack(level=-1).reset_index()
+fa_bp_cnt_df = pd.DataFrame(fa_bp_cnt_list, columns=['sag_id', 'u_id', 'data_type',
+                            'tot_bp_cnt'
+                            ])
+src_bp_cnt_df = pd.DataFrame(src_bp_cnt_list, columns=['sag_id', 'data_type',
+                             'tot_bp_cnt'
+                             ])
+
+merge_bp_cnt_df = fa_bp_cnt_df.merge(src_bp_cnt_df, on='sag_id', how='left')
+unstack_cnt_df = merge_bp_cnt_df[['u_id', 'tot_bp_cnt_x', 'tot_bp_cnt_y']]
+#unstack_cnt_df = fa_bp_cnt_df.set_index(['sag_id', 'data_type']).unstack(level=-1).reset_index()
+print(unstack_cnt_df.head())
 unstack_cnt_df.columns = ['sag_id', 'synSAG_tot', 'src_genome_tot']
 # calc basic stats for src and mock
 src_mock_err_list = []
 for ind, row in unstack_cnt_df.iterrows():
-    print(ind)
     sag_id = row['sag_id']
     mockSAG_tot = row['synSAG_tot']
     src_genome_tot = row['src_genome_tot']
@@ -176,14 +188,13 @@ src_mock_err_df.to_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdou
                         'final_recruits/src_mock_df.tsv',
                         index=False, sep='\t'
                         )
-sys.exit()
+print(src_mock_err_df.head())
 '''
 src_mock_err_df = pd.read_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdout/' + \
                                 'final_recruits/src_mock_df.tsv',
                                 sep='\t', header=0
                                 )
-print(src_mock_err_df.head())
-
+'''
 # MinHash
 mh_file = joinpath(files_path, 'minhash_recruits/' + \
                 'CAMI_high_GoldStandardAssembly.mhr_trimmed_recruits.tsv'

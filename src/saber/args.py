@@ -50,30 +50,30 @@ class SABerArgumentParser(argparse.ArgumentParser):
         self.reqs.add_argument("-o", "--output-dir", required=True, dest="save_path",
                                  help="Path to directory for all outputs."
                                  )
-        self.optopt.add_argument("--max_contig_len", required=False, default=5000,
+        self.optopt.add_argument("--max_contig_len", required=False, default=10000,
                                  dest="max_contig_len",
-                                 help="Max subcontig length in basepairs [5000]."
+                                 help="Max subcontig length in basepairs [10000]."
                                  )
-        self.optopt.add_argument("--overlap_len", required=False, default=1000,
+        self.optopt.add_argument("--overlap_len", required=False, default=2000,
                                  dest="overlap_len",
-                                 help="subcontig overlap in basepairs [1000]."
+                                 help="subcontig overlap in basepairs [2000]."
                                  )
-        self.optopt.add_argument("--minhash_jacc_thresh", required=False, default=0.99,
+        self.optopt.add_argument("--minhash_jacc_thresh", required=False, default=0.01,
                                  dest="jacc_thresh",
-                                 help="Minimum Jaccard index between SAG and MG subcontig MinHash signatures [0.99]."
+                                 help="Minimum Jaccard index between SAG and MG subcontig MinHash signatures [0.01]."
                                  )
         self.optopt.add_argument("--minhash_pass_prop", required=False, default=0.01,
                                  dest="mh_per_pass",
-                                 help="Minimum Jaccard index between SAG and MG subcontig MinHash signatures [0.51]."
+                                 help="Minimum Jaccard index between SAG and MG subcontig MinHash signatures [0.01]."
                                  )
         self.optopt.add_argument("--abund_pass_prop", required=False, default=0.51,
                                  dest="abund_per_pass",
                                  help="Proportion of subcontigs required to pass Abundance filter [0.51]."
                                  )
-        self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.51,
+        self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.1,
                                  dest="gmm_per_pass",
                                  help="Proportion of subcontigs required to pass "
-                                      "tetranucleotide filter [0.01]."
+                                      "tetranucleotide filter [0.1]."
                                  )
         self.optopt.add_argument("-t", "--num_threads", required=False, default=1,
                                  dest="nthreads",

@@ -10,6 +10,8 @@ import sys
 from psutil import virtual_memory
 import numpy as np
 from tqdm import tqdm
+from subprocess import Popen
+
 
 
 def build_signature(p):
@@ -34,6 +36,17 @@ def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_thresho
                                                         )
     else:
         logging.info('[SABer]: Building Signature for %s\n' % sag_id)
+        sm_cmd = ['sourmash', 'compute', '-k', '51', '-n', '0', '--scaled', '100',
+                    sag_file, '-o', o_join(sig_path, sag_id + '.SAG.sig')
+                        ]
+        with open(o_join(sig_path, sag_id + '.out.txt'), 'w') as sm_out:
+                with open(o_join(sig_path, sag_id + '.err.txt'), 'w') as stderr_file:
+                    run_sm = Popen(sm_cmd, stdout=sm_out, stderr=stderr_file)
+                    run_sm.communicate()
+        sag_sig = sourmash.signature.load_one_signature(o_join(sig_path,
+                                                             sag_id + '.SAG.sig')
+                                                        )
+        '''
         sag_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
         for sg_head in sag_headers:
             sag_subseq = str(sag_subcontigs[sg_head].seq)
@@ -41,7 +54,7 @@ def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_thresho
         sag_sig = sourmash.SourmashSignature(sag_minhash, name=sag_id)
         with open(o_join(sig_path, sag_id + '.SAG.sig'), 'w') as sags_out:
             sourmash.signature.save_signatures([sag_sig], fp=sags_out)
-
+        '''
     logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
     pass_list = []
     for mg_sig in mg_sig_list:

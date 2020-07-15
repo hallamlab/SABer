@@ -32,9 +32,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
     #            (think about http://merenlab.org/2020/01/02/visualizing-metagenomic-bins/#introduction)
 
     mg_id = mg_sub_file[0]
-    mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
-    mg_headers = tuple(mg_subcontigs.keys())
-    mg_subs = tuple([r.seq for r in mg_subcontigs])
+
 
     # Build/Load tetramers for SAGs and MG subset by ara recruits
     if isfile(o_join(tra_path, mg_id + '.tetras.tsv')):
@@ -42,8 +40,12 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
         mg_tetra_df = pd.read_csv(o_join(tra_path, mg_id + '.tetras.tsv'),
                                   sep='\t', index_col=0, header=0
                                   )
+        mg_headers = mg_tetra_df.index.values
     else:
         logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % mg_id)
+        mg_subcontigs = s_utils.get_seqs(mg_sub_file[1]) # TODO: can this be removed?
+        mg_headers = tuple(mg_subcontigs.keys())
+        mg_subs = tuple([r.seq for r in mg_subcontigs])
         mg_tetra_df = s_utils.tetra_cnt(mg_subs)
         mg_tetra_df['contig_id'] = mg_headers
         mg_tetra_df.set_index('contig_id', inplace=True)
@@ -132,7 +134,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
 
             logging.info('[SABer]: Calculating AIC/BIC for GMM components\n')
             sag_train_vals = [1 for x in sag_tetra_df.index]
-            n_components = np.arange(1, 5, 1)
+            n_components = np.arange(1, 10, 1)
             models = [GMM(n, random_state=42) for n in n_components]
             bics = []
             aics = []
