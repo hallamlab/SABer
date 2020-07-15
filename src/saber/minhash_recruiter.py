@@ -25,8 +25,8 @@ def build_signature(p):
 
 @ray.remote
 def compare_sigs(sag_id, sag_file, mhr_path, sig_path, mg_sig_list, jacc_threshold):
-    sag_subcontigs = s_utils.get_seqs(sag_file)
-    sag_headers = tuple(sag_subcontigs.keys())
+    #sag_subcontigs = s_utils.get_seqs(sag_file)
+    #sag_headers = tuple(sag_subcontigs.keys())
 
     # Calculate\Load MinHash Signatures with SourMash for SAG subseqs
     if isfile(o_join(sig_path, sag_id + '.SAG.sig')):
