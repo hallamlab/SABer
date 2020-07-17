@@ -89,7 +89,7 @@ def run_ovl_analysis_OLD(p):
     for x in zip_list:
         ovl_list.append(calc_OVL(x[0], x[1], x[2], x[3]))
     ava_df['ovl'] = ovl_list
-    ava_df = ava_df.loc[ava_df['ovl'] >= 0.95]
+    ava_df = ava_df.loc[ava_df['ovl'] >= 0.98]
     ovl_contig_tup = tuple(set(ava_df['query_id']))
 
     return ovl_contig_tup

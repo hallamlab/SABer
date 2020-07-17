@@ -64,11 +64,11 @@ class SABerArgumentParser(argparse.ArgumentParser):
                                  )
         self.optopt.add_argument("--minhash_pass_prop", required=False, default=0.01,
                                  dest="mh_per_pass",
-                                 help="Minimum Jaccard index between SAG and MG subcontig MinHash signatures [0.01]."
+                                 help="Proportion of subcontigs required to pass MinHash signatures [0.01]."
                                  )
-        self.optopt.add_argument("--abund_pass_prop", required=False, default=0.51,
+        self.optopt.add_argument("--abund_pass_prop", required=False, default=0.70,
                                  dest="abund_per_pass",
-                                 help="Proportion of subcontigs required to pass Abundance filter [0.51]."
+                                 help="Proportion of subcontigs required to pass Abundance filter [0.70]."
                                  )
         self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.1,
                                  dest="gmm_per_pass",
