@@ -103,6 +103,11 @@ tax_mg_df = tax_mg_df[['@@SEQUENCEID', 'CAMI_genomeID', 'domain', 'phylum', 'cla
                         'family', 'genus', 'species', 'strain'
                         ]]
 
+tax_mg_df.to_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdout/' + \
+                                'error_analysis/src2sag_map.tsv',
+                                sep='\t', index=False
+                                )
+sys.exit()
 files_path = sys.argv[1]
 err_path = files_path + '/error_analysis'
 if not path.exists(err_path):

@@ -28,54 +28,7 @@ def calc_OVL(m1, m2, std1, std2):
 
     return ovl
 
-'''
-def jensen_shannon_distance(val):
-    """
-    method to compute the Jenson-Shannon Distance
-    between two probability distributions
-    """
-
-    m1, m2, std1, std2 = val
-    r1 = norm.rvs(loc=m1, scale=std1, size=10000)
-    r2 = norm.rvs(loc=m2, scale=std2, size=10000)
-    # convert the vectors into numpy arrays in case that they aren't
-    p = np.array(r1)
-    q = np.array(r2)
-    # calculate m
-    m = (p + q) / 2
-    # compute Jensen Shannon Divergence
-    divergence = (scipy.stats.entropy(p, m) + scipy.stats.entropy(q, m)) / 2
-    # compute the Jensen Shannon Distance
-    distance = np.sqrt(divergence)
-    inv_dist = 1 - distance
-
-    return inv_dist
-'''
-'''
-@ray.remote(num_cpus=1)
-def run_ovl_analysis(recruit_row, query_df):
-
-    #pairwise_df = pd.merge(recruit_contig_df, query_contig_df, on='key').drop('key',axis=1)
-    #pairwise_df.columns = ['recruit_id', 'recruit_mu', 'recruit_sigma', 'query_id',
-    #                        'query_mu', 'query_sigma'
-    #                        ]
-
-    query_sub_df = query_df.loc[((query_df['totalAvgDepth'] >= recruit_row['lower'])
-                                & (query_df['totalAvgDepth'] <= recruit_row['upper'])
-                                )]
-    query_sub_df['ovl'] = query_sub_df.swifter.apply(lambda row: calc_OVL(recruit_row['totalAvgDepth'],
-                                                recruit_row['stdev'], row['totalAvgDepth'],
-                                                row['stdev']), axis=1
-                                                )
-    ovl_contig_tup = tuple(query_sub_df['contigName'].loc[query_sub_df['ovl'] >= 0.90])
-    #ovl90_df = query_sub_df.loc[query_sub_df['ovl'] >= 0.90]
-
-    return ovl_contig_tup
-'''
-
-
-#@ray.remote(num_cpus=1)
-def run_ovl_analysis_OLD(p):
+def run_ovl_analysis(p):
     recruit_df, query_df = p
     ava_df = pd.merge(recruit_df, query_df, on='key').drop('key',axis=1)
     ava_df.columns = ['recruit_id', 'r_mu', 'r_sigma', 'query_id', 'q_mu', 'q_sigma']
@@ -104,17 +57,6 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
     mg_headers = tuple(mg_subcontigs.keys())
 
-    #mg_id, mg_headers = mg_subcontigs[0], mg_subcontigs[1]
-    '''
-    logging.info('[SABer]: Starting Abundance Recruitment Algorithm\n')
-    logging.info('[SABer]: Checking for abundance table for %s\n' % mg_id)
-    if isfile(o_join(abr_path, mg_id + '.samsum_merged.tsv')):
-        logging.info('[SABer]: Loading  %s abundance table\n' % mg_id)
-        mg_ss_df = pd.read_csv(o_join(abr_path, mg_id + '.samsum_merged.tsv'),
-                               sep='\t', header=0
-                               )
-    else:
-    '''
     logging.info('[SABer]: Building %s abundance table\n' % mg_id)
     mg_sub_path = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
     # is it indexed?
@@ -193,65 +135,6 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                     run_covm.communicate()
         covm_output_list.append(mg_covm_out)
 
-        '''
-            logging.info('[SABer]: Calculating TPM with samsum for %s\n' % pe_id)
-            mg_input = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
-            sam_input = o_join(abr_path, pe_id + '.sam')
-            # samsum API
-            ref_seq_abunds = commands.ref_sequence_abundances(aln_file=sam_input,
-                                                              seq_file=mg_input, multireads=True
-                                                              )
-            ss_output_list.append(ref_seq_abunds)
-
-        logging.info('[SABer]: Merging results for all samsum output\n')
-        # Merge API output for each raw sample file
-        refseq_header_list = ss_output_list[0].keys()
-        refseq_merge_list = []
-        for refseq_header in refseq_header_list:
-            for i, refseq_dict in enumerate(ss_output_list):
-                refseq_obj = refseq_dict[refseq_header]
-                rso_name = refseq_obj.name
-                rso_length = refseq_obj.length
-                rso_reads_mapped = refseq_obj.reads_mapped
-                rso_weight_total = refseq_obj.weight_total
-                rso_fpkm = refseq_obj.fpkm
-                rso_tpm = refseq_obj.tpm
-                rso_sample_index = i
-                refseq_merge_list.append([rso_name, rso_sample_index, rso_length,
-                                          rso_reads_mapped, rso_weight_total, rso_fpkm,
-                                          rso_tpm
-                                          ])
-        mg_ss_df = pd.DataFrame(refseq_merge_list, columns=['subcontig_id', 'sample_index',
-                                                              'length', 'reads_mapped',
-                                                              'weight_total', 'fpkm', 'tpm'
-                                                              ])
-        mg_ss_df.to_csv(o_join(abr_path, mg_id + '.samsum_merged.tsv'), sep='\t', index=False)
-        '''
-
-    '''
-    for mhr_file in mhr_files_list:
-        # hackin to get BINID
-        if 'evo_' in mhr_file:
-            bin_id = '.'.join(mhr_file.split('.', 2)[0:2])
-        else:
-            mhr_spl = mhr_file.split('.', 1)[0]
-            if mhr_spl.find('_'):
-                bin_id = '_'.join(mhr_spl.split('_', 2)[0:2])
-            else:
-                bin_id = mhr_spl
-        print(bin_id)
-
-        recruit_df = pd.read_csv(os.path.join(mhr_path, mhr_file), header=None,
-                                 names=['sag_id', 'subcontig_id', 'contig_id'],
-                                 sep='\t'
-                                 )
-
-        sag_id = recruit_df['sag_id'].iloc[0]
-    '''
-    #max_mem = int(virtual_memory().total*0.25)
-    #ray.init(num_cpus=nthreads, memory=max_mem, object_store_memory=max_mem)
-    #time.sleep(60)
-    #logging.info('[SABer]: Initializing Ray cluster and Loading shared data\n')
     covm_pass_dfs = []
     for sag_id in tqdm(set(minhash_df['sag_id'])):
         if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
@@ -299,7 +182,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                 split_nr_dfs = np.array_split(nonrecruit_filter_df, nthreads*10, axis=0)
                 pool = multiprocessing.Pool(processes=nthreads)
                 arg_list = [[recruit_contigs_df, s_df] for i, s_df in enumerate(split_nr_dfs)]
-                results = pool.imap_unordered(run_ovl_analysis_OLD, arg_list)
+                results = pool.imap_unordered(run_ovl_analysis, arg_list)
                 merge_list = []
                 for i, o_list in enumerate(results):
                     sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
@@ -308,40 +191,6 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                 overall_recruit_list.extend(set_list)
                 pool.close()
                 pool.join()
-                '''
-                futures = []
-                for i, s_df in enumerate(split_nr_dfs):
-                    futures.append(run_ovl_analysis_OLD.remote(recruit_contigs_df, s_df))
-
-                ray_results = []
-                for f in tqdm(futures):
-                    ray_results.extend(ray.get(f))
-                ray_set_list = list(set(ray_results))
-                overall_recruit_list.extend(ray_set_list)
-                '''
-
-            '''
-                split_nr_dfs = np.array_split(nonrecruit_contigs_df, 100, axis=0)
-                merge_list = []
-                num_cores = multiprocessing.cpu_count()
-                print("Building multiprocessing pool")
-                pool = multiprocessing.Pool(processes=num_cores)
-                arg_list = [[i, s_df, recruit_contigs_df] for i, s_df in enumerate(split_nr_dfs)]
-                results = pool.imap_unordered(run_ovl_analysis, arg_list)
-                print("Executing pool")
-                merge_list = []
-                for i, o_df in enumerate(results):
-                    sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
-                    merge_list.append(o_df)
-                pool.close()
-                pool.join()
-
-                print("\nMerging results")
-                merge_df = pd.concat(merge_list)
-                uniq_df = merge_df.drop_duplicates(subset='query_id', keep='first')
-                overall_recruit_list.extend(list(uniq_df['query_id']))
-                print("Finished")
-            '''
 
             uniq_recruit_dict = dict.fromkeys(overall_recruit_list, 0)
             for r in overall_recruit_list:
@@ -363,7 +212,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                   )
             covm_pass_dfs.append(final_pass_df)
     covm_df = pd.concat(covm_pass_dfs)
-    #ray.shutdown()
+
     '''
     # extract TPM and pivot for MG
     mg_ss_trim_df = mg_ss_df[['subcontig_id', 'sample_index', 'tpm']].dropna(how='any')
