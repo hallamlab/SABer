@@ -69,6 +69,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
             isfile(o_join(tra_path, sag_id + '.iso_recruits.tsv')) &
             isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv'))
             ):
+            logging.info('[elvis]: %s files already exist' % sag_id)
             logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
             with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
                 gmm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
@@ -83,6 +84,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
                 logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % sag_id)
                 sag_tetra_df = pd.read_csv(o_join(tra_path, sag_id + '.tetras.tsv'),
                                            sep='\t', index_col=0, header=0)
+                logging.info('[SABer]: Loading tetramer Hz matrix for %s\n is completed' % sag_id)
             else:
                 logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % sag_id)
                 sag_tetra_df = s_utils.tetra_cnt(sag_subs)
@@ -95,42 +97,9 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
                                        )
 
             mg_tetra_filter_df = mg_tetra_df.loc[mg_tetra_df.index.isin(mg_rpkm_contig_list)]
+            logging.info('[SABer]: loading complete')
             #concat_tetra_df = pd.concat([sag_tetra_df, mg_tetra_filter_df])
-            '''
-            normed_tetra_df = concat_tetra_df
-            sag_normed_tetra_df = normed_tetra_df[
-                normed_tetra_df.index.isin(sag_tetra_df.index)
-            ]
-            mg_normed_tetra_df = normed_tetra_df.loc[
-                normed_tetra_df.index.isin(mg_tetra_filter_df.index)
-            ]
 
-            # UMAP for Dimension reduction of tetras
-            sag_features = sag_normed_tetra_df.values
-            sag_targets = sag_normed_tetra_df.index.values
-            mg_features = mg_normed_tetra_df.values
-            mg_targets = mg_normed_tetra_df.index.values
-            normed_features = normed_tetra_df.values
-            normed_targets = normed_tetra_df.index.values
-
-            logging.info('[SABer]: Dimension reduction of tetras with UMAP\n')
-            umap_trans = umap.UMAP(n_neighbors=2, min_dist=0.0,
-                                   n_components=num_components, metric='manhattan',
-                                   random_state=42
-                                   ).fit_transform(normed_features)
-            pc_col_names = ['pc' + str(x) for x in range(1, num_components + 1)]
-            umap_df = pd.DataFrame(umap_trans, columns=pc_col_names, index=normed_targets)
-
-            sag_umap_df = umap_df.loc[umap_df.index.isin(sag_tetra_df.index)]
-            mg_umap_df = umap_df.loc[umap_df.index.isin(mg_tetra_filter_df.index)]
-
-            sag_tetra_df = concat_tetra_df.loc[
-                                    concat_tetra_df.index.isin(sag_tetra_df.index)
-                                    ]
-            mg_tetra_df = concat_tetra_df.loc[
-                                    concat_tetra_df.index.isin(mg_tetra_filter_df.index)
-                                    ]
-            '''
 
             logging.info('[SABer]: Calculating AIC/BIC for GMM components\n')
             sag_train_vals = [1 for x in sag_tetra_df.index]
