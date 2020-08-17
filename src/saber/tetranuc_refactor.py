@@ -25,14 +25,12 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
     
     ## if tetra files exist
     if isfile(o_join(tra_path, mg_id + '.tetras.tsv')):
-        logging.info('a')
         logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % mg_id)
         mg_tetra_df = pd.read_csv(o_join(tra_path, mg_id + '.tetras.tsv'), sep='\t', index_col=0, header=0)
         mg_headers = mg_tetra_df.index.values
 
     ## if tetra files don't exist
     else:
-        logging.info('b')
         mg_subcontigs, mg_headers, mg_subs, mg_tetra_df = calculate_tetramer_hz_matrix(mg_id, mg_sub_file[1])
 
     ## pass list for all  
@@ -54,6 +52,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
 
         ## load existing pass lists 
         if all([isfile(x) for x in paths]):
+            logging.info('found pass lists\n')
             logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
             for pred_name in predictors:
                 with open(o_join(tra_path, sag_id + '.' + pred_name + '_recruits.tsv'), 'r') as tra_in:
@@ -65,7 +64,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
                 logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % sag_id)
                 sag_tetra_df = pd.read_csv(o_join(tra_path, sag_id + '.tetras.tsv'),
                                            sep='\t', index_col=0, header=0)
-                logging.info('[SABer]: Loading tetramer Hz matrix for %s\n is completed' % sag_id)
+                logging.info('[SABer]: Loading tetramer Hz matrix for %s is completed\n' % sag_id)
             else:
                 logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % sag_id)
                 sag_tetra_df = s_utils.tetra_cnt(sag_subs)
@@ -76,16 +75,14 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
             # Concat SAGs amd MG for GMM
             mg_rpkm_contig_list = list(rpkm_max_df.loc[rpkm_max_df['sag_id'] == sag_id]['subcontig_id'].values)
             mg_tetra_filter_df = mg_tetra_df.loc[mg_tetra_df.index.isin(mg_rpkm_contig_list)]
-            logging.info('[SABer]: loading complete')
-            
-            
-            
+            logging.info('[SABer]: loading complete\n')
             logging.info('[SABer]: Now training ML\n')
             ## Calling function Train to handle all ML related work. It is standalone and is able to parallel process
             pass_lists = Train(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, mg_tetra_filter_df,mg_rpkm_contig_list, predictors, ml_functions)
             #########################################################################################################
-        
-        
+            for pred_name in predictors:
+                with open(o_join(tra_path, sag_id + '.'+ pred_name+'_recruits.tsv'), 'w') as tra_out:
+                    tra_out.write('\n'.join(['\t'.join(x) for x in pass_lists[pred_name]]))
         
         for pred_name in predictors:
             total_pass_lists[pred_name] = total_pass_lists[pred_name].extend(pass_lists[pred_name])
@@ -97,15 +94,14 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
     
     for tetra_id in tetra_df_dict:
         tetra_df = tetra_df_dict[tetra_id]
-        mg_max_only_df = updateDF(tetra_df)
+        mg_max_only_df = updateDF(tetra_df, tetra_id, mg_headers, gmm_per_pass)
         tetra_df_dict[tetra_id] = mg_max_only_df
     
     return tetra_df_dict
 
 
 
-
-def updateDF(tetra_df, mg_headers, gmm_per_pass):
+def updateDF(tetra_df, tetra_id, mg_headers, gmm_per_pass):
     gmm_cnt_df = tetra_df.groupby(['sag_id', 'contig_id']).count().reset_index()
     gmm_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
     # Build subcontig count for each MG contig
@@ -147,15 +143,12 @@ def Train(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass,mg_tetra_filter_d
 
 def runOCSVM(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, mg_tetra_filter_df, mg_rpkm_contig_list):
     logging.info('[SABer]: Training OCSVM on SAG tetras\n')
-    logging.info(sag_tetra_df.values[0])
     # fit OCSVM
     clf = svm.OneClassSVM()
     clf.fit(sag_tetra_df.values)
-    logging.info('finish fitting\n')
     sag_pred = clf.predict(sag_tetra_df.values)
     #sag_pred_df = pd.DataFrame(data=sag_pred, index=sag_tetra_df.index.values)
     mg_pred = clf.predict(mg_tetra_filter_df.values)
-    logging.info('finish predicting\n')
     mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_filter_df.index.values)
     svm_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
     # And is has to be from the RPKM pass list
@@ -165,6 +158,7 @@ def runOCSVM(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, mg_tetra_filt
         svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
 
     logging.info('[SABer]: Recruited %s subcontigs to %s with OCSVM\n' % (len(svm_pass_list), sag_id))
+    
     return svm_pass_list
 
 def runGMM(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, predictors):
