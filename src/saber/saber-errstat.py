@@ -103,15 +103,12 @@ tax_mg_df = tax_mg_df[['@@SEQUENCEID', 'CAMI_genomeID', 'domain', 'phylum', 'cla
                         'family', 'genus', 'species', 'strain'
                         ]]
 
-tax_mg_df.to_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdout/' + \
-                                'error_analysis/src2sag_map.tsv',
-                                sep='\t', index=False
-                                )
-sys.exit()
 files_path = sys.argv[1]
 err_path = files_path + '/error_analysis'
 if not path.exists(err_path):
     makedirs(err_path)
+
+tax_mg_df.to_csv(files_path + 'error_analysis/src2sag_map.tsv', sep='\t', index=False)
 
 # count all bp's for Source genomes, Source MetaG, MockSAGs
 src_metag_file = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/CAMI_high_GoldStandardAssembly.fasta'
@@ -127,6 +124,7 @@ src_genome_list = [joinpath(src_genome_path, f) for f in listdir(src_genome_path
             if ((f.split('.')[-1] == 'fasta' or f.split('.')[-1] == 'fna') and
                 'Sample' not in f)
             ]
+'''
 # list all mockSAGs
 mocksag_list = [joinpath(mocksag_path, f) for f in listdir(mocksag_path)
             if (f.split('.')[-1] == 'fasta')
@@ -188,18 +186,14 @@ src_mock_err_df = pd.DataFrame(src_mock_err_list, columns=['sag_id', 'algorithm'
                                                     'FalseNeg', 'TrueNeg'
                                                     ])
 
-print(src_mock_err_df.head())
-src_mock_err_df.to_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdout/' + \
-                        'final_recruits/src_mock_df.tsv',
-                        index=False, sep='\t'
-                        )
-print(src_mock_err_df.head())
+src_mock_err_df.to_csv(files_path + 'final_recruits/src_mock_df.tsv', index=False, sep='\t')
+
 '''
 src_mock_err_df = pd.read_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdout/' + \
                                 'final_recruits/src_mock_df.tsv',
                                 sep='\t', header=0
                                 )
-'''
+
 # MinHash
 mh_file = joinpath(files_path, 'minhash_recruits/' + \
                 'CAMI_high_GoldStandardAssembly.mhr_trimmed_recruits.tsv'

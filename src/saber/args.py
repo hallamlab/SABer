@@ -58,22 +58,25 @@ class SABerArgumentParser(argparse.ArgumentParser):
                                  dest="overlap_len",
                                  help="subcontig overlap in basepairs [2000]."
                                  )
-        self.optopt.add_argument("--minhash_jacc_thresh", required=False, default=0.01,
+        self.optopt.add_argument("--minhash_jacc_thresh", required=False, default=0.25,
                                  dest="jacc_thresh",
-                                 help="Minimum Jaccard index between SAG and MG subcontig MinHash signatures [0.01]."
+                                 help="Minimum Jaccard index between SAG and MG "
+                                      "subcontig MinHash signatures [0.25]."
                                  )
         self.optopt.add_argument("--minhash_pass_prop", required=False, default=0.01,
                                  dest="mh_per_pass",
-                                 help="Proportion of subcontigs required to pass MinHash signatures [0.01]."
+                                 help="Proportion of subcontigs required to pass "
+                                      "MinHash signatures [0.01]."
                                  )
-        self.optopt.add_argument("--abund_pass_prop", required=False, default=0.70,
+        self.optopt.add_argument("--abund_pass_prop", required=False, default=0.51,
                                  dest="abund_per_pass",
-                                 help="Proportion of subcontigs required to pass Abundance filter [0.70]."
+                                 help="Proportion of subcontigs required to pass "
+                                      "Abundance filter [0.51]."
                                  )
-        self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.1,
+        self.optopt.add_argument("--tetra_pass_prop", required=False, default=0.01,
                                  dest="gmm_per_pass",
                                  help="Proportion of subcontigs required to pass "
-                                      "tetranucleotide filter [0.1]."
+                                      "tetranucleotide filter [0.01]."
                                  )
         self.optopt.add_argument("-t", "--num_threads", required=False, default=1,
                                  dest="nthreads",

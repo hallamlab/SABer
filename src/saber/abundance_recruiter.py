@@ -6,7 +6,6 @@ from subprocess import Popen
 from sklearn.preprocessing import normalize
 from samsum import commands
 import saber.utilities as s_utils
-#import ray
 import sys
 from statistics import NormalDist
 import multiprocessing
@@ -20,6 +19,8 @@ import scipy.stats
 import itertools
 import swifter
 import time
+import argparse
+from sklearn import svm
 
 
 def calc_OVL(m1, m2, std1, std2):
@@ -27,6 +28,7 @@ def calc_OVL(m1, m2, std1, std2):
     ovl = NormalDist(mu=m1, sigma=std1).overlap(NormalDist(mu=m2, sigma=std2))
 
     return ovl
+
 
 def run_ovl_analysis(p):
     recruit_df, query_df = p
@@ -46,6 +48,20 @@ def run_ovl_analysis(p):
     ovl_contig_tup = tuple(set(ava_df['query_id']))
 
     return ovl_contig_tup
+
+
+def run_svm_analysis(sag_df, mg_df, sag_id):
+    # fit OCSVM
+    clf = svm.OneClassSVM()
+    clf.fit(sag_df.values)
+    mg_pred = clf.predict(mg_df.values)
+    mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_df.index.values)
+    svm_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
+    svm_pass_list = []
+    for md_nm in svm_pass_df.index.values:
+        svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+
+    return svm_pass_list
 
 
 
@@ -76,7 +92,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     # Process raw metagenomes to calculate abundances
     with open(mg_raw_file_list, 'r') as raw_fa_in:
         raw_data = raw_fa_in.readlines()
-    covm_output_list = []
+    sorted_bam_list = []
     for line in raw_data:
         split_line = line.strip('\n').split('\t')
         if len(split_line) == 2:
@@ -119,21 +135,23 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
             with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
                 run_sort = Popen(sort_cmd, stderr=stderr_file)
                 run_sort.communicate()
-       # run coverm on sorted bam
-        mg_covm_out = o_join(abr_path, pe_id + '.metabat.tsv')
-        try:
-            covm_size = getsize(mg_covm_out)
-        except:
-            covm_size = -1
-        if covm_size <= 0: #isfile(mg_covm_out) == False:
-            logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
-            covm_cmd = ['coverm', 'contig', '-t', str(nthreads), '-b', mg_sort_out, '-m',
-                        'metabat']
-            with open(mg_covm_out, 'w') as covm_file:
-                with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
-                    run_covm = Popen(covm_cmd, stdout=covm_file, stderr=stderr_file)
-                    run_covm.communicate()
-        covm_output_list.append(mg_covm_out)
+        sorted_bam_list.append(mg_sort_out)
+
+    # run coverm on sorted bam
+    mg_covm_out = o_join(abr_path, mg_id + '.metabat.tsv')
+    try: # if file exists but is empty
+        covm_size = getsize(mg_covm_out)
+    except: # if file doesn't exist
+        covm_size = -1
+    if covm_size <= 0:
+        logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
+        covm_cmd = ['coverm', 'contig', '-t', str(nthreads), '-m', 'metabat', '-b'
+                    ]
+        covm_cmd.extend(sorted_bam_list)
+        with open(mg_covm_out, 'w') as covm_file:
+            with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
+                run_covm = Popen(covm_cmd, stdout=covm_file, stderr=stderr_file)
+                run_covm.communicate()
 
     covm_pass_dfs = []
     for sag_id in tqdm(set(minhash_df['sag_id'])):
@@ -147,70 +165,96 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
             covm_pass_dfs.append(final_pass_df)
         else:
             # subset df for sag_id
-            sag_mh_pass_df = minhash_df[minhash_df['sag_id'] == sag_id]
-
-            overall_recruit_list = []
-
-            logging.info("Starting OV coefficient analysis\n")
-            for input_file in tqdm(covm_output_list):
-                input_df = pd.read_csv(input_file, header=0, sep='\t')
-                input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
-                                    'AvgDepth', 'variance'
-                                   ]
-                input_df['stdev'] = input_df['variance']**(1/2)
-                filter_df = input_df.loc[input_df['stdev'] != 0.0]
-                filter_df['upper'] = filter_df['totalAvgDepth'] + filter_df['stdev']
-                filter_df['lower'] = filter_df['totalAvgDepth'] - filter_df['stdev']
-                filter_df['key'] = 1
-
-                recruit_contigs_df = filter_df.loc[filter_df['contigName'].isin(
+            mh_jacc_list = list(set(minhash_df['contig_id'].loc[
+                                            (minhash_df['sag_id'] == sag_id) &
+                                            (minhash_df['jacc_sim'] >= 0.99)
+                                            ]))
+            if len(mh_jacc_list) != 0:
+                sag_mh_pass_df = minhash_df.loc[minhash_df['contig_id'].isin(mh_jacc_list)]
+                overall_recruit_list = []
+                logging.info("Starting one-class SVM analysis\n")
+                mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t')
+                recruit_contigs_df = mg_covm_df.loc[mg_covm_df['contigName'].isin(
                                                 list(sag_mh_pass_df['subcontig_id']))
                                                 ]
+                nonrecruit_filter_df = mg_covm_df.loc[~mg_covm_df['contigName'].isin(
+                                                        recruit_contigs_df['contigName'])
+                                                        ]
+                recruit_contigs_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
+                nonrecruit_filter_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
+                recruit_contigs_df.set_index('contigName', inplace=True)
+                nonrecruit_filter_df.set_index('contigName', inplace=True)
 
-                r_max_sd1 = recruit_contigs_df['upper'].max()
-                r_min_sd1 = recruit_contigs_df['lower'].min()
+                keep_cols = [x for x in recruit_contigs_df.columns if x.rsplit('.', 1)[1] != 'bam-var'] # recruit_contigs_df.columns
+                recruit_bam_df = recruit_contigs_df[keep_cols]
+                nonrecruit_bam_df = nonrecruit_filter_df[keep_cols]
 
-                nonrecruit_filter_df = filter_df.loc[
-                                            ((filter_df['totalAvgDepth'] >= r_min_sd1)
-                                            & (filter_df['totalAvgDepth'] <= r_max_sd1)
-                                            & ~filter_df['contigName'].isin(
-                                                recruit_contigs_df['contigName']
-                                                ))]
-                recruit_contigs_df = recruit_contigs_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
-                nonrecruit_filter_df = nonrecruit_filter_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
+                final_pass_list = run_svm_analysis(recruit_contigs_df, nonrecruit_filter_df, sag_id)
 
-                split_nr_dfs = np.array_split(nonrecruit_filter_df, nthreads*10, axis=0)
-                pool = multiprocessing.Pool(processes=nthreads)
-                arg_list = [[recruit_contigs_df, s_df] for i, s_df in enumerate(split_nr_dfs)]
-                results = pool.imap_unordered(run_ovl_analysis, arg_list)
-                merge_list = []
-                for i, o_list in enumerate(results):
-                    sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
-                    merge_list.extend(o_list)
-                set_list = list(set(merge_list))
-                overall_recruit_list.extend(set_list)
-                pool.close()
-                pool.join()
+                '''
+                logging.info("Starting OV coefficient analysis\n")
+                for input_file in tqdm(covm_output_list):
+                    input_df = pd.read_csv(input_file, header=0, sep='\t')
+                    input_df.columns = ['contigName', 'contigLeg', 'totalAvgDepth',
+                                        'AvgDepth', 'variance'
+                                       ]
+                    input_df['stdev'] = input_df['variance']**(1/2)
+                    filter_df = input_df.loc[input_df['stdev'] != 0.0]
+                    filter_df['upper'] = filter_df['totalAvgDepth'] + filter_df['stdev']
+                    filter_df['lower'] = filter_df['totalAvgDepth'] - filter_df['stdev']
+                    filter_df['key'] = 1
 
-            uniq_recruit_dict = dict.fromkeys(overall_recruit_list, 0)
-            for r in overall_recruit_list:
-                uniq_recruit_dict[r] += 1
+                    recruit_contigs_df = filter_df.loc[filter_df['contigName'].isin(
+                                                    list(sag_mh_pass_df['subcontig_id']))
+                                                    ]
 
-            final_pass_list = []
-            for i in uniq_recruit_dict.items():
-                k, v = i
-                if (int(v) == int(len(covm_output_list))):
-                    final_pass_list.append([sag_id, k, k.rsplit('_', 1)[0]])
-            final_pass_df = pd.DataFrame(final_pass_list,
-                                         columns=['sag_id', 'subcontig_id', 'contig_id']
-                                         )
-            final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
-                                 header=False, index=False, sep='\t'
-                                 )
-            print("There are {} total subcontigs, {} contigs".format(
-                  len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
-                  )
-            covm_pass_dfs.append(final_pass_df)
+                    r_max_sd1 = recruit_contigs_df['upper'].max()
+                    r_min_sd1 = recruit_contigs_df['lower'].min()
+
+                    nonrecruit_filter_df = filter_df.loc[
+                                                ((filter_df['totalAvgDepth'] >= r_min_sd1)
+                                                & (filter_df['totalAvgDepth'] <= r_max_sd1)
+                                                & ~filter_df['contigName'].isin(
+                                                    recruit_contigs_df['contigName']
+                                                    ))]
+                    recruit_contigs_df = recruit_contigs_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
+                    nonrecruit_filter_df = nonrecruit_filter_df[['contigName', 'totalAvgDepth', 'stdev', 'key']]
+
+                    split_nr_dfs = np.array_split(nonrecruit_filter_df, nthreads*10, axis=0)
+                    pool = multiprocessing.Pool(processes=nthreads)
+                    arg_list = [[recruit_contigs_df, s_df] for i, s_df in enumerate(split_nr_dfs)]
+                    results = pool.imap_unordered(run_ovl_analysis, arg_list)
+                    merge_list = []
+                    for i, o_list in enumerate(results):
+                        sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
+                        merge_list.extend(o_list)
+                    set_list = list(set(merge_list))
+                    overall_recruit_list.extend(set_list)
+                    pool.close()
+                    pool.join()
+
+
+                uniq_recruit_dict = dict.fromkeys(overall_recruit_list, 0)
+                for r in overall_recruit_list:
+                    uniq_recruit_dict[r] += 1
+
+                final_pass_list = []
+                for i in uniq_recruit_dict.items():
+                    k, v = i
+                    if (int(v) == int(len(covm_output_list))):
+                        final_pass_list.append([sag_id, k, k.rsplit('_', 1)[0]])
+                '''
+                final_pass_df = pd.DataFrame(final_pass_list,
+                                             columns=['sag_id', 'subcontig_id', 'contig_id']
+                                             )
+                final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
+                                     header=False, index=False, sep='\t'
+                                     )
+                print("There are {} total subcontigs, {} contigs".format(
+                      len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
+                      )
+                covm_pass_dfs.append(final_pass_df)
+
     covm_df = pd.concat(covm_pass_dfs)
 
     '''
@@ -325,3 +369,60 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
 
 
     return covm_max_df
+
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='uses metabat normalized abundance to recruit metaG reads to SAGs')
+    parser.add_argument(
+        '--abr_path', help='path to abundance output directory',
+        required=True
+        )
+    parser.add_argument(
+        '--sub_path',
+        help='path to SAG subcontigs file(s)', required=True
+        )
+    parser.add_argument(
+        '--mg_sub_file',
+        help='path to metagenome subcontigs file', required=True
+        )
+    parser.add_argument(
+        '--raw_fastqs',
+        help='path to raw metagenomes, comma separated list', required=True
+        )
+    parser.add_argument(
+        '--minh_df',
+        help='path to output dataframe from abundance recruiter', required=True
+        )
+    parser.add_argument(
+        '--per_pass',
+        help='pass percentage of subcontigs to pass complete contig [0.70]', required=True,
+        default='0.70'
+        )
+    parser.add_argument(
+        '--threads',
+        help='number of threads to use [1]', required=True,
+        default='1'
+        )
+    parser.add_argument("-v", "--verbose", action="store_true", default=False,
+                        help="Prints a more verbose runtime log"
+                        )
+    args = parser.parse_args()
+    # set args
+    abr_path = args.abr_path
+    subcontig_path = args.sub_path
+    mg_sub_file = args.mg_sub_file
+    mg_raw_file_list = args.raw_fastqs.split(',')
+    minhash_recruit_file = args.minh_df
+    per_pass = float(args.per_pass)
+    nthreads = int(args.threads)
+
+    s_log.prep_logging("abund_log.txt", args.verbose)
+    mg_id = basename(mg_sub_file).rsplit('.', 2)[0]
+    minhash_recruit_df = pd.read_csv(minhash_recruit_file, header=0, sep='\t')
+    logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
+
+    run_abund_recruiter(subcontig_path, abr_path, [mg_id, mg_sub_file],
+                        minhash_recruit_df, per_pass, nthreads)
+
