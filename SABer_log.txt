@@ -527,3 +527,21 @@
 27/08 20:50:55 INFO:
 [SABer]: Comparing Signature for 1021_A_run134.final.scaffolds.gt1kb.2908.synSAG
 
+27/08 21:07:30 INFO:
+[SABer]: Loading Signature for 1021_O_run134.final.scaffolds.gt1kb.7883.synSAG
+
+27/08 21:07:31 INFO:
+[SABer]: Comparing Signature for 1021_O_run134.final.scaffolds.gt1kb.7883.synSAG
+
+27/08 21:29:50 INFO:
+[SABer]: Loading Signature for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.2644.synSAG
+
+27/08 21:29:51 INFO:
+[SABer]: Comparing Signature for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.2644.synSAG
+
+27/08 21:36:18 INFO:
+[SABer]: Loading Signature for 1021_AZ_run134.final.scaffolds.gt1kb.10329.synSAG
+
+27/08 21:36:19 INFO:
+[SABer]: Comparing Signature for 1021_AZ_run134.final.scaffolds.gt1kb.10329.synSAG
+
