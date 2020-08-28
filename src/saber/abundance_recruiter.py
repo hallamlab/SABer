@@ -22,6 +22,7 @@ import time
 import argparse
 from sklearn import svm
 
+pd.set_option('display.max_columns', None)
 
 def calc_OVL(m1, m2, std1, std2):
 
@@ -52,17 +53,18 @@ def run_ovl_analysis(p):
 
 def run_svm_analysis(sag_df, mg_df, sag_id):
     # fit OCSVM
-    clf = svm.OneClassSVM()
+    clf = svm.OneClassSVM(nu=0.8)
     clf.fit(sag_df.values)
     mg_pred = clf.predict(mg_df.values)
     mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_df.index.values)
     svm_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
     svm_pass_list = []
-    for md_nm in svm_pass_df.index.values:
-        svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+    #for md_nm in svm_pass_df.index.values:
+    sub_mg_df = mg_df.loc[mg_df.index.isin(svm_pass_df.index.values)]
+    for md_nm in sub_mg_df.index.values:
+            svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
 
     return svm_pass_list
-
 
 
 def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
@@ -154,6 +156,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                 run_covm.communicate()
 
     covm_pass_dfs = []
+    minhash_df['jacc_sim'] = minhash_df['jacc_sim'].astype(float)
     for sag_id in tqdm(set(minhash_df['sag_id'])):
         if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
             logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
@@ -165,10 +168,12 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
             covm_pass_dfs.append(final_pass_df)
         else:
             # subset df for sag_id
-            mh_jacc_list = list(set(minhash_df['contig_id'].loc[
-                                            (minhash_df['sag_id'] == sag_id) &
-                                            (minhash_df['jacc_sim'] >= 0.99)
-                                            ]))
+            minhash_sag_df = minhash_df.loc[((minhash_df['sag_id'] == sag_id) &
+                                             (minhash_df['jacc_sim_max'] == 1.0) &
+                                             (minhash_df['subcontig_recruits'] > 1))
+                                             ]
+            mh_jacc_list = list(set(minhash_sag_df['contig_id']))
+
             if len(mh_jacc_list) != 0:
                 sag_mh_pass_df = minhash_df.loc[minhash_df['contig_id'].isin(mh_jacc_list)]
                 overall_recruit_list = []
@@ -352,6 +357,7 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     covm_recruit_filter_df = covm_recruit_df.loc[covm_recruit_df['percent_recruited'] >=
                                                  float(covm_per_pass)
                                                  ]
+    '''
     mg_contig_per_max_df = covm_recruit_filter_df.groupby(['contig_id'])[
         'percent_recruited'].max().reset_index()
     mg_contig_per_max_df.columns = ['contig_id', 'percent_max']
@@ -366,9 +372,23 @@ def run_abund_recruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     covm_max_df.to_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), sep='\t',
                         index=False
                         )
-
-
-    return covm_max_df
+    '''
+    covm_max_list = []
+    for sag_id in list(set(covm_recruit_filter_df['sag_id'])):
+        sag_max_only_df = covm_recruit_filter_df.loc[covm_recruit_filter_df['sag_id'] == sag_id]
+        covm_max_df = mg_tot_df[mg_tot_df['contig_id'].isin(list(sag_max_only_df['contig_id']))]
+        covm_max_df['sag_id'] = sag_id
+        covm_max_df = covm_max_df[['sag_id', 'subcontig_id', 'contig_id']]
+        covm_max_list.append(covm_max_df)
+    covm_final_max_df = pd.concat(covm_max_list)
+    mh_covm_df = pd.concat([covm_final_max_df,
+                            minhash_df[['sag_id', 'subcontig_id', 'contig_id']]
+                            ])
+    mh_covm_df.drop_duplicates(inplace=True)
+    mh_covm_df.to_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'),
+                                    sep='\t', index=False
+                                    )
+    return mh_covm_df
 
 
 

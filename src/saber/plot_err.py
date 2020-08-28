@@ -247,7 +247,7 @@ plt.close()
 '''
 sns.set(font_scale=1.5)  # crazy big
 g = sns.relplot(x='level', y='score', hue='statistic', style='statistic',
-                col='algorithm', kind='line', col_wrap=4,
+                col='algorithm', kind='line', col_wrap=4,# ci="sd",
                 col_order=['SABer-Isolation Forest', 'SABer-OCSVM', 'SABer-GMM',
                 'SABer-Ensemble'],
                 sort=False,
@@ -262,7 +262,7 @@ plt.clf()
 plt.close()
 
 g = sns.relplot(x='level', y='score', hue='statistic', style='statistic',
-                col='algorithm', kind='line', col_wrap=5,
+                col='algorithm', kind='line', col_wrap=5,# ci="sd",
                 col_order=['MinHash', 'TPM', 'Isolation Forest', 'OCSVM', 'GMM',
                             'Tetra Ensemble', 'SABer-Isolation Forest',
                             'SABer-OCSVM', 'SABer-GMM', 'SABer-Ensemble'],

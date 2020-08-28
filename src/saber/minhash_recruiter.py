@@ -12,6 +12,7 @@ from tqdm import tqdm
 from subprocess import Popen
 import time
 
+pd.set_option('display.max_columns', None)
 
 def build_signature(p):
     header, seq = p
@@ -205,13 +206,18 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         minhash_df = pd.concat(minhash_pass_list)
     else:
         minhash_df = minhash_pass_list[0]
-    recruit_list = list(minhash_df['contig_id'].loc[minhash_df['recruit_bool'] == True])
-    minhash_recruit_df = minhash_df.loc[minhash_df['contig_id'].isin(recruit_list)]
+    recruit_list = list(minhash_df['subcontig_id'].loc[minhash_df['jacc_sim'] >= 0.10])
+    minhash_recruit_df = minhash_df.loc[minhash_df['subcontig_id'].isin(recruit_list)]
     logging.info('[SABer]: Compiling all MinHash Recruits\n')
     # Count # of subcontigs recruited to each SAG via samsum
-    mh_trim_df = minhash_recruit_df[['sag_id', 'subcontig_id', 'contig_id']]
-    mh_cnt_df = mh_trim_df.groupby(['sag_id', 'contig_id']).count().reset_index()
+    mh_cnt_df = minhash_recruit_df.groupby(['sag_id', 'contig_id'])['subcontig_id'].count().reset_index()
     mh_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
+    mh_avg_df = minhash_recruit_df.groupby(['sag_id', 'contig_id'])['jacc_sim'].mean().reset_index()
+    mh_avg_df.columns = ['sag_id', 'contig_id', 'jacc_sim_avg']
+    mh_max_df = minhash_recruit_df.groupby(['sag_id', 'contig_id'])['jacc_sim'].max().reset_index()
+    mh_max_df.columns = ['sag_id', 'contig_id', 'jacc_sim_max']
+
+
     # Build subcontig count for each MG contig
     mg_contig_list = [x.rsplit('_', 1)[0] for x in mg_headers]
     mg_tot_df = pd.DataFrame(zip(mg_contig_list, mg_headers),
@@ -221,8 +227,14 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     mh_recruit_df = mh_cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
     mh_recruit_df['percent_recruited'] = mh_recruit_df['subcontig_recruits'] / \
                                            mh_recruit_df['subcontig_total']
-    mh_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
+    mh_jacc_merge_df = mh_recruit_df.merge(mh_avg_df, how='left', on=['sag_id', 'contig_id'])
+    mh_max_merge_df = mh_jacc_merge_df.merge(mh_max_df, how='left', on=['sag_id', 'contig_id'])
+    #mh_recruit_filter_df = mh_max_merge_df.loc[(mh_max_merge_df['jacc_sim_avg'] == 1.0) |
+    #                                            ((mh_max_merge_df['jacc_sim_avg'] >= 0.10) &
+    #                                             (mh_max_merge_df['percent_recruited'] >= 0.10)
+    #                                              )]
     # Only pass contigs that have the magjority of subcontigs recruited, i.e., >= 51%
+    '''
     mh_recruit_filter_df = mh_recruit_df.loc[mh_recruit_df['percent_recruited'] >=
                                                  float(mh_per_pass)
                                                  ]
@@ -230,24 +242,41 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         'percent_recruited'].max().reset_index()
     mg_contig_per_max_df.columns = ['contig_id', 'percent_max']
     mh_recruit_max_df = mh_recruit_filter_df.merge(mg_contig_per_max_df, how='left',
-                                                       on='contig_id')
+                                                       on='subcontig_id')
+
     # Now pass contigs that have the maximum recruit % of subcontigs
     mh_max_only_df = mh_recruit_max_df.loc[mh_recruit_max_df['percent_recruited'] >=
                                                mh_recruit_max_df['percent_max']
                                                ]
+    '''
     mh_max_list = []
     for sag_id in list(set(minhash_df['sag_id'])):
-        sag_max_only_df = mh_max_only_df.loc[mh_max_only_df['sag_id'] == sag_id]
+        sag_max_only_df = mh_max_merge_df.loc[mh_max_merge_df['sag_id'] == sag_id]
         mh_max_df = mg_tot_df[mg_tot_df['contig_id'].isin(list(sag_max_only_df['contig_id']))]
         mh_max_df['sag_id'] = sag_id
-        mh_max_df = mh_max_df[['sag_id', 'subcontig_id', 'contig_id']]
-        mh_max_list.append(mh_max_df)
+        sag_merge_df = mh_max_df.merge(sag_max_only_df, how='left',
+                                       on=['contig_id', 'sag_id']
+                                       )
+        sag_merge_df = sag_merge_df[['sag_id', 'subcontig_id', 'contig_id', 'subcontig_recruits',
+                                     'subcontig_total', 'percent_recruited', 'jacc_sim_avg',
+                                     'jacc_sim_max'
+                                     ]]
+        mh_max_list.append(sag_merge_df)
     mh_final_max_df = pd.concat(mh_max_list)
     merge_jacc_df = mh_final_max_df.merge(minhash_df, how='left',
-                                          on=['sag_id', 'subcontig_id','contig_id'])
-    merge_jacc_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t',
+                                          on=['sag_id', 'subcontig_id','contig_id']
+                                          )
+
+    minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] >= 0.40) &
+                                           (merge_jacc_df['subcontig_recruits'] > 1)) |
+                                          (merge_jacc_df['jacc_sim_max'] == 1.0) |
+                                          (merge_jacc_df['percent_recruited'] >= 0.25) |
+                                          (merge_jacc_df['jacc_sim_avg'] >= 0.25)
+                                          ]
+
+    minhash_filter_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t',
                         index=False
                         )
     logging.info('[SABer]: MinHash Recruitment Algorithm Complete\n')
 
-    return merge_jacc_df
+    return minhash_filter_df

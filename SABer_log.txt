@@ -1,961 +1,493 @@
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Directory specified, looking for SAGs
 
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Found 101 SAGs in directory
 
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs
 
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 1 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 2 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 3 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 4 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 5 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 6 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 7 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 8 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 9 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 10 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 11 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 12 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 13 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 14 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 15 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 16 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 17 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 18 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 19 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 20 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 21 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 22 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 23 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 24 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 25 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 26 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 27 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 28 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 29 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 30 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 31 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 32 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 33 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 34 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 35 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 36 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 37 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 38 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 39 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 40 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 41 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 42 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 43 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 44 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 45 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 46 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 47 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 48 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 49 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 50 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 51 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 52 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 53 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 54 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 55 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 56 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 57 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 58 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 59 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 60 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 61 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 62 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 63 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 64 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 65 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 66 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 67 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 68 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 69 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 70 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 71 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 72 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 73 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 74 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 75 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 76 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 77 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 78 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 79 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 80 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 81 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 82 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 83 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 84 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 85 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 86 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 87 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 88 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 89 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 90 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 91 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 92 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 93 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 94 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 95 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 96 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 97 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 98 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 99 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 100 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 101 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 
 
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading/Building subcontigs: 1 done
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 
 
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Starting Kmer Recruitment Step
 
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: MinHash Recruitment Algorithm
 
-16/08 09:17:02 INFO:
+27/08 17:48:36 INFO:
 [SABer]: Loading subcontigs for CAMI_high_GoldStandardAssembly
 
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Comparing Signatures of SAGs to MetaG contigs
 
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/1 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/2 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/3 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/4 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/5 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/6 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/7 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/8 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/9 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/10 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/11 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/12 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/13 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/14 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/15 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/16 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/17 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/18 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/19 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/20 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/21 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/22 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/23 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/24 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/25 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/26 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/27 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/28 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/29 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/30 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/31 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/32 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/33 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/34 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/35 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/36 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/37 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/38 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/39 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/40 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/41 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/42 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/43 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/44 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/45 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/46 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/47 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/48 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/49 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/50 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/51 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/52 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/53 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/54 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/55 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/56 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/57 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/58 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/59 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/60 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/61 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/62 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/63 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/64 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/65 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/66 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/67 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/68 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/69 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/70 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/71 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/72 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/73 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/74 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/75 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/76 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/77 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/78 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/79 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/80 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/81 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/82 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/83 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/84 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/85 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/86 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/87 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/88 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/89 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/90 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/91 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/92 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/93 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/94 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/95 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/96 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/97 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/98 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/99 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/100 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading/Comparing SAG and MetaG signatures: 0/101 done
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 
 
-16/08 09:17:03 INFO:
+27/08 17:48:37 INFO:
 [SABer]: Loading CAMI_high_GoldStandardAssembly Signatures
 
-16/08 09:19:02 INFO:
+27/08 17:49:57 INFO:
 [SABer]: Building/Comparing 101 SAG signatures
 
-16/08 09:19:05 INFO:
+27/08 17:49:59 INFO:
 [SABer]: Analyzing MinHash signatures
 
-16/08 09:19:05 INFO:
+27/08 17:49:59 INFO:
 [SABer]: Loading Signature for 1021_AZ_run134.final.scaffolds.gt1kb.7935.synSAG
 
-16/08 09:19:06 INFO:
+27/08 17:49:59 INFO:
 [SABer]: Comparing Signature for 1021_AZ_run134.final.scaffolds.gt1kb.7935.synSAG
 
-16/08 09:40:53 INFO:
+27/08 18:03:30 INFO:
 [SABer]: Loading Signature for 1021_BA_run134.final.scaffolds.gt1kb.941.synSAG
 
-16/08 09:40:54 INFO:
+27/08 18:03:31 INFO:
 [SABer]: Comparing Signature for 1021_BA_run134.final.scaffolds.gt1kb.941.synSAG
 
-16/08 10:07:53 INFO:
+27/08 18:20:36 INFO:
 [SABer]: Loading Signature for 1021_F_run134.final.scaffolds.gt1kb.6560.synSAG
 
-16/08 10:07:54 INFO:
+27/08 18:20:37 INFO:
 [SABer]: Comparing Signature for 1021_F_run134.final.scaffolds.gt1kb.6560.synSAG
 
-16/08 10:37:38 INFO:
+27/08 18:41:57 INFO:
 [SABer]: Loading Signature for 1021_I_run134.final.scaffolds.gt1kb.7110.synSAG
 
-16/08 10:37:39 INFO:
+27/08 18:41:58 INFO:
 [SABer]: Comparing Signature for 1021_I_run134.final.scaffolds.gt1kb.7110.synSAG
 
-16/08 10:45:37 INFO:
+27/08 18:47:15 INFO:
 [SABer]: Loading Signature for 1021_H_run134.final.scaffolds.gt1kb.11270.synSAG
 
-16/08 10:45:38 INFO:
+27/08 18:47:16 INFO:
 [SABer]: Comparing Signature for 1021_H_run134.final.scaffolds.gt1kb.11270.synSAG
 
-16/08 11:04:48 INFO:
+27/08 18:59:58 INFO:
 [SABer]: Loading Signature for 1021_AZ_run134.final.scaffolds.gt1kb.10931.synSAG
 
-16/08 11:04:49 INFO:
+27/08 18:59:59 INFO:
 [SABer]: Comparing Signature for 1021_AZ_run134.final.scaffolds.gt1kb.10931.synSAG
 
-16/08 11:25:23 INFO:
+27/08 19:13:12 INFO:
 [SABer]: Loading Signature for 1021_F_run134.final.scaffolds.gt1kb.12306.synSAG
 
-16/08 11:25:24 INFO:
+27/08 19:13:13 INFO:
 [SABer]: Comparing Signature for 1021_F_run134.final.scaffolds.gt1kb.12306.synSAG
 
-16/08 11:55:05 INFO:
+27/08 19:32:47 INFO:
 [SABer]: Loading Signature for 1021_H_run134.final.scaffolds.gt1kb.7960.synSAG
 
-16/08 11:55:06 INFO:
+27/08 19:32:47 INFO:
 [SABer]: Comparing Signature for 1021_H_run134.final.scaffolds.gt1kb.7960.synSAG
-
-16/08 12:13:23 INFO:
-[SABer]: Loading Signature for 1021_I_run134.final.scaffolds.gt1kb.7276.synSAG
-
-16/08 12:13:24 INFO:
-[SABer]: Comparing Signature for 1021_I_run134.final.scaffolds.gt1kb.7276.synSAG
-
-16/08 12:21:01 INFO:
-[SABer]: Loading Signature for 1021_A_run134.final.scaffolds.gt1kb.854.synSAG
-
-16/08 12:21:02 INFO:
-[SABer]: Comparing Signature for 1021_A_run134.final.scaffolds.gt1kb.854.synSAG
-
-16/08 12:37:48 INFO:
-[SABer]: Loading Signature for 1021_F_run134.final.scaffolds.gt1kb.1750.synSAG
-
-16/08 12:37:49 INFO:
-[SABer]: Comparing Signature for 1021_F_run134.final.scaffolds.gt1kb.1750.synSAG
-
-16/08 13:09:08 INFO:
-[SABer]: Loading Signature for 1021_I_run134.final.scaffolds.gt1kb.3181.synSAG
-
-16/08 13:09:10 INFO:
-[SABer]: Comparing Signature for 1021_I_run134.final.scaffolds.gt1kb.3181.synSAG
-
-16/08 13:42:22 INFO:
-[SABer]: Loading Signature for 1021_O_run134.final.scaffolds.gt1kb.1982.synSAG
-
-16/08 13:42:23 INFO:
-[SABer]: Comparing Signature for 1021_O_run134.final.scaffolds.gt1kb.1982.synSAG
-
-16/08 13:52:57 INFO:
-[SABer]: Loading Signature for 1021_A_run134.final.scaffolds.gt1kb.2908.synSAG
-
-16/08 13:52:58 INFO:
-[SABer]: Comparing Signature for 1021_A_run134.final.scaffolds.gt1kb.2908.synSAG
-
-16/08 14:16:05 INFO:
-[SABer]: Loading Signature for 1021_O_run134.final.scaffolds.gt1kb.7883.synSAG
-
-16/08 14:16:06 INFO:
-[SABer]: Comparing Signature for 1021_O_run134.final.scaffolds.gt1kb.7883.synSAG
-
-16/08 14:48:04 INFO:
-[SABer]: Loading Signature for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.2644.synSAG
-
-16/08 14:48:05 INFO:
-[SABer]: Comparing Signature for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.2644.synSAG
-
-16/08 14:55:36 INFO:
-[SABer]: Loading Signature for 1021_AZ_run134.final.scaffolds.gt1kb.10329.synSAG
-
-16/08 14:55:37 INFO:
-[SABer]: Comparing Signature for 1021_AZ_run134.final.scaffolds.gt1kb.10329.synSAG
-
-16/08 15:24:59 INFO:
-[SABer]: Loading Signature for 1021_N_run134.final.scaffolds.gt1kb.8002.synSAG
-
-16/08 15:25:00 INFO:
-[SABer]: Comparing Signature for 1021_N_run134.final.scaffolds.gt1kb.8002.synSAG
-
-16/08 15:47:43 INFO:
-[SABer]: Loading Signature for 1021_AI_run134.final.scaffolds.gt1kb.7154.synSAG
-
-16/08 15:47:44 INFO:
-[SABer]: Comparing Signature for 1021_AI_run134.final.scaffolds.gt1kb.7154.synSAG
-
-16/08 16:05:45 INFO:
-[SABer]: Loading Signature for 1021_BA_run134.final.scaffolds.gt1kb.9387.synSAG
-
-16/08 16:05:46 INFO:
-[SABer]: Comparing Signature for 1021_BA_run134.final.scaffolds.gt1kb.9387.synSAG
-
-16/08 16:20:18 INFO:
-[SABer]: Loading Signature for 1021_AG_run134.final.scaffolds.gt1kb.6034.synSAG
-
-16/08 16:20:19 INFO:
-[SABer]: Comparing Signature for 1021_AG_run134.final.scaffolds.gt1kb.6034.synSAG
-
-16/08 16:44:34 INFO:
-[SABer]: Loading Signature for 1021_AG_run134.final.scaffolds.gt1kb.10855.synSAG
-
-16/08 16:44:35 INFO:
-[SABer]: Comparing Signature for 1021_AG_run134.final.scaffolds.gt1kb.10855.synSAG
-
-16/08 17:11:05 INFO:
-[SABer]: Loading Signature for 1021_BA_run134.final.scaffolds.gt1kb.3664.synSAG
-
-16/08 17:11:06 INFO:
-[SABer]: Comparing Signature for 1021_BA_run134.final.scaffolds.gt1kb.3664.synSAG
-
-16/08 17:19:34 INFO:
-[SABer]: Loading Signature for 1021_BD_run134.final.scaffolds.gt1kb.9842.synSAG
-
-16/08 17:19:35 INFO:
-[SABer]: Comparing Signature for 1021_BD_run134.final.scaffolds.gt1kb.9842.synSAG
-
-16/08 17:23:25 INFO:
-[SABer]: Loading Signature for 1021_AC_run134.final.scaffolds.gt1kb.10972.synSAG
-
-16/08 17:23:26 INFO:
-[SABer]: Comparing Signature for 1021_AC_run134.final.scaffolds.gt1kb.10972.synSAG
-
-16/08 17:51:48 INFO:
-[SABer]: Loading Signature for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.4291.synSAG
-
-16/08 17:51:49 INFO:
-[SABer]: Comparing Signature for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.4291.synSAG
-
-16/08 18:12:51 INFO:
-[SABer]: Loading Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.2165.synSAG
-
-16/08 18:12:52 INFO:
-[SABer]: Comparing Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.2165.synSAG
-
-16/08 18:33:57 INFO:
-[SABer]: Loading Signature for 1021_AC_run134.final.scaffolds.gt1kb.6804.synSAG
-
-16/08 18:33:58 INFO:
-[SABer]: Comparing Signature for 1021_AC_run134.final.scaffolds.gt1kb.6804.synSAG
-
-16/08 19:05:46 INFO:
-[SABer]: Loading Signature for 1021_BD_run134.final.scaffolds.gt1kb.9584.synSAG
-
-16/08 19:05:46 INFO:
-[SABer]: Comparing Signature for 1021_BD_run134.final.scaffolds.gt1kb.9584.synSAG
-
-16/08 19:25:37 INFO:
-[SABer]: Loading Signature for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.8791.synSAG
-
-16/08 19:25:38 INFO:
-[SABer]: Comparing Signature for 1021_BF_run134_run137WDH_run147.final.scaffolds.gt1kb.8791.synSAG
-
-16/08 19:36:24 INFO:
-[SABer]: Loading Signature for 1021_G_run134.final.scaffolds.gt1kb.5813.synSAG
-
-16/08 19:36:25 INFO:
-[SABer]: Comparing Signature for 1021_G_run134.final.scaffolds.gt1kb.5813.synSAG
-
-16/08 19:51:48 INFO:
-[SABer]: Loading Signature for 1021_BE_run134.final.scaffolds.gt1kb.10576.synSAG
-
-16/08 19:51:49 INFO:
-[SABer]: Comparing Signature for 1021_BE_run134.final.scaffolds.gt1kb.10576.synSAG
-
-16/08 20:21:53 INFO:
-[SABer]: Loading Signature for 1021_L_run134.final.scaffolds.gt1kb.11887.synSAG
-
-16/08 20:21:53 INFO:
-[SABer]: Comparing Signature for 1021_L_run134.final.scaffolds.gt1kb.11887.synSAG
-
-16/08 20:37:16 INFO:
-[SABer]: Loading Signature for 1021_O_run134.final.scaffolds.gt1kb.3282.synSAG
-
-16/08 20:37:17 INFO:
-[SABer]: Comparing Signature for 1021_O_run134.final.scaffolds.gt1kb.3282.synSAG
-
-16/08 20:55:16 INFO:
-[SABer]: Loading Signature for 1021_BE_run134.final.scaffolds.gt1kb.2753.synSAG
-
-16/08 20:55:17 INFO:
-[SABer]: Comparing Signature for 1021_BE_run134.final.scaffolds.gt1kb.2753.synSAG
-
-16/08 21:13:38 INFO:
-[SABer]: Loading Signature for 1021_G_run134.final.scaffolds.gt1kb.2383.synSAG
-
-16/08 21:13:38 INFO:
-[SABer]: Comparing Signature for 1021_G_run134.final.scaffolds.gt1kb.2383.synSAG
-
-16/08 21:30:34 INFO:
-[SABer]: Loading Signature for 1010920.gt1kb.11392.synSAG
-
-16/08 21:30:35 INFO:
-[SABer]: Comparing Signature for 1010920.gt1kb.11392.synSAG
-
-16/08 21:48:41 INFO:
-[SABer]: Loading Signature for 1010920.gt1kb.10448.synSAG
-
-16/08 21:48:41 INFO:
-[SABer]: Comparing Signature for 1010920.gt1kb.10448.synSAG
-
-16/08 22:07:50 INFO:
-[SABer]: Loading Signature for 1021_BE_run134.final.scaffolds.gt1kb.3145.synSAG
-
-16/08 22:07:51 INFO:
-[SABer]: Comparing Signature for 1021_BE_run134.final.scaffolds.gt1kb.3145.synSAG
-
-16/08 22:10:05 INFO:
-[SABer]: Loading Signature for 1021_O_run134.final.scaffolds.gt1kb.1578.synSAG
-
-16/08 22:10:05 INFO:
-[SABer]: Comparing Signature for 1021_O_run134.final.scaffolds.gt1kb.1578.synSAG
-
-16/08 22:39:39 INFO:
-[SABer]: Loading Signature for 1021_I_run134.final.scaffolds.gt1kb.10148.synSAG
-
-16/08 22:39:40 INFO:
-[SABer]: Comparing Signature for 1021_I_run134.final.scaffolds.gt1kb.10148.synSAG
-
-16/08 22:42:03 INFO:
-[SABer]: Loading Signature for 1021_BA_run134.final.scaffolds.gt1kb.4795.synSAG
-
-16/08 22:42:04 INFO:
-[SABer]: Comparing Signature for 1021_BA_run134.final.scaffolds.gt1kb.4795.synSAG
-
-16/08 22:52:07 INFO:
-[SABer]: Loading Signature for 1021_AC_run134.final.scaffolds.gt1kb.4918.synSAG
-
-16/08 22:52:08 INFO:
-[SABer]: Comparing Signature for 1021_AC_run134.final.scaffolds.gt1kb.4918.synSAG
-
-16/08 23:09:32 INFO:
-[SABer]: Loading Signature for 1021_AN_run134_run137WDH_run147.final.scaffolds.gt1kb.156.synSAG
-
-16/08 23:09:33 INFO:
-[SABer]: Comparing Signature for 1021_AN_run134_run137WDH_run147.final.scaffolds.gt1kb.156.synSAG
-
-16/08 23:30:06 INFO:
-[SABer]: Loading Signature for 1021_B_run134_run137WDH_run147.final.scaffolds.gt1kb.12618.synSAG
-
-16/08 23:30:07 INFO:
-[SABer]: Comparing Signature for 1021_B_run134_run137WDH_run147.final.scaffolds.gt1kb.12618.synSAG
-
-16/08 23:44:54 INFO:
-[SABer]: Loading Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.6040.synSAG
-
-16/08 23:44:55 INFO:
-[SABer]: Comparing Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.6040.synSAG
-
-17/08 00:11:37 INFO:
-[SABer]: Loading Signature for 1021_G_run134.final.scaffolds.gt1kb.5006.synSAG
-
-17/08 00:11:38 INFO:
-[SABer]: Comparing Signature for 1021_G_run134.final.scaffolds.gt1kb.5006.synSAG
-
-17/08 00:33:12 INFO:
-[SABer]: Loading Signature for 1021_Q_run134.final.scaffolds.gt1kb.11308.synSAG
-
-17/08 00:33:13 INFO:
-[SABer]: Comparing Signature for 1021_Q_run134.final.scaffolds.gt1kb.11308.synSAG
-
-17/08 00:40:33 INFO:
-[SABer]: Loading Signature for 1021_BA_run134.final.scaffolds.gt1kb.8154.synSAG
-
-17/08 00:40:34 INFO:
-[SABer]: Comparing Signature for 1021_BA_run134.final.scaffolds.gt1kb.8154.synSAG
-
-17/08 01:06:11 INFO:
-[SABer]: Loading Signature for 1021_AE_run134.final.scaffolds.gt1kb.6618.synSAG
-
-17/08 01:06:12 INFO:
-[SABer]: Comparing Signature for 1021_AE_run134.final.scaffolds.gt1kb.6618.synSAG
-
-17/08 01:29:52 INFO:
-[SABer]: Loading Signature for 1021_H_run134.final.scaffolds.gt1kb.5744.synSAG
-
-17/08 01:29:53 INFO:
-[SABer]: Comparing Signature for 1021_H_run134.final.scaffolds.gt1kb.5744.synSAG
-
-17/08 01:53:45 INFO:
-[SABer]: Loading Signature for 1021_AE_run134.final.scaffolds.gt1kb.1211.synSAG
-
-17/08 01:53:46 INFO:
-[SABer]: Comparing Signature for 1021_AE_run134.final.scaffolds.gt1kb.1211.synSAG
-
-17/08 02:16:29 INFO:
-[SABer]: Loading Signature for 1021_F_run134.final.scaffolds.gt1kb.8049.synSAG
-
-17/08 02:16:30 INFO:
-[SABer]: Comparing Signature for 1021_F_run134.final.scaffolds.gt1kb.8049.synSAG
-
-17/08 02:31:25 INFO:
-[SABer]: Loading Signature for 1021_BD_run134.final.scaffolds.gt1kb.4644.synSAG
-
-17/08 02:31:26 INFO:
-[SABer]: Comparing Signature for 1021_BD_run134.final.scaffolds.gt1kb.4644.synSAG
-
-17/08 02:36:01 INFO:
-[SABer]: Loading Signature for 1021_BD_run134.final.scaffolds.gt1kb.12398.synSAG
-
-17/08 02:36:02 INFO:
-[SABer]: Comparing Signature for 1021_BD_run134.final.scaffolds.gt1kb.12398.synSAG
-
-17/08 03:00:59 INFO:
-[SABer]: Loading Signature for 1010920.gt1kb.2035.synSAG
-
-17/08 03:01:00 INFO:
-[SABer]: Comparing Signature for 1010920.gt1kb.2035.synSAG
-
-17/08 03:19:20 INFO:
-[SABer]: Loading Signature for 1021_AG_run134.final.scaffolds.gt1kb.2340.synSAG
-
-17/08 03:19:21 INFO:
-[SABer]: Comparing Signature for 1021_AG_run134.final.scaffolds.gt1kb.2340.synSAG
-
-17/08 03:36:57 INFO:
-[SABer]: Loading Signature for 1021_BD_run134.final.scaffolds.gt1kb.9342.synSAG
-
-17/08 03:36:58 INFO:
-[SABer]: Comparing Signature for 1021_BD_run134.final.scaffolds.gt1kb.9342.synSAG
-
-17/08 03:40:50 INFO:
-[SABer]: Loading Signature for 1021_AE_run134.final.scaffolds.gt1kb.3304.synSAG
-
-17/08 03:40:51 INFO:
-[SABer]: Comparing Signature for 1021_AE_run134.final.scaffolds.gt1kb.3304.synSAG
-
-17/08 03:56:30 INFO:
-[SABer]: Loading Signature for 1021_AR_run134_run137WDH_run147.final.scaffolds.gt1kb.9034.synSAG
-
-17/08 03:56:31 INFO:
-[SABer]: Comparing Signature for 1021_AR_run134_run137WDH_run147.final.scaffolds.gt1kb.9034.synSAG
-
-17/08 04:13:43 INFO:
-[SABer]: Loading Signature for 1021_AI_run134.final.scaffolds.gt1kb.3271.synSAG
-
-17/08 04:13:44 INFO:
-[SABer]: Comparing Signature for 1021_AI_run134.final.scaffolds.gt1kb.3271.synSAG
-
-17/08 04:45:01 INFO:
-[SABer]: Loading Signature for 1021_M_run134.final.scaffolds.gt1kb.12482.synSAG
-
-17/08 04:45:02 INFO:
-[SABer]: Comparing Signature for 1021_M_run134.final.scaffolds.gt1kb.12482.synSAG
-
-17/08 05:03:27 INFO:
-[SABer]: Loading Signature for 1021_AG_run134.final.scaffolds.gt1kb.10875.synSAG
-
-17/08 05:03:28 INFO:
-[SABer]: Comparing Signature for 1021_AG_run134.final.scaffolds.gt1kb.10875.synSAG
-
-17/08 05:27:23 INFO:
-[SABer]: Loading Signature for 1021_I_run134.final.scaffolds.gt1kb.1090.synSAG
-
-17/08 05:27:24 INFO:
-[SABer]: Comparing Signature for 1021_I_run134.final.scaffolds.gt1kb.1090.synSAG
-
-17/08 05:47:21 INFO:
-[SABer]: Loading Signature for 1021_B_run134_run137WDH_run147.final.scaffolds.gt1kb.7708.synSAG
-
-17/08 05:47:22 INFO:
-[SABer]: Comparing Signature for 1021_B_run134_run137WDH_run147.final.scaffolds.gt1kb.7708.synSAG
-
-17/08 06:19:16 INFO:
-[SABer]: Loading Signature for 1021_AC_run134.final.scaffolds.gt1kb.1528.synSAG
-
-17/08 06:19:17 INFO:
-[SABer]: Comparing Signature for 1021_AC_run134.final.scaffolds.gt1kb.1528.synSAG
-
-17/08 06:33:49 INFO:
-[SABer]: Loading Signature for 1021_O_run134.final.scaffolds.gt1kb.11989.synSAG
-
-17/08 06:33:49 INFO:
-[SABer]: Comparing Signature for 1021_O_run134.final.scaffolds.gt1kb.11989.synSAG
-
-17/08 06:52:32 INFO:
-[SABer]: Loading Signature for 1010920.gt1kb.9704.synSAG
-
-17/08 06:52:33 INFO:
-[SABer]: Comparing Signature for 1010920.gt1kb.9704.synSAG
-
-17/08 07:13:57 INFO:
-[SABer]: Loading Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.4799.synSAG
-
-17/08 07:13:58 INFO:
-[SABer]: Comparing Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.4799.synSAG
-
-17/08 07:27:57 INFO:
-[SABer]: Loading Signature for 1021_BE_run134.final.scaffolds.gt1kb.2975.synSAG
-
-17/08 07:27:57 INFO:
-[SABer]: Comparing Signature for 1021_BE_run134.final.scaffolds.gt1kb.2975.synSAG
-
-17/08 07:50:18 INFO:
-[SABer]: Loading Signature for 1021_AR_run134_run137WDH_run147.final.scaffolds.gt1kb.1502.synSAG
-
-17/08 07:50:19 INFO:
-[SABer]: Comparing Signature for 1021_AR_run134_run137WDH_run147.final.scaffolds.gt1kb.1502.synSAG
-
-17/08 08:00:07 INFO:
-[SABer]: Loading Signature for 1021_G_run134.final.scaffolds.gt1kb.7282.synSAG
-
-17/08 08:00:07 INFO:
-[SABer]: Comparing Signature for 1021_G_run134.final.scaffolds.gt1kb.7282.synSAG
-
-17/08 08:18:45 INFO:
-[SABer]: Loading Signature for 1021_H_run134.final.scaffolds.gt1kb.4621.synSAG
-
-17/08 08:18:46 INFO:
-[SABer]: Comparing Signature for 1021_H_run134.final.scaffolds.gt1kb.4621.synSAG
-
-17/08 08:36:36 INFO:
-[SABer]: Loading Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.1987.synSAG
-
-17/08 08:36:37 INFO:
-[SABer]: Comparing Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.1987.synSAG
-
-17/08 08:50:00 INFO:
-[SABer]: Loading Signature for 1021_AZ_run134.final.scaffolds.gt1kb.6471.synSAG
-
-17/08 08:50:01 INFO:
-[SABer]: Comparing Signature for 1021_AZ_run134.final.scaffolds.gt1kb.6471.synSAG
-
-17/08 09:12:16 INFO:
-[SABer]: Loading Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.8886.synSAG
-
-17/08 09:12:17 INFO:
-[SABer]: Comparing Signature for 1021_AH_run134_run137WDH_run147.final.scaffolds.gt1kb.8886.synSAG
-
-17/08 09:23:20 INFO:
-[SABer]: Loading Signature for 1021_L_run134.final.scaffolds.gt1kb.6245.synSAG
-
-17/08 09:23:21 INFO:
-[SABer]: Comparing Signature for 1021_L_run134.final.scaffolds.gt1kb.6245.synSAG
-
-17/08 09:27:06 INFO:
-[SABer]: Loading Signature for 1021_H_run134.final.scaffolds.gt1kb.2075.synSAG
-
-17/08 09:27:07 INFO:
-[SABer]: Comparing Signature for 1021_H_run134.final.scaffolds.gt1kb.2075.synSAG
-
-17/08 09:54:56 INFO:
-[SABer]: Loading Signature for 1021_N_run134.final.scaffolds.gt1kb.9635.synSAG
-
-17/08 09:54:57 INFO:
-[SABer]: Comparing Signature for 1021_N_run134.final.scaffolds.gt1kb.9635.synSAG
-
-17/08 10:15:25 INFO:
-[SABer]: Loading Signature for 1021_AE_run134.final.scaffolds.gt1kb.3541.synSAG
-
-17/08 10:15:26 INFO:
-[SABer]: Comparing Signature for 1021_AE_run134.final.scaffolds.gt1kb.3541.synSAG
-
-17/08 10:30:33 INFO:
-[SABer]: Loading Signature for 1021_BE_run134.final.scaffolds.gt1kb.4241.synSAG
-
-17/08 10:30:34 INFO:
-[SABer]: Comparing Signature for 1021_BE_run134.final.scaffolds.gt1kb.4241.synSAG
-
-17/08 10:46:57 INFO:
-[SABer]: Loading Signature for 1021_AI_run134.final.scaffolds.gt1kb.11438.synSAG
-
-17/08 10:46:58 INFO:
-[SABer]: Comparing Signature for 1021_AI_run134.final.scaffolds.gt1kb.11438.synSAG
-
-17/08 11:09:00 INFO:
-[SABer]: Loading Signature for 1021_AI_run134.final.scaffolds.gt1kb.9674.synSAG
-
-17/08 11:09:01 INFO:
-[SABer]: Comparing Signature for 1021_AI_run134.final.scaffolds.gt1kb.9674.synSAG
-
-17/08 11:41:58 INFO:
-[SABer]: Loading Signature for 1021_AN_run134_run137WDH_run147.final.scaffolds.gt1kb.2593.synSAG
-
-17/08 11:41:58 INFO:
-[SABer]: Comparing Signature for 1021_AN_run134_run137WDH_run147.final.scaffolds.gt1kb.2593.synSAG
-
-17/08 11:58:42 INFO:
-[SABer]: Loading Signature for 1021_M_run134.final.scaffolds.gt1kb.1739.synSAG
-
-17/08 11:58:43 INFO:
-[SABer]: Comparing Signature for 1021_M_run134.final.scaffolds.gt1kb.1739.synSAG
-
-17/08 12:20:51 INFO:
-[SABer]: Loading Signature for 1021_O_run134.final.scaffolds.gt1kb.7889.synSAG
-
-17/08 12:20:52 INFO:
-[SABer]: Comparing Signature for 1021_O_run134.final.scaffolds.gt1kb.7889.synSAG
 
