@@ -33,9 +33,9 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
     #        3. Can TetraNuc Hz be calc'ed for each sample? Does that improve things?
     #            (think about http://merenlab.org/2020/01/02/visualizing-metagenomic-bins/#introduction)
 
+    logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
+
     mg_id = mg_sub_file[0]
-
-
     # Build/Load tetramers for SAGs and MG subset by ara recruits
     if isfile(o_join(tra_path, mg_id + '.tetras.tsv')):
         logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % mg_id)
