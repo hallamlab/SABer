@@ -1,27 +1,16 @@
 import logging
 import pandas as pd
+import os
 from os.path import isfile, basename, getsize
 from os.path import join as o_join
 from subprocess import Popen
-from sklearn.preprocessing import normalize
-from samsum import commands
 import saber.utilities as s_utils
-import sys
-from statistics import NormalDist
-import multiprocessing
-pd.options.mode.chained_assignment = None
-from scipy.stats import norm
 import numpy as np
-import os
-from psutil import virtual_memory
 from tqdm import tqdm
-import scipy.stats
-import itertools
-import swifter
-import time
 import argparse
 from sklearn import svm
 pd.set_option('display.max_columns', None)
+pd.options.mode.chained_assignment = None
 
 
 def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
