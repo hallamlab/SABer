@@ -3,9 +3,16 @@ from sklearn import svm
 from sklearn.model_selection import RandomizedSearchCV, train_test_split, GridSearchCV
 from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
+from sklearn.mixture import GaussianMixture as GMM
 from sklearn import metrics
 import pandas as pd
 
+
+
+## cross validation: Split training data into several sets, and use different parameters to fit the set into models to determine the best
+##                   parameters. Then predict the test data
+
+## data structures: X_train(cv), y_train(cv), X_test, y_test
 
 class MLModel:
 
@@ -18,7 +25,7 @@ class MLModel:
         self.scoreFun = scoreFun
         return
 
-    def validateRandom(self, X_train, y_train, params, n_jobs = 1, n_iter = 10, cv = 5):
+    def validateRandom(self, X_train, params, y_train = None, n_jobs = 1, n_iter = 10, cv = 5):
         '''Validate model with training data using RandomizedSearchCV
         :param X_train: X_train
         :param y_train: y_train
@@ -33,6 +40,7 @@ class MLModel:
         self.best_estimator = randomcv.best_estimator_
 
         return randomcv.best_estimator_
+
 
     def validateGrid(self, X_train, y_train, params, n_jobs = 1, cv = 5):
         gridcv = GridSearchCV(self.model, param_grid= params, n_jobs = n_jobs, cv = cv, scoring = self.scoreFun)
@@ -50,39 +58,58 @@ class MLModel:
         pass
         return
 
+    def precision_metric(self):
+
+
+        return 
+
 
 if __name__ == "__main__":
     
     ## training set
-    X_train = [[0, 0, 1], [1, 1, 2], [2, 2, 3], [3, 3, 4], [4, 4, 5]]
-    y_train = [-1, -1, 1, -1, 1]
+    # X_train = [[0, 0, 1], [1, 1, 2], [2, 2, 3], [3, 3, 4], [4, 4, 5]]
+    # y_train = [-1, -1, 1, -1, 1]
 
     ## testing set
-    X_test = [[1, 3, 4], [1, 0, 2], [3, 1, 4], [5, 1, 1], [2, 4, 3]]
-    y_test = [-1, 1, 1, 1, 1]
+    # X_test = [[1, 3, 4], [1, 0, 2], [3, 1, 4], [5, 1, 1], [2, 4, 3]]
+    # y_test = [-1, 1, 1, 1, 1]
+
+
+    X_train = np.random.rand(100,3)
+    y_train = np.random.rand(100,1)
+
+    X_test = np.random.rand(50,3)
+    y_test = np.random.rand(50,1)
+
+
+    ### GMM validateRandom example ###
+    gmm = MLModel(GMM(), scoreFun= GMM().aic)
+    gmm_param = {"n_components":range(1, 10, 2)}
+    best = gmm.validateRandom(X_train= X_train, params = gmm_param)
+    print(best)
 
 
 
-    #### OCSVM validateRandom example ###
+    # #### OCSVM validateRandom example ###
 
-    ocsvm1 = MLModel(OneClassSVM())
-    params = {'kernel': ['rbf', 'linear', 'poly'], 'nu': [0.3, 0.5]}
-    best_estimator1 = ocsvm1.validateRandom(X_train, y_train, params, n_jobs = 2, n_iter = 10, cv = 3)
-    print(best_estimator1)
-
-
-
-    #### OCSVM validateGrid example ###
-    ocsvm2 = MLModel(OneClassSVM())
-    best_estimator2 = ocsvm2.validateGrid(X_train, y_train, params, n_jobs = 2, cv = 3)
-    print(best_estimator2)
+    # ocsvm1 = MLModel(OneClassSVM())
+    # params = {'kernel': ['rbf', 'linear', 'poly'], 'nu': [0.3, 0.5]}
+    # best_estimator1 = ocsvm1.validateRandom(X_train, y_train, params, n_jobs = 2, n_iter = 10, cv = 5)
+    # print(best_estimator1)
 
 
-    #### OCSVM with different scoring function example ###
-    ocsvm3 = MLModel(OneClassSVM())
-    ocsvm3.addScoreFun(metrics.make_scorer(metrics.mean_absolute_error))
-    best_estimator3 = ocsvm3.validateGrid(X_train, y_train, params, n_jobs = 2, cv = 3)
-    print(best_estimator3)
+
+    # #### OCSVM validateGrid example ###
+    # ocsvm2 = MLModel(OneClassSVM())
+    # best_estimator2 = ocsvm2.validateGrid(X_train, y_train, params, n_jobs = 2, cv = 3)
+    # print(best_estimator2)
+
+
+    # #### OCSVM with different scoring function example ###
+    # ocsvm3 = MLModel(OneClassSVM())
+    # ocsvm3.addScoreFun(metrics.make_scorer(metrics.mean_absolute_error))
+    # best_estimator3 = ocsvm3.validateGrid(X_train, y_train, params, n_jobs = 2, cv = 3)
+    # print(best_estimator3)
 
 
 

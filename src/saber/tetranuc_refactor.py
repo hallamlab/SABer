@@ -10,7 +10,7 @@ from sklearn import svm
 from sklearn.ensemble import IsolationForest
 import sys
 import argparse
-# from tetranuc_meta import MLModel
+from tetranuc_meta import MLModel
 
 ##TODO: src2sag.tsv, why not use supervised learning
 ##TODO: Visualization area in Jupyter Notebook
@@ -19,8 +19,8 @@ import argparse
 
 
 def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_per_pass):
-    predictors = ['ocsvm']
-    ml_functions = {'ocsvm': runOCSVM}
+    predictors = ['ocsvm', 'gmm']
+    ml_functions = {'ocsvm': runOCSVM, 'gmm':runGMM}
     mg_id = mg_sub_file[0]
     
     ## if tetra files exist
@@ -40,6 +40,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
 
     #### for every sag
     for i, sag_rec in enumerate(sag_sub_files):
+        logging.info('run once\n')
         sag_id, sag_file = sag_rec
         sag_subcontigs = s_utils.get_seqs(sag_file)
         sag_headers= tuple(sag_subcontigs.keys())
@@ -82,23 +83,28 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
             ## Calling function Train to handle all ML related work. It is standalone and is able to parallel process
             pass_lists = Train(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, mg_tetra_filter_df,mg_rpkm_contig_list, predictors, ml_functions)
             #########################################################################################################
-            for pred_name in predictors:
-                with open(o_join(tra_path, sag_id + '.'+ pred_name+'_recruits.tsv'), 'w') as tra_out:
-                    tra_out.write('\n'.join(['\t'.join(x) for x in pass_lists[pred_name]]))
+            # for pred_name in predictors:
+            #     with open(o_join(tra_path, sag_id + '.'+ pred_name+'_recruits.tsv'), 'w') as tra_out:
+            #         tra_out.write('\n'.join(['\t'.join(x) for x in pass_lists[pred_name]]))
         
         for pred_name in predictors:
-            total_pass_lists[pred_name] = total_pass_lists[pred_name].extend(pass_lists[pred_name])
-    ### end for every sag
+            # total_pass_lists[pred_name] = total_pass_lists[pred_name].append(pass_lists[pred_name])
+            total_pass_lists[pred_name] = pass_lists[pred_name]
+            # logging.info(total_pass_lists)
     
+    ### end for every sag
     tetra_df_dict = dict.fromkeys(predictors)
     for pred_name in predictors:
         tetra_df_dict[pred_name] = pd.DataFrame(total_pass_lists[pred_name], columns=['sag_id', 'subcontig_id', 'contig_id'])
     
+
     for tetra_id in tetra_df_dict:
         tetra_df = tetra_df_dict[tetra_id]
         mg_max_only_df = updateDF(tetra_df, tetra_id, mg_headers, gmm_per_pass)
+        logging.info("finish updating df\n")
         tetra_df_dict[tetra_id] = mg_max_only_df
     
+    logging.info(tetra_df_dict)
     return tetra_df_dict
 
 
@@ -146,10 +152,12 @@ def Train(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass,mg_tetra_filter_d
 def runOCSVM(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, mg_tetra_filter_df, mg_rpkm_contig_list):
     logging.info('[SABer]: Training OCSVM on SAG tetras\n')
     # fit OCSVM
+    
+    sag_tetra_df.to_csv(o_join(tra_path, "try_sag_tetra_df.tsv"), sep = '\t', index = False)
+    mg_tetra_filter_df.to_csv(o_join(tra_path, "try_mg_tetra_df.tsv"), sep = '\t', index = False)
+    
     clf = svm.OneClassSVM()
     clf.fit(sag_tetra_df.values)
-    sag_pred = clf.predict(sag_tetra_df.values)
-    #sag_pred_df = pd.DataFrame(data=sag_pred, index=sag_tetra_df.index.values)
     mg_pred = clf.predict(mg_tetra_filter_df.values)
     mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_filter_df.index.values)
     svm_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
@@ -163,12 +171,22 @@ def runOCSVM(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, mg_tetra_filt
     
     return svm_pass_list
 
-def runGMM(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, predictors):
-
-    return
+def runGMM(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, mg_tetra_filter_df, mg_rpkm_contig_list):
+    logging.info('[SABer]: Training GMM on SAG tetras\n')
+    gmm_model = MLModel(GMM(), scoreFun=GMM().aic)
+    gmm_param = {"n_components":range(1, 100, 5)}
+    best_gmm = gmm_model.validateRandom(X_train= sag_tetra_df, params = gmm_param, n_jobs= 5, n_iter= 20)
+    mg_pred = best_gmm.predict(mg_tetra_filter_df.values)
+    mg_pred_df = pd.DataFrame(data=mg_pred, index = mg_tetra_filter_df.index.values)
+    gmm_pass_df = mg_pred_df.loc[gmm_pass_df.index.isin(mg_rpkm_contig_list)]
+    gmm_pass_list = []
+    for md_nm in gmm_pass_df.index.values:
+        gmm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+    logging.info('[SABer]: Recruited %s subcontigs to %s with GMM\n' % (len(gmm_pass_list), sag_id))
+    return gmm_pass_list
 
 def runIsoF(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, predictors):
-
+    
     return
 
 
