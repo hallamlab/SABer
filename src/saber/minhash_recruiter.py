@@ -206,6 +206,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         minhash_df = pd.concat(minhash_pass_list)
     else:
         minhash_df = minhash_pass_list[0]
+    minhash_df['jacc_sim'] = minhash_df['jacc_sim'].astype(float)
     recruit_list = list(minhash_df['subcontig_id'].loc[minhash_df['jacc_sim'] >= 0.10])
     minhash_recruit_df = minhash_df.loc[minhash_df['subcontig_id'].isin(recruit_list)]
     logging.info('[SABer]: Compiling all MinHash Recruits\n')
@@ -269,7 +270,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
 
     minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] >= 0.40) &
                                            (merge_jacc_df['subcontig_recruits'] > 1)) |
-                                          (merge_jacc_df['jacc_sim_max'] == 1.0) |
+                                          (merge_jacc_df['jacc_sim_max'] >= 0.99) |
                                           (merge_jacc_df['percent_recruited'] >= 0.25) |
                                           (merge_jacc_df['jacc_sim_avg'] >= 0.25)
                                           ]

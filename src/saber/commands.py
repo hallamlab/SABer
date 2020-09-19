@@ -97,7 +97,7 @@ def recruit(sys_args):
                                            )
     # Abundance Recruit Module
     logging.info('[SABer]: Starting Abundance Recruitment Step\n')
-    abund_df = abr.run_abund_recruiter(save_dirs_dict['subcontigs'],
+    abund_df = abr.runAbundRecruiter(save_dirs_dict['subcontigs'],
     								   save_dirs_dict['abund_recruits'], mg_sub_file,
                                        recruit_s.mg_raw_file_list, minhash_df,
                                        recruit_s.abund_per_pass, recruit_s.nthreads

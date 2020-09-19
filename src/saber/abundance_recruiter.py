@@ -23,10 +23,13 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     logging.info('[SABer]: Building %s abundance table\n' % mg_id)
     mg_sub_path = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
     # Process raw metagenomes to calculate abundances
-    mg_covm_out = procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path)
+    mg_covm_out = procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path,
+                             nthreads
+                             )
     # Recruit subcontigs using OC-SVM
     covm_pass_dfs = []
     minhash_df['jacc_sim'] = minhash_df['jacc_sim'].astype(float)
+    logging.info("Starting one-class SVM analysis\n")
     for sag_id in tqdm(set(minhash_df['sag_id'])):
         final_pass_df = recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out)
         covm_pass_dfs.append(final_pass_df)
@@ -49,6 +52,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     covm_recruit_filter_df = covm_recruit_df.loc[covm_recruit_df['percent_recruited'] >=
                                                  float(covm_per_pass)
                                                  ]
+
     covm_max_list = []
     for sag_id in list(set(covm_recruit_filter_df['sag_id'])):
         sag_max_only_df = covm_recruit_filter_df.loc[covm_recruit_filter_df['sag_id'] == sag_id]
@@ -68,7 +72,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     return mh_covm_df
 
 
-def procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path):
+def procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path, nthreads):
     # Build BWA index
     buildBWAindex(abr_path, mg_id, mg_sub_path)
     # Process each raw metagenome
@@ -82,8 +86,10 @@ def procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path):
         # Build/sorted .bam files
         mg_sort_out = runSamTools(abr_path, pe_id, nthreads, mg_id)
         sorted_bam_list.append(mg_sort_out)
-
     mg_covm_out = runCovM(abr_path, mg_id, nthreads, sorted_bam_list)
+
+    return mg_covm_out
+
 
 
 def buildBWAindex(abr_path, mg_id, mg_sub_path):
@@ -174,7 +180,7 @@ def runCovM(abr_path, mg_id, nthreads, sorted_bam_list):
 
 def recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out):
     if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
-        logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
+        #logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
         final_pass_df = pd.read_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
                                     header=None,
                                     names=['sag_id', 'subcontig_id', 'contig_id'],
@@ -182,15 +188,17 @@ def recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out):
                                     )
     else:
         # subset df for sag_id
-        minhash_sag_df = minhash_df.loc[((minhash_df['sag_id'] == sag_id) &
-                                         (minhash_df['jacc_sim_max'] == 1.0) &
-                                         (minhash_df['subcontig_recruits'] > 1))
-                                         ]
-        mh_jacc_list = list(set(minhash_sag_df['contig_id']))
+        minhash_sag_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
+        minhash_90_list = list(minhash_sag_df['subcontig_id'].loc[
+                                minhash_sag_df['jacc_sim_max'] >= 0.90]
+                                )
+        minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0) &
+                                               (minhash_sag_df['subcontig_recruits'] > 1)
+                                               ]
+        mh_jacc_list = list(set(minhash_filter_df['contig_id']))
         if len(mh_jacc_list) != 0:
             sag_mh_pass_df = minhash_df.loc[minhash_df['contig_id'].isin(mh_jacc_list)]
             overall_recruit_list = []
-            logging.info("Starting one-class SVM analysis\n")
             mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t')
             recruit_contigs_df = mg_covm_df.loc[mg_covm_df['contigName'].isin(
                                             list(sag_mh_pass_df['subcontig_id']))
@@ -215,16 +223,21 @@ def recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out):
             final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
                                  header=False, index=False, sep='\t'
                                  )
-            logging.info("There are {} total subcontigs, {} contigs".format(
+            print("There are {} total subcontigs, {} contigs".format(
                   len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
                   )
+            #logging.info("There are {} total subcontigs, {} contigs".format(
+            #      len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
+            #      )
+        else:
+            final_pass_df = pd.DataFrame([], columns=['sag_id', 'subcontig_id', 'contig_id'])
 
     return final_pass_df
 
 
 def runOCSVM(sag_df, mg_df, sag_id):
     # fit OCSVM
-    clf = svm.OneClassSVM(nu=0.8)
+    clf = svm.OneClassSVM(nu=0.9)
     clf.fit(sag_df.values)
     mg_pred = clf.predict(mg_df.values)
     mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_df.index.values)

@@ -352,7 +352,7 @@ algo_list = ['MinHash', 'TPM', 'tetra_gmm', 'tetra_svm', 'tetra_comb',
 level_list = ['domain', 'phylum', 'class', 'order', 'family',
                 'genus', 'species', 'strain', 'CAMI_genomeID'
                 ]
-
+tp_list = []
 for i, sag_id in enumerate(list(final_concat_df['sag_id'].unique())):
     sag_key_list = [str(s) for s in set(tax_mg_df['CAMI_genomeID']) if str(s) in sag_id]
     sag_key = max(sag_key_list, key=len)
@@ -392,6 +392,14 @@ for i, sag_id in enumerate(list(final_concat_df['sag_id'].unique())):
             err_list[5] = FN_cnt_df['bp_cnt'].sum() # 'FalseNeg'
             err_list[6] = TN_cnt_df['bp_cnt'].sum() # 'TrueNeg'
             error_list.append(err_list)
+            if col == 'strain':
+                tp_df = TP_cnt_df.copy()
+                tp_df['sag_id'] = sag_id
+                tp_df['algo'] = algo
+                tp_list.append(tp_df)
+
+tpm_concat_df = pd.concat(tp_list)
+tpm_concat_df.to_csv(err_path + '/TruePos_table.tsv', index=False, sep='\t')
 
 mg_err_df = pd.DataFrame(error_list, columns=['sag_id', 'algorithm', 'level',
                                                     'TruePos', 'FalsePos',
