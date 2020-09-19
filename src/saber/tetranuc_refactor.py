@@ -82,12 +82,12 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, gmm_p
             ## Calling function Train to handle all ML related work. It is standalone and is able to parallel process
             pass_lists = Train(rpkm_max_df, mg_tetra_df, sag_tetra_df, gmm_per_pass, mg_tetra_filter_df,mg_rpkm_contig_list, predictors, ml_functions)
             #########################################################################################################
-            for pred_name in predictors:
-                with open(o_join(tra_path, sag_id + '.'+ pred_name+'_recruits.tsv'), 'w') as tra_out:
-                    tra_out.write('\n'.join(['\t'.join(x) for x in pass_lists[pred_name]]))
+            # for pred_name in predictors:
+            #     with open(o_join(tra_path, sag_id + '.'+ pred_name+'_recruits.tsv'), 'w') as tra_out:
+            #         tra_out.write('\n'.join(['\t'.join(x) for x in pass_lists[pred_name]]))
         
         for pred_name in predictors:
-            total_pass_lists[pred_name] = total_pass_lists[pred_name].extend(pass_lists[pred_name])
+            total_pass_lists[pred_name] = pass_lists[pred_name]
     ### end for every sag
     
     tetra_df_dict = dict.fromkeys(predictors)

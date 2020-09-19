@@ -18,7 +18,7 @@ class MLModel:
         self.scoreFun = scoreFun
         return
 
-    def validateRandom(self, X_train, y_train, params, n_jobs = 1, n_iter = 10, cv = 5):
+    def validateRandom(self, X_train, y_train = None, params, n_jobs = 1, n_iter = 10, cv = 5):
         '''Validate model with training data using RandomizedSearchCV
         :param X_train: X_train
         :param y_train: y_train
