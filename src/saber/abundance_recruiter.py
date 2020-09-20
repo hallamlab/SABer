@@ -82,9 +82,11 @@ def procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path, n
     for line in raw_data:
         raw_file_list = line.strip('\n').split('\t')
         # Run BWA mem
-        pe_id = runBWAmem(abr_path, subcontig_path, mg_id, raw_file_list, nthreads)
+        pe_id, mg_sam_out = runBWAmem(abr_path, subcontig_path, mg_id, raw_file_list,
+                                      nthreads
+                                      )
         # Build/sorted .bam files
-        mg_sort_out = runSamTools(abr_path, pe_id, nthreads, mg_id)
+        mg_sort_out = runSamTools(abr_path, pe_id, nthreads, mg_id, mg_sam_out)
         sorted_bam_list.append(mg_sort_out)
     mg_covm_out = runCovM(abr_path, mg_id, nthreads, sorted_bam_list)
 
@@ -134,10 +136,10 @@ def runBWAmem(abr_path, subcontig_path, mg_id, raw_file_list, nthreads):
                 run_mem = Popen(mem_cmd, stdout=sam_file, stderr=stderr_file)
                 run_mem.communicate()
 
-    return pe_id
+    return pe_id, mg_sam_out
 
 
-def runSamTools(abr_path, pe_id, nthreads, mg_id):
+def runSamTools(abr_path, pe_id, nthreads, mg_id, mg_sam_out):
     mg_bam_out = o_join(abr_path, pe_id + '.bam')
     if isfile(mg_bam_out) == False:
         logging.info('[SABer]: Converting SAM to BAM with SamTools\n')
