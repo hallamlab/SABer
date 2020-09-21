@@ -60,6 +60,8 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         covm_max_df['sag_id'] = sag_id
         covm_max_df = covm_max_df[['sag_id', 'subcontig_id', 'contig_id']]
         covm_max_list.append(covm_max_df)
+        print(covm_max_df.head())
+    print(len(covm_max_list))
     covm_final_max_df = pd.concat(covm_max_list)
     mh_covm_df = pd.concat([covm_final_max_df,
                             minhash_df[['sag_id', 'subcontig_id', 'contig_id']]
