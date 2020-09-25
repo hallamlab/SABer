@@ -89,6 +89,7 @@ matplotlib.pyplot.savefig(err_path + "SABer_strain_venn.png", bbox_inches='tight
 plt.clf()
 plt.close()
 
+print('Venn built')
 
 err_file = err_path + 'All_stats_count.tsv'
 err_df = pd.read_csv(err_file, header=0, sep='\t')
@@ -160,6 +161,7 @@ concat_val_df.to_csv(err_path + 'Compiled_stats.tsv', sep='\t', index=False)
 concat_out_df = pd.concat(outlier_list)
 concat_out_df.to_csv(err_path + 'Compiled_outliers.tsv', sep='\t', index=False)
 level_order = ['domain', 'family', 'class', 'order', 'genus', 'species', 'strain', 'exact']
+print('Wrote Compiled_outliers')
 '''
 g = sns.FacetGrid(unstack_df, col='level', row='algorithm', aspect=1.5,
                     col_order=level_order,
@@ -259,6 +261,8 @@ for algo in set(err_trim_df['algorithm']):
     plt.clf()
     plt.close()
 
+print('Built Boxplots')
+
 # Stat by level line plot
 err_deduped_df = err_trim_df.loc[err_trim_df['algorithm'].isin(['SABer-GMM', 'SABer-OCSVM',
                                                             'SABer-Isolation Forest',
@@ -345,6 +349,7 @@ g.set_titles(row_template = '{row_name}', col_template = '{col_name}')
 g.savefig(err_path + "SABer_AllSteps_relplot.png", bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
+print('Built SABer_AllSteps_relplot')
 
 '''
 
