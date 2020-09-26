@@ -24,7 +24,7 @@ level_path = err_path + 'multi-level'
 if not path.exists(level_path):
     makedirs(level_path)
 
-
+'''
 # Trup Positive Venn Diagram
 tp_file = err_path + 'TruePos_table.tsv'
 truePos_df = pd.read_csv(tp_file, header=0, sep='\t')
@@ -90,7 +90,7 @@ plt.clf()
 plt.close()
 
 print('Venn built')
-
+'''
 err_file = err_path + 'All_stats_count.tsv'
 err_df = pd.read_csv(err_file, header=0, sep='\t')
 map_algo = {'synSAG':'synSAG', 'MinHash':'MinHash', 'TPM':'TPM', 'tetra_gmm':'GMM',

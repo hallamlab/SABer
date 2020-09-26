@@ -269,11 +269,12 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                                           )
 
     minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] >= 0.40) &
-                                           (merge_jacc_df['subcontig_recruits'] > 1)) |
-                                          (merge_jacc_df['jacc_sim_max'] >= 0.99) |
-                                          (merge_jacc_df['percent_recruited'] >= 0.25) |
-                                          (merge_jacc_df['jacc_sim_avg'] >= 0.25)
-                                          ]
+                                           (merge_jacc_df['subcontig_recruits'] > 3)) |
+                                          (merge_jacc_df['jacc_sim_max'] >= 0.99)
+                                          ] # |
+                                          #(merge_jacc_df['percent_recruited'] >= 0.25) |
+                                          #(merge_jacc_df['jacc_sim_avg'] >= 0.25)
+                                          #]
 
     minhash_filter_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t',
                         index=False

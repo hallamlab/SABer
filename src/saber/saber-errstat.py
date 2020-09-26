@@ -6,6 +6,7 @@ from os import listdir, makedirs, path
 from Bio import SeqIO
 pd.set_option('display.max_columns', None)
 from tqdm import tqdm
+import multiprocessing
 
 
 def calc_err(df):
@@ -119,6 +120,25 @@ def collect_error(p):
                 tp_list.append(tp_df)
 
     return error_list, tp_list
+
+def extSAG_bp_cnt(p):
+    extSAG_file, extSAG_path, alg2algo = p
+    file_path = os.path.join(extSAG_path, extSAG_file)
+    with open(file_path, 'r') as file_in:
+        data = file_in.readlines()
+    header_list = []
+    for line in data:
+        if '>' in line:
+            header = line.replace('>','').strip('\n')
+            prefix = file_path.split('/')[-1].replace('.extended_SAG.fasta', '')
+            sag_id = prefix.rsplit('.', 1)[0]
+            alg = alg2algo[prefix.rsplit('.', 1)[1]]
+            header_list.append([sag_id, header, alg])
+    extSAG_df = pd.DataFrame(header_list, columns=['sag_id', 'contig_id', 'algorithm'])
+    extSAG_df['subcontig_id'] = None
+    extSAG_df = extSAG_df[['sag_id', 'subcontig_id', 'contig_id', 'algorithm']]
+
+    return extSAG_df
 
 
 # Map genome id and contig id to taxid for error analysis
@@ -333,27 +353,22 @@ print('loading extended SAG files')
 alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
             'iso':'iso_extend', 'comb':'comb_extend'
             }
-'''
-alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
-            'comb':'comb_extend'
-            }
-'''
+
+####
+pool = multiprocessing.Pool(processes=10)
+arg_list = []
 for extSAG_file in extSAG_file_list:
-    file_path = os.path.join(extSAG_path, extSAG_file)
-    with open(file_path, 'r') as file_in:
-        data = file_in.readlines()
-    header_list = []
-    for line in data:
-        if '>' in line:
-            header = line.replace('>','').strip('\n')
-            prefix = file_path.split('/')[-1].replace('.extended_SAG.fasta', '')
-            sag_id = prefix.rsplit('.', 1)[0]
-            alg = alg2algo[prefix.rsplit('.', 1)[1]]
-            header_list.append([sag_id, header, alg])
-    extSAG_df = pd.DataFrame(header_list, columns=['sag_id', 'contig_id', 'algorithm'])
-    extSAG_df['subcontig_id'] = None
-    extSAG_df = extSAG_df[['sag_id', 'subcontig_id', 'contig_id', 'algorithm']]
-    extSAG_df_list.append(extSAG_df)
+    arg_list.append([extSAG_file, extSAG_path, alg2algo])
+results = pool.imap_unordered(extSAG_bp_cnt, arg_list)
+
+extSAG_df_list = []
+for output in tqdm(results):
+    extSAG_df_list.append(output)
+
+pool.close()
+pool.join()
+####
+
 exSAG_concat_df = pd.concat(extSAG_df_list)
 
 mh_concat_df['algorithm'] = 'MinHash'
@@ -396,7 +411,7 @@ level_list = ['domain', 'phylum', 'class', 'order', 'family',
 ####
 pool = multiprocessing.Pool(processes=10)
 arg_list = []
-for sag_id in enumerate(list(final_concat_df['sag_id'].unique())):
+for sag_id in list(final_concat_df['sag_id'].unique()):
     arg_list.append([sag_id, tax_mg_df, final_tax_df, algo_list, level_list])
 results = pool.imap_unordered(collect_error, arg_list)
 #logging.info('[SABer]: Comparing Signature for %s\n' % sag_id)
