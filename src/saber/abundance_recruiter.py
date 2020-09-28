@@ -11,6 +11,8 @@ import argparse
 from sklearn import svm
 pd.set_option('display.max_columns', None)
 pd.options.mode.chained_assignment = None
+import multiprocessing
+import sys
 
 
 def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
@@ -30,9 +32,32 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     covm_pass_dfs = []
     minhash_df['jacc_sim'] = minhash_df['jacc_sim'].astype(float)
     logging.info("Starting one-class SVM analysis\n")
-    for sag_id in tqdm(set(minhash_df['sag_id'])):
-        final_pass_df = recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out)
-        covm_pass_dfs.append(final_pass_df)
+    ####
+    pool = multiprocessing.Pool(processes=nthreads)
+    arg_list = []
+    for sag_id in set(minhash_df['sag_id']):
+        if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
+            #logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
+            final_pass_df = pd.read_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
+                                        header=None,
+                                        names=['sag_id', 'subcontig_id', 'contig_id'],
+                                        sep='\t'
+                                        )
+            covm_pass_dfs.append(final_pass_df)
+        else:
+            arg_list.append([abr_path, sag_id, minhash_df, mg_covm_out])
+    logging.info("{} already complete, {} to run\n".format(len(covm_pass_dfs), len(arg_list)))
+    results = pool.imap_unordered(recruitSubs, arg_list)
+    for i, output in enumerate(results):
+        covm_pass_dfs.append(output)
+        sys.stderr.write('\rdone {}/{}'.format(i, len(arg_list)))
+    pool.close()
+    pool.join()
+    ####
+    
+    #for sag_id in tqdm(set(minhash_df['sag_id'])):
+    #    final_pass_df = recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out)
+    #    covm_pass_dfs.append(final_pass_df)
     covm_df = pd.concat(covm_pass_dfs)
 
     # Count # of subcontigs recruited to each SAG via samsum
@@ -180,59 +205,52 @@ def runCovM(abr_path, mg_id, nthreads, sorted_bam_list):
     return mg_covm_out
 
 
-def recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out):
-    if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
-        #logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
-        final_pass_df = pd.read_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
-                                    header=None,
-                                    names=['sag_id', 'subcontig_id', 'contig_id'],
-                                    sep='\t'
-                                    )
-    else:
-        # subset df for sag_id
-        minhash_sag_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
-        minhash_90_list = list(minhash_sag_df['subcontig_id'].loc[
-                                minhash_sag_df['jacc_sim_max'] >= 0.90]
-                                )
-        minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0) &
-                                               (minhash_sag_df['subcontig_recruits'] > 1)
-                                               ]
-        mh_jacc_list = list(set(minhash_filter_df['contig_id']))
-        if len(mh_jacc_list) != 0:
-            sag_mh_pass_df = minhash_df.loc[minhash_df['contig_id'].isin(mh_jacc_list)]
-            overall_recruit_list = []
-            mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t')
-            recruit_contigs_df = mg_covm_df.loc[mg_covm_df['contigName'].isin(
-                                            list(sag_mh_pass_df['subcontig_id']))
-                                            ]
-            nonrecruit_filter_df = mg_covm_df.loc[~mg_covm_df['contigName'].isin(
-                                                    recruit_contigs_df['contigName'])
-                                                    ]
-            recruit_contigs_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
-            nonrecruit_filter_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
-            recruit_contigs_df.set_index('contigName', inplace=True)
-            nonrecruit_filter_df.set_index('contigName', inplace=True)
+def recruitSubs(p):
+    abr_path, sag_id, minhash_df, mg_covm_out = p
+    # subset df for sag_id
+    minhash_sag_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
+    minhash_90_list = list(minhash_sag_df['subcontig_id'].loc[
+                            minhash_sag_df['jacc_sim_max'] >= 0.90]
+                            )
+    minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0) &
+                                           (minhash_sag_df['subcontig_recruits'] > 1)
+                                           ]
+    mh_jacc_list = list(set(minhash_filter_df['contig_id']))
+    if len(mh_jacc_list) != 0:
+        sag_mh_pass_df = minhash_df.loc[minhash_df['contig_id'].isin(mh_jacc_list)]
+        overall_recruit_list = []
+        mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t')
+        recruit_contigs_df = mg_covm_df.loc[mg_covm_df['contigName'].isin(
+                                        list(sag_mh_pass_df['subcontig_id']))
+                                        ]
+        nonrecruit_filter_df = mg_covm_df.loc[~mg_covm_df['contigName'].isin(
+                                                recruit_contigs_df['contigName'])
+                                                ]
+        recruit_contigs_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
+        nonrecruit_filter_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
+        recruit_contigs_df.set_index('contigName', inplace=True)
+        nonrecruit_filter_df.set_index('contigName', inplace=True)
 
-            keep_cols = [x for x in recruit_contigs_df.columns
-                         if x.rsplit('.', 1)[1] != 'bam-var'
-                         ]
-            recruit_bam_df = recruit_contigs_df[keep_cols]
-            nonrecruit_bam_df = nonrecruit_filter_df[keep_cols]
-            final_pass_list = runOCSVM(recruit_contigs_df, nonrecruit_filter_df, sag_id)
-            final_pass_df = pd.DataFrame(final_pass_list,
-                                         columns=['sag_id', 'subcontig_id', 'contig_id']
-                                         )
-            final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
-                                 header=False, index=False, sep='\t'
-                                 )
-            print("There are {} total subcontigs, {} contigs".format(
-                  len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
-                  )
-            #logging.info("There are {} total subcontigs, {} contigs".format(
-            #      len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
-            #      )
-        else:
-            final_pass_df = pd.DataFrame([], columns=['sag_id', 'subcontig_id', 'contig_id'])
+        keep_cols = [x for x in recruit_contigs_df.columns
+                     if x.rsplit('.', 1)[1] != 'bam-var'
+                     ]
+        recruit_bam_df = recruit_contigs_df[keep_cols]
+        nonrecruit_bam_df = nonrecruit_filter_df[keep_cols]
+        final_pass_list = runOCSVM(recruit_contigs_df, nonrecruit_filter_df, sag_id)
+        final_pass_df = pd.DataFrame(final_pass_list,
+                                     columns=['sag_id', 'subcontig_id', 'contig_id']
+                                     )
+        final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
+                             header=False, index=False, sep='\t'
+                             )
+        #print("There are {} total subcontigs, {} contigs".format(
+        #      len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
+        #      )
+        #logging.info("There are {} total subcontigs, {} contigs".format(
+        #      len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
+        #      )
+    else:
+        final_pass_df = pd.DataFrame([], columns=['sag_id', 'subcontig_id', 'contig_id'])
 
     return final_pass_df
 

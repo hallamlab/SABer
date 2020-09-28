@@ -59,179 +59,21 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
     svm_total_pass_list = []
     iso_total_pass_list= []
     comb_total_pass_list = []
-    #for i, sag_rec in enumerate(sag_sub_files):
-    for i, sag_id in enumerate(set(minhash_df['sag_id'])):
-        #sag_id, sag_file = sag_rec
-        if sag_id in list(rpkm_max_df['sag_id']):
-            '''
-            sag_subcontigs = s_utils.get_seqs(sag_file)
-            sag_headers= tuple(sag_subcontigs.keys())
-            sag_subs = tuple([r.seq for r in sag_subcontigs])
-            '''
-            if (isfile(o_join(tra_path, sag_id + '.gmm_recruits.tsv')) &
-                isfile(o_join(tra_path, sag_id + '.svm_recruits.tsv')) &
-                isfile(o_join(tra_path, sag_id + '.iso_recruits.tsv')) &
-                isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv'))
-                ):
-                logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
-                with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
-                    gmm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
-                with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'r') as tra_in:
-                    svm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
-                with open(o_join(tra_path, sag_id + '.iso_recruits.tsv'), 'r') as tra_in:
-                    iso_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
-                with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'r') as tra_in:
-                    comb_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
-            else:
-                '''
-                if isfile(o_join(tra_path, sag_id + '.tetras.tsv')):
-                    logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % sag_id)
-                    sag_tetra_df = pd.read_csv(o_join(tra_path, sag_id + '.tetras.tsv'),
-                                               sep='\t', index_col=0, header=0)
-                else:
-                    logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % sag_id)
-                    sag_tetra_df = s_utils.tetra_cnt(sag_subs)
-                    sag_tetra_df['contig_id'] = sag_headers
-                    sag_tetra_df.set_index('contig_id', inplace=True)
-                    sag_tetra_df.to_csv(o_join(tra_path, sag_id + '.tetras.tsv'), sep='\t')
-                '''
-                # Concat SAGs amd MG for ML Training
-                minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id) &
-                                                (minhash_df['jacc_sim'] == 1.0) &
-                                                (minhash_df['subcontig_recruits'] > 1)
-                                                ]
-                                             #(minhash_df['jacc_sim_max'] >= 0.51))] # &
-                                             #(minhash_df['subcontig_recruits'] > 1))
-                                             #]
-                if minhash_sag_df.shape[0] != 0:
-                    sag_mh_contig_list = list(set(minhash_sag_df['contig_id'].values))
-                    sag_tetra_contig_list = [x for x in mg_tetra_df.index.values
-                                             if sag_mh_contig_list.count(x.rsplit('_', 1)[0]) != 0
-                                             ]
-                    sag_tetra_df = mg_tetra_df.loc[mg_tetra_df.index.isin(sag_tetra_contig_list)]
-                    mg_rpkm_contig_list = list(set(rpkm_max_df.loc[rpkm_max_df['sag_id'] == sag_id
-                                                               ]['contig_id'].values)
-                                               )
-                    mg_tetra_contig_list = [x for x in mg_tetra_df.index.values
-                                             if mg_rpkm_contig_list.count(x.rsplit('_', 1)[0]) != 0
-                                             ]
-                    mg_tetra_filter_df = mg_tetra_df.loc[mg_tetra_df.index.isin(mg_tetra_contig_list)]
-                    logging.info('[SABer]: Calculating AIC/BIC for GMM components\n')
-                    sag_train_vals = [1 for x in sag_tetra_df.index]
-                    n_components = np.arange(1, 10, 1)
-                    models = [GMM(n, random_state=42) for n in n_components]
-                    bics = []
-                    aics = []
-                    for i, model in enumerate(models):
-                        n_comp = n_components[i]
-                        try:
-                            bic = model.fit(sag_tetra_df.values,
-                                            sag_train_vals).bic(sag_tetra_df.values
-                                                                )
-                            bics.append(bic)
-                        except:
-                            logging.info('[WARNING]: BIC failed with %s components\n' % n_comp)
-                        try:
-                            aic = model.fit(sag_tetra_df.values,
-                                            sag_train_vals).aic(sag_tetra_df.values
-                                                                )
-                            aics.append(aic)
-                        except:
-                            logging.info('[WARNING]: AIC failed with %s components\n' % n_comp)
-
-                    min_bic_comp = n_components[bics.index(min(bics))]
-                    min_aic_comp = n_components[aics.index(min(aics))]
-                    logging.info('[SABer]: Min AIC/BIC at %s/%s, respectively\n' %
-                          (min_aic_comp, min_bic_comp)
-                          )
-                    logging.info('[SABer]: Using BIC as guide for GMM components\n')
-                    logging.info('[SABer]: Training GMM on SAG tetras\n')
-                    gmm = GMM(n_components=min_aic_comp, random_state=42
-                              ).fit(sag_tetra_df.values)
-                    logging.info('[SABer]: GMM Converged: %s\n' % gmm.converged_)
-                    try:  # TODO: add predict and predict_proba to this and output all to table
-                        sag_scores = gmm.score_samples(sag_tetra_df.values)
-                        sag_scores_df = pd.DataFrame(data=sag_scores, index=sag_tetra_df.index.values)
-                        sag_scores_df.columns = ['wLogProb']
-                        sag_score_min = min(sag_scores_df.values)[0]
-                        sag_score_max = max(sag_scores_df.values)[0]
-                        mg_scores = gmm.score_samples(mg_tetra_filter_df.values)
-                        mg_scores_df = pd.DataFrame(data=mg_scores, index=mg_tetra_filter_df.index.values)
-                        mg_scores_df.columns = ['wLogProb']
-                        gmm_pass_df = mg_scores_df.loc[(mg_scores_df['wLogProb'] >= sag_score_min) &
-                                                       (mg_scores_df['wLogProb'] <= sag_score_max)
-                                                       ]
-                        # And is has to be from the RPKM pass list
-                        #gmm_pass_df = gmm_pass_df.loc[gmm_pass_df.index.isin(mg_rpkm_contig_list)]
-                        gmm_pass_list = []
-                        for md_nm in gmm_pass_df.index.values:
-                            if mg_tetra_contig_list.count(md_nm) != 0:
-                                gmm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
-                    except:
-                        logging.info('[SABer]: Warning: No recruits found...\n')
-                        gmm_pass_list = []
-
-                    logging.info('[SABer]: Training OCSVM on SAG tetras\n')
-                    # fit OCSVM
-                    clf = svm.OneClassSVM()
-                    clf.fit(sag_tetra_df.values)
-                    #print(clf.get_params())
-                    sag_pred = clf.predict(sag_tetra_df.values)
-                    #sag_pred_df = pd.DataFrame(data=sag_pred, index=sag_tetra_df.index.values)
-                    mg_pred = clf.predict(mg_tetra_filter_df.values)
-                    mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_filter_df.index.values)
-                    svm_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
-                    # And is has to be from the RPKM pass list
-                    #svm_pass_df = svm_pass_df.loc[svm_pass_df.index.isin(mg_rpkm_contig_list)]
-                    svm_pass_list = []
-                    for md_nm in svm_pass_df.index.values:
-                        if mg_tetra_contig_list.count(md_nm) != 0:
-                            svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
-
-
-                    logging.info('[SABer]: Training Isolation Forest on SAG tetras\n')
-                    # fit IsoForest
-                    clf = IsolationForest(random_state=42)
-                    clf.fit(sag_tetra_df.values)
-                    #clf.set_params(n_estimators=20)  # add 10 more trees
-                    #clf.fit(sag_tetra_df.values)  # fit the added trees
-                    mg_pred = clf.predict(mg_tetra_filter_df.values)
-                    mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_filter_df.index.values)
-                    iso_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
-                    # And is has to be from the RPKM pass list
-                    #iso_pass_df = iso_pass_df.loc[iso_pass_df.index.isin(mg_rpkm_contig_list)]
-                    iso_pass_list = []
-                    for md_nm in iso_pass_df.index.values:
-                        if mg_tetra_contig_list.count(md_nm) != 0:
-                            iso_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
-
-                    gmm_id_list = [x[1] for x in gmm_pass_list]
-                    svm_id_list = [x[1] for x in svm_pass_list]
-                    iso_id_list = [x[1] for x in iso_pass_list]
-                    comb_set_list = list(set(gmm_id_list) & set(svm_id_list) & set(iso_id_list))
-                    #comb_set_list = list(set(gmm_id_list) & set(svm_id_list))
-                    comb_pass_list = []
-                    for md_nm in comb_set_list:
-                        comb_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
-
-                    logging.info('[SABer]: Recruited %s subcontigs to %s with GMM\n' % (len(gmm_pass_list), sag_id))
-                    logging.info('[SABer]: Recruited %s subcontigs to %s with SVM\n' % (len(svm_pass_list), sag_id))
-                    logging.info('[SABer]: Recruited %s subcontigs to %s with Isolation Forest\n' % (len(iso_pass_list), sag_id))
-                    logging.info('[SABer]: Recruited %s subcontigs to %s with combined methods\n' % (len(comb_pass_list), sag_id))
-
-                    with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'w') as tra_out:
-                        tra_out.write('\n'.join(['\t'.join(x) for x in gmm_pass_list]))
-                    with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'w') as tra_out:
-                        tra_out.write('\n'.join(['\t'.join(x) for x in svm_pass_list]))
-                    with open(o_join(tra_path, sag_id + '.iso_recruits.tsv'), 'w') as tra_out:
-                        tra_out.write('\n'.join(['\t'.join(x) for x in iso_pass_list]))
-                    with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'w') as tra_out:
-                        tra_out.write('\n'.join(['\t'.join(x) for x in comb_pass_list]))
-
-            gmm_total_pass_list.extend(gmm_pass_list)
-            svm_total_pass_list.extend(svm_pass_list)
-            iso_total_pass_list.extend(iso_pass_list)
-            comb_total_pass_list.extend(comb_pass_list)
+    ####
+    pool = multiprocessing.Pool(processes=nthreads)
+    arg_list = []
+    for sag_id in set(minhash_df['sag_id']):
+        arg_list.append([sag_id, tra_path, minhash_df, mg_tetra_df, rpkm_max_df])
+    results = pool.imap_unordered(run_tetra_ML, arg_list)
+    for i, output in enumerate(results):
+        gmm_total_pass_list.extend(output[0])
+        svm_total_pass_list.extend(output[1])
+        iso_total_pass_list.extend(output[2])
+        comb_total_pass_list.extend(output[3])
+        sys.stderr.write('\rdone {}/{}'.format(i, len(arg_list)))
+    pool.close()
+    pool.join()
+    ####          
 
     gmm_df = pd.DataFrame(gmm_total_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
     svm_df = pd.DataFrame(svm_total_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
@@ -292,6 +134,185 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
 
 
     return tetra_df_dict
+
+
+def run_tetra_ML(p):
+    sag_id, tra_path, minhash_df, mg_tetra_df, rpkm_max_df = p 
+    #sag_id, sag_file = sag_rec
+    if sag_id in list(rpkm_max_df['sag_id']):
+        '''
+        sag_subcontigs = s_utils.get_seqs(sag_file)
+        sag_headers= tuple(sag_subcontigs.keys())
+        sag_subs = tuple([r.seq for r in sag_subcontigs])
+        '''
+        if (isfile(o_join(tra_path, sag_id + '.gmm_recruits.tsv')) &
+            isfile(o_join(tra_path, sag_id + '.svm_recruits.tsv')) &
+            isfile(o_join(tra_path, sag_id + '.iso_recruits.tsv')) &
+            isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv'))
+            ):
+            #logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
+            with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
+                gmm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+            with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'r') as tra_in:
+                svm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+            with open(o_join(tra_path, sag_id + '.iso_recruits.tsv'), 'r') as tra_in:
+                iso_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+            with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'r') as tra_in:
+                comb_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+        else:
+            '''
+            if isfile(o_join(tra_path, sag_id + '.tetras.tsv')):
+                logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % sag_id)
+                sag_tetra_df = pd.read_csv(o_join(tra_path, sag_id + '.tetras.tsv'),
+                                           sep='\t', index_col=0, header=0)
+            else:
+                logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % sag_id)
+                sag_tetra_df = s_utils.tetra_cnt(sag_subs)
+                sag_tetra_df['contig_id'] = sag_headers
+                sag_tetra_df.set_index('contig_id', inplace=True)
+                sag_tetra_df.to_csv(o_join(tra_path, sag_id + '.tetras.tsv'), sep='\t')
+            '''
+            # Concat SAGs amd MG for ML Training
+            minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id) &
+                                            (minhash_df['jacc_sim'] == 1.0) &
+                                            (minhash_df['subcontig_recruits'] > 1)
+                                            ]
+                                         #(minhash_df['jacc_sim_max'] >= 0.51))] # &
+                                         #(minhash_df['subcontig_recruits'] > 1))
+                                         #]
+            if minhash_sag_df.shape[0] != 0:
+                sag_mh_contig_list = list(set(minhash_sag_df['contig_id'].values))
+                sag_tetra_contig_list = [x for x in mg_tetra_df.index.values
+                                         if sag_mh_contig_list.count(x.rsplit('_', 1)[0]) != 0
+                                         ]
+                sag_tetra_df = mg_tetra_df.loc[mg_tetra_df.index.isin(sag_tetra_contig_list)]
+                mg_rpkm_contig_list = list(set(rpkm_max_df.loc[rpkm_max_df['sag_id'] == sag_id
+                                                           ]['contig_id'].values)
+                                           )
+                mg_tetra_contig_list = [x for x in mg_tetra_df.index.values
+                                         if mg_rpkm_contig_list.count(x.rsplit('_', 1)[0]) != 0
+                                         ]
+                mg_tetra_filter_df = mg_tetra_df.loc[mg_tetra_df.index.isin(mg_tetra_contig_list)]
+                #logging.info('[SABer]: Calculating AIC/BIC for GMM components\n')
+                sag_train_vals = [1 for x in sag_tetra_df.index]
+                n_components = np.arange(1, 10, 1)
+                models = [GMM(n, random_state=42) for n in n_components]
+                bics = []
+                aics = []
+                for i, model in enumerate(models):
+                    n_comp = n_components[i]
+                    try:
+                        bic = model.fit(sag_tetra_df.values,
+                                        sag_train_vals).bic(sag_tetra_df.values
+                                                            )
+                        bics.append(bic)
+                    except:
+                        1+1
+                        #logging.info('[WARNING]: BIC failed with %s components\n' % n_comp)
+                    try:
+                        aic = model.fit(sag_tetra_df.values,
+                                        sag_train_vals).aic(sag_tetra_df.values
+                                                            )
+                        aics.append(aic)
+                    except:
+                        1+1
+                        #logging.info('[WARNING]: AIC failed with %s components\n' % n_comp)
+
+                min_bic_comp = n_components[bics.index(min(bics))]
+                min_aic_comp = n_components[aics.index(min(aics))]
+                #logging.info('[SABer]: Min AIC/BIC at %s/%s, respectively\n' %
+                      #(min_aic_comp, min_bic_comp)
+                      #)
+                #logging.info('[SABer]: Using BIC as guide for GMM components\n')
+                #logging.info('[SABer]: Training GMM on SAG tetras\n')
+                gmm = GMM(n_components=min_aic_comp, random_state=42
+                          ).fit(sag_tetra_df.values)
+                #logging.info('[SABer]: GMM Converged: %s\n' % gmm.converged_)
+                try:  # TODO: add predict and predict_proba to this and output all to table
+                    sag_scores = gmm.score_samples(sag_tetra_df.values)
+                    sag_scores_df = pd.DataFrame(data=sag_scores, index=sag_tetra_df.index.values)
+                    sag_scores_df.columns = ['wLogProb']
+                    sag_score_min = min(sag_scores_df.values)[0]
+                    sag_score_max = max(sag_scores_df.values)[0]
+                    mg_scores = gmm.score_samples(mg_tetra_filter_df.values)
+                    mg_scores_df = pd.DataFrame(data=mg_scores, index=mg_tetra_filter_df.index.values)
+                    mg_scores_df.columns = ['wLogProb']
+                    gmm_pass_df = mg_scores_df.loc[(mg_scores_df['wLogProb'] >= sag_score_min) &
+                                                   (mg_scores_df['wLogProb'] <= sag_score_max)
+                                                   ]
+                    # And is has to be from the RPKM pass list
+                    #gmm_pass_df = gmm_pass_df.loc[gmm_pass_df.index.isin(mg_rpkm_contig_list)]
+                    gmm_pass_list = []
+                    for md_nm in gmm_pass_df.index.values:
+                        if mg_tetra_contig_list.count(md_nm) != 0:
+                            gmm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+                except:
+                    #logging.info('[SABer]: Warning: No recruits found...\n')
+                    gmm_pass_list = []
+
+                #logging.info('[SABer]: Training OCSVM on SAG tetras\n')
+                # fit OCSVM
+                clf = svm.OneClassSVM()
+                clf.fit(sag_tetra_df.values)
+                #print(clf.get_params())
+                sag_pred = clf.predict(sag_tetra_df.values)
+                #sag_pred_df = pd.DataFrame(data=sag_pred, index=sag_tetra_df.index.values)
+                mg_pred = clf.predict(mg_tetra_filter_df.values)
+                mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_filter_df.index.values)
+                svm_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
+                # And is has to be from the RPKM pass list
+                #svm_pass_df = svm_pass_df.loc[svm_pass_df.index.isin(mg_rpkm_contig_list)]
+                svm_pass_list = []
+                for md_nm in svm_pass_df.index.values:
+                    if mg_tetra_contig_list.count(md_nm) != 0:
+                        svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+
+
+                #logging.info('[SABer]: Training Isolation Forest on SAG tetras\n')
+                # fit IsoForest
+                clf = IsolationForest(random_state=42)
+                clf.fit(sag_tetra_df.values)
+                #clf.set_params(n_estimators=20)  # add 10 more trees
+                #clf.fit(sag_tetra_df.values)  # fit the added trees
+                mg_pred = clf.predict(mg_tetra_filter_df.values)
+                mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_filter_df.index.values)
+                iso_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
+                # And is has to be from the RPKM pass list
+                #iso_pass_df = iso_pass_df.loc[iso_pass_df.index.isin(mg_rpkm_contig_list)]
+                iso_pass_list = []
+                for md_nm in iso_pass_df.index.values:
+                    if mg_tetra_contig_list.count(md_nm) != 0:
+                        iso_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+
+                gmm_id_list = [x[1] for x in gmm_pass_list]
+                svm_id_list = [x[1] for x in svm_pass_list]
+                iso_id_list = [x[1] for x in iso_pass_list]
+                comb_set_list = list(set(gmm_id_list) & set(svm_id_list) & set(iso_id_list))
+                #comb_set_list = list(set(gmm_id_list) & set(svm_id_list))
+                comb_pass_list = []
+                for md_nm in comb_set_list:
+                    comb_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+
+                #logging.info('[SABer]: Recruited %s subcontigs to %s with GMM\n' % (len(gmm_pass_list), sag_id))
+                #logging.info('[SABer]: Recruited %s subcontigs to %s with SVM\n' % (len(svm_pass_list), sag_id))
+                #logging.info('[SABer]: Recruited %s subcontigs to %s with Isolation Forest\n' % (len(iso_pass_list), sag_id))
+                #logging.info('[SABer]: Recruited %s subcontigs to %s with combined methods\n' % (len(comb_pass_list), sag_id))
+
+                with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'w') as tra_out:
+                    tra_out.write('\n'.join(['\t'.join(x) for x in gmm_pass_list]))
+                with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'w') as tra_out:
+                    tra_out.write('\n'.join(['\t'.join(x) for x in svm_pass_list]))
+                with open(o_join(tra_path, sag_id + '.iso_recruits.tsv'), 'w') as tra_out:
+                    tra_out.write('\n'.join(['\t'.join(x) for x in iso_pass_list]))
+                with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'w') as tra_out:
+                    tra_out.write('\n'.join(['\t'.join(x) for x in comb_pass_list]))
+
+        return gmm_pass_list, svm_pass_list, iso_pass_list, comb_pass_list
+
+    else:
+        return [], [], [], []
+
+
 
 
 
