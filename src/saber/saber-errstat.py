@@ -5,6 +5,8 @@ from os.path import join as joinpath
 from os import listdir, makedirs, path
 from Bio import SeqIO
 pd.set_option('display.max_columns', None)
+from tqdm import tqdm
+import multiprocessing
 
 
 def calc_err(df):
@@ -71,6 +73,72 @@ def cnt_contig_bp(fasta_file):
 
     return fa_cnt_dict
 
+
+def collect_error(p):
+    error_list = []
+    tp_list = []
+    sag_id, tax_mg_df, final_tax_df, algo_list, level_list = p
+    sag_key_list = [str(s) for s in set(tax_mg_df['CAMI_genomeID']) if str(s) in sag_id]
+    sag_key = max(sag_key_list, key=len)
+    sag_sub_df = final_tax_df.loc[final_tax_df['sag_id'] == sag_id]
+    for algo in algo_list:
+        algo_sub_df = sag_sub_df.loc[sag_sub_df['algorithm'] == algo]
+        algo_include_contigs = list(algo_sub_df['contig_id'])
+        for col in level_list:
+            col_key = final_tax_df.loc[final_tax_df['CAMI_genomeID'] == sag_key,
+                                        col].iloc[0]
+            cami_include_ids = list(set(tax_mg_df.loc[tax_mg_df[col] == col_key,
+                                    'CAMI_genomeID'])
+                                    )
+            mg_include_contigs = list(set(tax_mg_df.loc[tax_mg_df['CAMI_genomeID'
+                                    ].isin(cami_include_ids)]['@@SEQUENCEID'])
+                                    )
+            sag_include_contigs = list(set(tax_mg_df.loc[tax_mg_df['CAMI_genomeID'
+                                    ].isin([sag_key])]['@@SEQUENCEID'])
+                                    )
+
+            if col == 'CAMI_genomeID':
+                col = 'exact'
+                col_key = sag_key
+            err_list = [sag_id, algo, col, 0, 0, 0, 0]
+            #for contig_id, contig_count in zip(tax_mg_df['@@SEQUENCEID'], tax_mg_df['bp_cnt']):
+            Pos_cnt_df = tax_mg_df.loc[tax_mg_df['@@SEQUENCEID'].isin(algo_include_contigs)]
+            TP_cnt_df = Pos_cnt_df.loc[Pos_cnt_df['@@SEQUENCEID'].isin(mg_include_contigs)]
+            FP_cnt_df = Pos_cnt_df.loc[~Pos_cnt_df['@@SEQUENCEID'].isin(mg_include_contigs)]
+            Neg_cnt_df = tax_mg_df.loc[~tax_mg_df['@@SEQUENCEID'].isin(algo_include_contigs)]
+            FN_cnt_df = Neg_cnt_df.loc[Neg_cnt_df['@@SEQUENCEID'].isin(sag_include_contigs)]
+            TN_cnt_df = Neg_cnt_df.loc[~Neg_cnt_df['@@SEQUENCEID'].isin(sag_include_contigs)]
+            err_list[3] = TP_cnt_df['bp_cnt'].sum() # 'TruePos'
+            err_list[4] = FP_cnt_df['bp_cnt'].sum() # 'FalsePos'
+            err_list[5] = FN_cnt_df['bp_cnt'].sum() # 'FalseNeg'
+            err_list[6] = TN_cnt_df['bp_cnt'].sum() # 'TrueNeg'
+            error_list.append(err_list)
+            if col == 'strain':
+                tp_df = TP_cnt_df.copy()
+                tp_df['sag_id'] = sag_id
+                tp_df['algo'] = algo
+                tp_list.append(tp_df)
+
+    return error_list, tp_list
+
+def extSAG_bp_cnt(p):
+    extSAG_file, extSAG_path, alg2algo = p
+    file_path = os.path.join(extSAG_path, extSAG_file)
+    with open(file_path, 'r') as file_in:
+        data = file_in.readlines()
+    header_list = []
+    for line in data:
+        if '>' in line:
+            header = line.replace('>','').strip('\n')
+            prefix = file_path.split('/')[-1].replace('.extended_SAG.fasta', '')
+            sag_id = prefix.rsplit('.', 1)[0]
+            alg = alg2algo[prefix.rsplit('.', 1)[1]]
+            header_list.append([sag_id, header, alg])
+    extSAG_df = pd.DataFrame(header_list, columns=['sag_id', 'contig_id', 'algorithm'])
+    extSAG_df['subcontig_id'] = None
+    extSAG_df = extSAG_df[['sag_id', 'subcontig_id', 'contig_id', 'algorithm']]
+
+    return extSAG_df
 
 
 # Map genome id and contig id to taxid for error analysis
@@ -285,27 +353,22 @@ print('loading extended SAG files')
 alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
             'iso':'iso_extend', 'comb':'comb_extend'
             }
-'''
-alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
-            'comb':'comb_extend'
-            }
-'''
+
+####
+pool = multiprocessing.Pool(processes=10)
+arg_list = []
 for extSAG_file in extSAG_file_list:
-    file_path = os.path.join(extSAG_path, extSAG_file)
-    with open(file_path, 'r') as file_in:
-        data = file_in.readlines()
-    header_list = []
-    for line in data:
-        if '>' in line:
-            header = line.replace('>','').strip('\n')
-            prefix = file_path.split('/')[-1].replace('.extended_SAG.fasta', '')
-            sag_id = prefix.rsplit('.', 1)[0]
-            alg = alg2algo[prefix.rsplit('.', 1)[1]]
-            header_list.append([sag_id, header, alg])
-    extSAG_df = pd.DataFrame(header_list, columns=['sag_id', 'contig_id', 'algorithm'])
-    extSAG_df['subcontig_id'] = None
-    extSAG_df = extSAG_df[['sag_id', 'subcontig_id', 'contig_id', 'algorithm']]
-    extSAG_df_list.append(extSAG_df)
+    arg_list.append([extSAG_file, extSAG_path, alg2algo])
+results = pool.imap_unordered(extSAG_bp_cnt, arg_list)
+
+extSAG_df_list = []
+for output in tqdm(results):
+    extSAG_df_list.append(output)
+
+pool.close()
+pool.join()
+####
+
 exSAG_concat_df = pd.concat(extSAG_df_list)
 
 mh_concat_df['algorithm'] = 'MinHash'
@@ -338,20 +401,36 @@ final_tax_df = final_group_df.merge(tax_mg_df, left_on='contig_id', right_on='@@
 
 sag_cnt_dict = final_tax_df.groupby('sag_id')['sag_id'].count().to_dict()
 
-error_list = []
 algo_list = ['MinHash', 'TPM', 'tetra_gmm', 'tetra_svm', 'tetra_iso', 'tetra_comb',
                 'gmm_combined', 'svm_combined', 'iso_combined', 'comb_combined',
                 'gmm_extend', 'svm_extend', 'iso_extend', 'comb_extend'
                 ]
-'''
-algo_list = ['MinHash', 'TPM', 'tetra_gmm', 'tetra_svm', 'tetra_comb',
-                'gmm_combined', 'svm_combined', 'comb_combined',
-                'gmm_extend', 'svm_extend', 'comb_extend'
-                ]
-'''
 level_list = ['domain', 'phylum', 'class', 'order', 'family',
                 'genus', 'species', 'strain', 'CAMI_genomeID'
                 ]
+####
+pool = multiprocessing.Pool(processes=10)
+arg_list = []
+for sag_id in list(final_concat_df['sag_id'].unique()):
+    arg_list.append([sag_id, tax_mg_df, final_tax_df, algo_list, level_list])
+results = pool.imap_unordered(collect_error, arg_list)
+#logging.info('[SABer]: Comparing Signature for %s\n' % sag_id)
+
+tot_error_list = []
+tot_tp_list = []
+#for i, output in enumerate(results):
+#    sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
+for output in tqdm(results):
+    tot_error_list.extend(output[0])
+    tot_tp_list.extend(output[1])
+
+pool.close()
+pool.join()
+####
+
+'''
+tp_list = []
+error_list = []
 
 for i, sag_id in enumerate(list(final_concat_df['sag_id'].unique())):
     sag_key_list = [str(s) for s in set(tax_mg_df['CAMI_genomeID']) if str(s) in sag_id]
@@ -392,11 +471,28 @@ for i, sag_id in enumerate(list(final_concat_df['sag_id'].unique())):
             err_list[5] = FN_cnt_df['bp_cnt'].sum() # 'FalseNeg'
             err_list[6] = TN_cnt_df['bp_cnt'].sum() # 'TrueNeg'
             error_list.append(err_list)
+            if col == 'strain':
+                tp_df = TP_cnt_df.copy()
+                tp_df['sag_id'] = sag_id
+                tp_df['algo'] = algo
+                tp_list.append(tp_df)
+
+tpm_concat_df = pd.concat(tp_list)
+tpm_concat_df.to_csv(err_path + '/TruePos_table.tsv', index=False, sep='\t')
 
 mg_err_df = pd.DataFrame(error_list, columns=['sag_id', 'algorithm', 'level',
                                                     'TruePos', 'FalsePos',
                                                     'FalseNeg', 'TrueNeg'
                                                     ])
+'''
+tpm_concat_df = pd.concat(tot_tp_list)
+tpm_concat_df.to_csv(err_path + '/TruePos_table.tsv', index=False, sep='\t')
+
+mg_err_df = pd.DataFrame(tot_error_list, columns=['sag_id', 'algorithm', 'level',
+                                                    'TruePos', 'FalsePos',
+                                                    'FalseNeg', 'TrueNeg'
+                                                    ])
+
 final_err_df = pd.concat([src_mock_err_df, mg_err_df])
 final_err_df.to_csv(err_path + '/All_error_count.tsv', index=False, sep='\t')
 

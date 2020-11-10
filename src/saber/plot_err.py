@@ -7,6 +7,9 @@ import numpy as np
 import sys
 import os
 from os import listdir, makedirs, path
+from matplotlib_venn import venn3
+pd.set_option('display.max_columns', None)
+
 
 
 sns.set_context("poster")
@@ -21,7 +24,73 @@ level_path = err_path + 'multi-level'
 if not path.exists(level_path):
     makedirs(level_path)
 
+'''
+# Trup Positive Venn Diagram
+tp_file = err_path + 'TruePos_table.tsv'
+truePos_df = pd.read_csv(tp_file, header=0, sep='\t')
+venn_dict = {'100': 0, '010': 0, '110': 0, '001': 0, '101': 0, '011': 0, '111': 0}
+for sag_id in set(truePos_df['sag_id']):
+    sag_tp_df = truePos_df.loc[truePos_df['sag_id'] == sag_id]
+    for contig_id in set(sag_tp_df['@@SEQUENCEID']):
+        contig_sub_df = sag_tp_df.loc[sag_tp_df['@@SEQUENCEID'] == contig_id]
+        algo_list = list(contig_sub_df['algo'])
+        # Count venn categories
+        if (('MinHash' in algo_list) & ('TPM' not in algo_list) &
+            ('tetra_comb' not in algo_list)
+            ):
+            venn_dict['100'] = venn_dict['100'] + 1
+        elif (('MinHash' not in algo_list) & ('TPM' in algo_list) &
+            ('tetra_comb' not in algo_list)
+            ):
+            venn_dict['010'] = venn_dict['010'] + 1
+        elif (('MinHash' not in algo_list) & ('TPM' not in algo_list) &
+            ('tetra_comb' in algo_list)
+            ):
+            venn_dict['001'] = venn_dict['001'] + 1
+        elif (('MinHash' in algo_list) & ('TPM' in algo_list) &
+            ('tetra_comb' not in algo_list)
+            ):
+            venn_dict['110'] = venn_dict['110'] + 1
+        elif (('MinHash' in algo_list) & ('TPM' not in algo_list) &
+            ('tetra_comb' in algo_list)
+            ):
+            venn_dict['101'] = venn_dict['101'] + 1
+        elif (('MinHash' not in algo_list) & ('TPM' in algo_list) &
+            ('tetra_comb' in algo_list)
+            ):
+            venn_dict['011'] = venn_dict['011'] + 1
+        elif (('MinHash' in algo_list) & ('TPM' in algo_list) &
+            ('tetra_comb' in algo_list)
+            ):
+            venn_dict['111'] = venn_dict['111'] + 1
+v3 = venn3(subsets = {'100':1, '010':1, '110':1,
+                      '001':1, '101':1, '011':1, '111':1},
+           set_labels = ('MinHash', 'Abundance', 'Tetranucleotide'))
 
+v3.get_patch_by_id('100').set_color('red')
+v3.get_patch_by_id('010').set_color('yellow')
+v3.get_patch_by_id('001').set_color('blue')
+v3.get_patch_by_id('110').set_color('orange')
+v3.get_patch_by_id('101').set_color('purple')
+v3.get_patch_by_id('011').set_color('green')
+v3.get_patch_by_id('111').set_color('grey')
+
+v3.get_label_by_id('100').set_text(venn_dict['100'])
+v3.get_label_by_id('010').set_text(venn_dict['010'])
+v3.get_label_by_id('001').set_text(venn_dict['001'])
+v3.get_label_by_id('110').set_text(venn_dict['110'])
+v3.get_label_by_id('101').set_text(venn_dict['101'])
+v3.get_label_by_id('011').set_text(venn_dict['011'])
+v3.get_label_by_id('111').set_text(venn_dict['111'])
+
+for text in v3.subset_labels:
+    text.set_fontsize(8)
+matplotlib.pyplot.savefig(err_path + "SABer_strain_venn.png", bbox_inches='tight', dpi=300)
+plt.clf()
+plt.close()
+
+print('Venn built')
+'''
 err_file = err_path + 'All_stats_count.tsv'
 err_df = pd.read_csv(err_file, header=0, sep='\t')
 map_algo = {'synSAG':'synSAG', 'MinHash':'MinHash', 'TPM':'TPM', 'tetra_gmm':'GMM',
@@ -92,6 +161,7 @@ concat_val_df.to_csv(err_path + 'Compiled_stats.tsv', sep='\t', index=False)
 concat_out_df = pd.concat(outlier_list)
 concat_out_df.to_csv(err_path + 'Compiled_outliers.tsv', sep='\t', index=False)
 level_order = ['domain', 'family', 'class', 'order', 'genus', 'species', 'strain', 'exact']
+print('Wrote Compiled_outliers')
 '''
 g = sns.FacetGrid(unstack_df, col='level', row='algorithm', aspect=1.5,
                     col_order=level_order,
@@ -191,6 +261,8 @@ for algo in set(err_trim_df['algorithm']):
     plt.clf()
     plt.close()
 
+print('Built Boxplots')
+
 # Stat by level line plot
 err_deduped_df = err_trim_df.loc[err_trim_df['algorithm'].isin(['SABer-GMM', 'SABer-OCSVM',
                                                             'SABer-Isolation Forest',
@@ -277,6 +349,7 @@ g.set_titles(row_template = '{row_name}', col_template = '{col_name}')
 g.savefig(err_path + "SABer_AllSteps_relplot.png", bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
+print('Built SABer_AllSteps_relplot')
 
 '''
 
