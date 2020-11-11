@@ -10,10 +10,12 @@ from sklearn import svm
 from sklearn.ensemble import IsolationForest
 import sys
 import argparse
+import multiprocessing
+
 
 
 def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minhash_df,
-                        per_pass
+                        per_pass, nthreads
                         ):
     """Returns dataframe of subcontigs recruited via tetranucleotide Hz
 
@@ -306,6 +308,12 @@ def run_tetra_ML(p):
                     tra_out.write('\n'.join(['\t'.join(x) for x in iso_pass_list]))
                 with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'w') as tra_out:
                     tra_out.write('\n'.join(['\t'.join(x) for x in comb_pass_list]))
+
+            else:
+                gmm_pass_list = []
+                svm_pass_list = []
+                iso_pass_list = []
+                comb_pass_list = []
 
         return gmm_pass_list, svm_pass_list, iso_pass_list, comb_pass_list
 

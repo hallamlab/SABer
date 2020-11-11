@@ -7,7 +7,7 @@ import numpy as np
 import sys
 import os
 from os import listdir, makedirs, path
-from matplotlib_venn import venn3
+#from matplotlib_venn import venn3
 pd.set_option('display.max_columns', None)
 
 
@@ -93,7 +93,7 @@ print('Venn built')
 '''
 err_file = err_path + 'All_stats_count.tsv'
 err_df = pd.read_csv(err_file, header=0, sep='\t')
-map_algo = {'synSAG':'synSAG', 'MinHash':'MinHash', 'TPM':'TPM', 'tetra_gmm':'GMM',
+map_algo = {'synSAG':'synSAG', 'MinHash':'MinHash', 'TPM':'MBN-Abund', 'tetra_gmm':'GMM',
             'tetra_svm':'OCSVM', 'tetra_iso':'Isolation Forest', 'tetra_comb':'Tetra Ensemble',
             'gmm_combined':'Final GMM', 'svm_combined':'Final OCSVM',
             'iso_combined':'Final Isolation Forest', 'comb_combined':'Final Ensemble',
@@ -335,7 +335,7 @@ plt.close()
 
 g = sns.relplot(x='level', y='score', hue='statistic', style='statistic',
                 col='algorithm', kind='line', col_wrap=5,# ci="sd",
-                col_order=['MinHash', 'TPM', 'Isolation Forest', 'OCSVM', 'GMM',
+                col_order=['MinHash', 'MBN-Abund', 'Isolation Forest', 'OCSVM', 'GMM',
                             'Tetra Ensemble', 'SABer-Isolation Forest',
                             'SABer-OCSVM', 'SABer-GMM', 'SABer-Ensemble'],
                 sort=False,
@@ -361,21 +361,23 @@ g.set_xticklabels(rotation=45)
 g.savefig("AMBER_tax_relplot.pdf", bbox_inches='tight')
 
 '''
-'''
+
 # Open SAG ID to AMBER map
 s2a_map_file = 'SABer2AMBER_map.tsv'
 s2a_map_df = pd.read_csv(s2a_map_file, header=0, sep='\t')
 s2a_map_df['sag_id'] = [x.rsplit('.', 1)[0] for x in s2a_map_df['sag_id']]
-deduped_df = unstack_df.loc[unstack_df['algorithm'].isin(['SABer-GMM', 'SABer-OCSVM',
-                                                            'SABer-Isolation Forest',
-                                                            'SABer-Ensemble'])
-                                                            ]
+#deduped_df = unstack_df.loc[unstack_df['algorithm'].isin(['SABer-GMM', 'SABer-OCSVM',
+#                                                            'SABer-Isolation Forest',
+#                                                            'SABer-Ensemble'])
+#                                                            ]
+deduped_df = unstack_df.loc[unstack_df['algorithm'].isin(['SABer-Ensemble'])]
 
-deduped_df['sag_id'] = [x.replace('.mockSAG', '') for x in deduped_df['sag_id']]
+deduped_df['synthSAG_id'] = deduped_df['sag_id']
+deduped_df['sag_id'] = [x.rsplit('.', 2)[0] for x in deduped_df['sag_id']]
 deduped_amb_df = pd.merge(deduped_df, s2a_map_df, on='sag_id', how='left')
 deduped_amb_df.columns = ['bin_id', 'algorithm', 'level', 'MCC', 'Precision',
-                        'Sensitivity', 'genome_id'
-                        ]
+                          'Sensitivity', 'synthSAG_id', 'genome_id'
+                          ]
 strain_df = deduped_amb_df.loc[deduped_amb_df['level'] == 'strain']
 strain_filter_df = strain_df[['bin_id', 'algorithm', 'Precision', 'Sensitivity', 'genome_id']]
 
@@ -390,7 +392,6 @@ amber_gen_df.columns = ['sample_id', 'bin_id', 'genome_id', 'Precision', 'Sensit
 amber_filter_df = amber_gen_df[['bin_id', 'algorithm', 'Precision', 'Sensitivity', 'genome_id']]
 
 sab_amb_df = pd.concat([strain_filter_df, amber_filter_df])
-
 avg_sab_amb_df = sab_amb_df.groupby(['algorithm']).mean().reset_index()
 
 paired_cmap_dict = {'blue': (0.2823529411764706, 0.47058823529411764, 0.8156862745098039),
@@ -404,7 +405,7 @@ paired_cmap_dict = {'blue': (0.2823529411764706, 0.47058823529411764, 0.81568627
                     'gold': (0.8352941176470589, 0.7333333333333333, 0.403921568627451),
                     'lightblue': (0.5098039215686274, 0.7764705882352941, 0.8862745098039215)
                     }
-
+'''
 # Plot average stats for algorithm
 color_dict = {'Binsanity-wf_0.2.5.9': paired_cmap_dict['rose'],
                 'Binsanity_0.2.5.9': paired_cmap_dict['rose'],
@@ -441,12 +442,49 @@ g = sns.scatterplot(x='Precision', y='Sensitivity', hue='algorithm', palette=col
                     style='algorithm', markers=marker_dict, hue_order=cat_order,
                     data=avg_sab_amb_df, s=75
                     )
-g.set(xlabel='Average Precision', ylabel='Average Sensitivity')
+'''
+# Plot average stats for algorithm
+color_dict = {'Binsanity-wf_0.2.5.9': paired_cmap_dict['rose'],
+                'Binsanity_0.2.5.9': paired_cmap_dict['rose'],
+                'COCACOLA': paired_cmap_dict['purple'],
+                'CONCOCT_2': paired_cmap_dict['lightblue'],
+                'CONCOCT_CAMI': paired_cmap_dict['lightblue'],
+                'DAS_Tool_1.1': paired_cmap_dict['blue'],
+                'MaxBin_2.0.2_CAMI': paired_cmap_dict['gold'],
+                'MaxBin_2.2.4': paired_cmap_dict['gold'],
+                'MetaBAT_2.11.2': paired_cmap_dict['green'],
+                'MetaBAT_CAMI': paired_cmap_dict['green'],
+                'Metawatt_3.5_CAMI': paired_cmap_dict['brown'],
+                'MyCC_CAMI': paired_cmap_dict['gray'],
+                'SABer-Ensemble': paired_cmap_dict['orange']
+                }
+marker_dict = {'MaxBin_2.0.2_CAMI': 's', 'MetaBAT_CAMI': 'o',
+                'MaxBin_2.2.4': 'd', 'CONCOCT_2': 'o',
+                'Binsanity_0.2.5.9': 'o', 'Binsanity-wf_0.2.5.9': 'd',
+                'SABer-Ensemble': 's', 'COCACOLA': 'o', 'Metawatt_3.5_CAMI': 'o',
+                'CONCOCT_CAMI': 'd',
+                'MyCC_CAMI': 'o', 'DAS_Tool_1.1': 's',
+                'MetaBAT_2.11.2': 'd'
+                }
+cat_order = ['Binsanity-wf_0.2.5.9', 'Binsanity_0.2.5.9', 'COCACOLA', 'CONCOCT_2',
+                'CONCOCT_CAMI', 'DAS_Tool_1.1', 'MaxBin_2.0.2_CAMI', 'MaxBin_2.2.4',
+                'MetaBAT_2.11.2', 'MetaBAT_CAMI', 'Metawatt_3.5_CAMI', 'MyCC_CAMI',
+                'SABer-Ensemble'
+                ]
+
+g = sns.scatterplot(y='Precision', x='Sensitivity', hue='algorithm', palette=color_dict,
+                    style='algorithm', markers=marker_dict, hue_order=cat_order,
+                    data=avg_sab_amb_df, s=75
+                    )
+
+g.set(ylabel='Average Precision', xlabel='Average Sensitivity')
 plt.xlim(0, 1)
-plt.ylim(0, 1)
+plt.ylim(0, 1.05)
 
 plt.legend(edgecolor='b', bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 g.figure.savefig("AMBER_SABer_scatterplot.png", bbox_inches='tight', dpi=300)
+plt.clf()
+plt.close()
 
 flierprops = dict(markerfacecolor='0.75', markersize=5, markeredgecolor='w',
               linestyle='none')
@@ -454,11 +492,11 @@ flierprops = dict(markerfacecolor='0.75', markersize=5, markeredgecolor='w',
 piv_sab_amb_df = sab_amb_df.set_index(['bin_id', 'algorithm', 'genome_id']).stack().reset_index()
 piv_sab_amb_df.columns = ['bin_id', 'algorithm', 'genome_id', 'statistic', 'score']
 
-cat_order = ['Binsanity-wf_0.2.5.9', 'Binsanity_0.2.5.9', 'COCACOLA', 'CONCOCT_2',
-                'CONCOCT_CAMI', 'DAS_Tool_1.1', 'MaxBin_2.0.2_CAMI', 'MaxBin_2.2.4',
-                'MetaBAT_2.11.2', 'MetaBAT_CAMI', 'Metawatt_3.5_CAMI', 'MyCC_CAMI',
-                'SABer-Isolation Forest', 'SABer-OCSVM', 'SABer-GMM', 'SABer-Ensemble'
-                ]
+#cat_order = ['Binsanity-wf_0.2.5.9', 'Binsanity_0.2.5.9', 'COCACOLA', 'CONCOCT_2',
+#                'CONCOCT_CAMI', 'DAS_Tool_1.1', 'MaxBin_2.0.2_CAMI', 'MaxBin_2.2.4',
+#                'MetaBAT_2.11.2', 'MetaBAT_CAMI', 'Metawatt_3.5_CAMI', 'MyCC_CAMI',
+#                'SABer-Isolation Forest', 'SABer-OCSVM', 'SABer-GMM', 'SABer-Ensemble'
+#                ]
 with sns.axes_style("white"):
     ax = sns.catplot(x="statistic", y="score", hue='algorithm', kind='box',
                         data=piv_sab_amb_df, aspect=2, palette=sns.light_palette("black"),
@@ -474,7 +512,6 @@ with sns.axes_style("white"):
     plt.savefig('AMBER_SABer_error_boxplox_count.png', bbox_inches='tight', dpi=300)
     plt.clf()
     plt.close()
-'''
 '''
 # Stat by level line plot
 for stat in set(err_df['statistic']):
