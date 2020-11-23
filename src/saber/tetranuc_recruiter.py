@@ -11,6 +11,7 @@ from sklearn.ensemble import IsolationForest
 import sys
 import argparse
 import multiprocessing
+from sklearn.preprocessing import StandardScaler
 
 
 
@@ -103,10 +104,10 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
                                              mg_recruit_df['subcontig_total']
         mg_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
         # Only pass contigs that have the magjority of subcontigs recruited (>= N%)
-        #mg_recruit_filter_df = mg_recruit_df.loc[mg_recruit_df['subcontig_recruits'] != 0]
-        mg_recruit_filter_df = mg_recruit_df.loc[
-                                        mg_recruit_df['percent_recruited'] >= float(per_pass)
-                                        ]
+        mg_recruit_filter_df = mg_recruit_df.loc[mg_recruit_df['subcontig_recruits'] != 0]
+        #mg_recruit_filter_df = mg_recruit_df.loc[
+        #                                mg_recruit_df['percent_recruited'] >= float(per_pass)
+        #                                ]
         '''
         mg_contig_per_max_df = mg_recruit_filter_df.groupby(['contig_id'])[
             'percent_recruited'].max().reset_index()
@@ -176,25 +177,27 @@ def run_tetra_ML(p):
             '''
             # Concat SAGs amd MG for ML Training
             minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id) &
-                                            (minhash_df['jacc_sim'] == 1.0) &
-                                            (minhash_df['subcontig_recruits'] > 1)
+                                            (minhash_df['jacc_sim'] == 1.0)
                                             ]
-                                         #(minhash_df['jacc_sim_max'] >= 0.51))] # &
-                                         #(minhash_df['subcontig_recruits'] > 1))
-                                         #]
             if minhash_sag_df.shape[0] != 0:
+                
+                scale = StandardScaler().fit(mg_tetra_df.values)
+                scaled_data = scale.transform(mg_tetra_df.values)
+                std_tetra_df = pd.DataFrame(scaled_data, index=mg_tetra_df.index)
+
                 sag_mh_contig_list = list(set(minhash_sag_df['contig_id'].values))
-                sag_tetra_contig_list = [x for x in mg_tetra_df.index.values
+                sag_tetra_contig_list = [x for x in std_tetra_df.index.values
                                          if sag_mh_contig_list.count(x.rsplit('_', 1)[0]) != 0
                                          ]
-                sag_tetra_df = mg_tetra_df.loc[mg_tetra_df.index.isin(sag_tetra_contig_list)]
+                sag_tetra_df = std_tetra_df.loc[std_tetra_df.index.isin(sag_tetra_contig_list)]
                 mg_rpkm_contig_list = list(set(rpkm_max_df.loc[rpkm_max_df['sag_id'] == sag_id
                                                            ]['contig_id'].values)
                                            )
-                mg_tetra_contig_list = [x for x in mg_tetra_df.index.values
+                mg_tetra_contig_list = [x for x in std_tetra_df.index.values
                                          if mg_rpkm_contig_list.count(x.rsplit('_', 1)[0]) != 0
                                          ]
-                mg_tetra_filter_df = mg_tetra_df.loc[mg_tetra_df.index.isin(mg_tetra_contig_list)]
+                mg_tetra_filter_df = std_tetra_df.loc[std_tetra_df.index.isin(mg_tetra_contig_list)]
+                
                 #logging.info('[SABer]: Calculating AIC/BIC for GMM components\n')
                 sag_train_vals = [1 for x in sag_tetra_df.index]
                 n_components = np.arange(1, 10, 1)
@@ -254,7 +257,7 @@ def run_tetra_ML(p):
 
                 #logging.info('[SABer]: Training OCSVM on SAG tetras\n')
                 # fit OCSVM
-                clf = svm.OneClassSVM()
+                clf = svm.OneClassSVM(nu=0.9, gamma=1e-06)
                 clf.fit(sag_tetra_df.values)
                 #print(clf.get_params())
                 sag_pred = clf.predict(sag_tetra_df.values)
