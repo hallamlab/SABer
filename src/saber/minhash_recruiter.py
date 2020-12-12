@@ -79,7 +79,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     # Calculate/Load MinHash Signatures with SourMash for MG subseqs
     mg_id = mg_sub_file[0]
     if ((isfile(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'))) &
-        (forcerun == False)
+        (forcerun == 'False')
         ):
         minhash_filter_df = pd.read_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), header=0,
                                         sep='\t'

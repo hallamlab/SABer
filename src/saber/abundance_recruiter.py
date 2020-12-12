@@ -23,7 +23,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
 
     mg_id = mg_sub_file[0]
     if ((isfile(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'))) &
-        (forcerun == False)
+        (forcerun == 'False')
         ):
         mh_covm_df = pd.read_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), header=0,
                                         sep='\t'

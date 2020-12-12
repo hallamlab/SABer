@@ -119,6 +119,19 @@ def run_tetra_ML(p):
                 iso_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
             with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'r') as tra_in:
                 comb_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+            gmm_filter_df = pd.DataFrame(gmm_pass_list,
+                                         columns=['sag_id', 'subcontig_id', 'contig_id']
+                                         )
+            svm_filter_df = pd.DataFrame(svm_pass_list,
+                                         columns=['sag_id', 'subcontig_id', 'contig_id']
+                                         )
+            iso_filter_df = pd.DataFrame(iso_pass_list,
+                                         columns=['sag_id', 'subcontig_id', 'contig_id']
+                                         )
+            comb_filter_df = pd.DataFrame(comb_pass_list,
+                                          columns=['sag_id', 'subcontig_id', 'contig_id']
+                                          ) 
+
         else:
             # Concat SAGs amd MG for ML Training
             minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id) &

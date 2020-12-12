@@ -108,8 +108,7 @@ def recruit(sys_args):
     logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
     tetra_df_dict = tra.run_tetra_recruiter(save_dirs_dict['tetra_recruits'],
     										sag_sub_files, mg_sub_file, abund_df,
-                                            minhash_df, recruit_s.gmm_per_pass, recruit_s.nthreads,
-                                            recruit_s.forcerun
+                                            minhash_df, recruit_s.gmm_per_pass, recruit_s.nthreads
                                        		)
     # Collect and join all recruits
     logging.info('[SABer]: Combining All Recruits\n')
