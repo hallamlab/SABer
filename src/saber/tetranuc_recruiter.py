@@ -57,97 +57,54 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
         mg_tetra_df.to_csv(o_join(tra_path, mg_id + '.tetras.tsv'),
                            sep='\t'
                            )
-
-    gmm_total_pass_list = []
-    svm_total_pass_list = []
-    iso_total_pass_list= []
-    comb_total_pass_list = []
     ####
+    gmm_df_list = []
+    svm_df_list = []
+    iso_df_list = []
+    comb_df_list = []
     pool = multiprocessing.Pool(processes=nthreads)
     arg_list = []
     for sag_id in set(minhash_df['sag_id']):
-        arg_list.append([sag_id, tra_path, minhash_df, mg_tetra_df, rpkm_max_df])
+        arg_list.append([sag_id, mg_id, mg_headers, tra_path, minhash_df, mg_tetra_df, rpkm_max_df])
     results = pool.imap_unordered(run_tetra_ML, arg_list)
     for i, output in enumerate(results):
-        gmm_total_pass_list.extend(output[0])
-        svm_total_pass_list.extend(output[1])
-        iso_total_pass_list.extend(output[2])
-        comb_total_pass_list.extend(output[3])
+        gmm_df_list.append(output[0])
+        svm_df_list.append(output[1])
+        iso_df_list.append(output[2])
+        comb_df_list.append(output[3])
         sys.stderr.write('\rdone {}/{}'.format(i, len(arg_list)))
     pool.close()
     pool.join()
-    ####          
+    ####
+    gmm_concat_df = pd.concat(gmm_df_list)
+    svm_concat_df = pd.concat(svm_df_list)
+    iso_concat_df = pd.concat(iso_df_list)
+    comb_concat_df = pd.concat(comb_df_list)
+    gmm_concat_df.to_csv(o_join(tra_path, mg_id + '.gmm.tra_trimmed_recruits.tsv'), sep='\t',
+        index=False
+        )
+    svm_concat_df.to_csv(o_join(tra_path, mg_id + '.svm.tra_trimmed_recruits.tsv'), sep='\t',
+        index=False
+        )
+    iso_concat_df.to_csv(o_join(tra_path, mg_id + '.iso.tra_trimmed_recruits.tsv'), sep='\t',
+        index=False
+        )
+    comb_concat_df.to_csv(o_join(tra_path, mg_id + '.comb.tra_trimmed_recruits.tsv'), sep='\t',
+        index=False
+        )
 
-    gmm_df = pd.DataFrame(gmm_total_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
-    svm_df = pd.DataFrame(svm_total_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
-    iso_df = pd.DataFrame(iso_total_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
-    comb_df = pd.DataFrame(comb_total_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
-
-    tetra_df_dict = {'gmm':gmm_df, 'svm':svm_df, 'iso':iso_df, 'comb':comb_df}
-    #tetra_df_dict = {'gmm':gmm_df, 'svm':svm_df, 'comb':comb_df}
-
-    for tetra_id in tetra_df_dict:
-        tetra_df = tetra_df_dict[tetra_id]
-        #mg_id, mg_headers, mg_subs = mg_subcontigs
-
-        # Count # of subcontigs recruited to each SAG
-        gmm_cnt_df = tetra_df.groupby(['sag_id', 'contig_id']).count().reset_index()
-        gmm_cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
-        # Build subcontig count for each MG contig
-        mg_contig_list = [x.rsplit('_', 1)[0] for x in mg_headers]
-        mg_tot_df = pd.DataFrame(zip(mg_contig_list, mg_headers),
-                                 columns=['contig_id', 'subcontig_id'])
-        mg_tot_cnt_df = mg_tot_df.groupby(['contig_id']).count().reset_index()
-        mg_tot_cnt_df.columns = ['contig_id', 'subcontig_total']
-        mg_recruit_df = gmm_cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
-        mg_recruit_df['percent_recruited'] = mg_recruit_df['subcontig_recruits'] / \
-                                             mg_recruit_df['subcontig_total']
-        mg_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
-        # Only pass contigs that have the magjority of subcontigs recruited (>= N%)
-        mg_recruit_filter_df = mg_recruit_df.loc[mg_recruit_df['subcontig_recruits'] != 0]
-        #mg_recruit_filter_df = mg_recruit_df.loc[
-        #                                mg_recruit_df['percent_recruited'] >= float(per_pass)
-        #                                ]
-        '''
-        mg_contig_per_max_df = mg_recruit_filter_df.groupby(['contig_id'])[
-            'percent_recruited'].max().reset_index()
-        mg_contig_per_max_df.columns = ['contig_id', 'percent_max']
-        mg_recruit_max_df = mg_recruit_filter_df.merge(mg_contig_per_max_df, how='left',
-                                                       on='contig_id')
-        # Now pass contigs that have the maximum recruit % of subcontigs
-        mg_max_only_df = mg_recruit_max_df.loc[mg_recruit_max_df['percent_recruited'] >=
-                                               mg_recruit_max_df['percent_max']
-                                               ]
-        mg_max_only_df.to_csv(o_join(tra_path, mg_id + '.' + tetra_id + '.tra_trimmed_recruits.tsv'), sep='\t', index=False)
-        '''
-        tetra_max_list = []
-        for sag_id in list(set(mg_recruit_filter_df['sag_id'])):
-            sag_max_only_df = mg_recruit_filter_df.loc[mg_recruit_filter_df['sag_id'] == sag_id]
-            tetra_max_df = mg_tot_df[mg_tot_df['contig_id'].isin(list(sag_max_only_df['contig_id']))]
-            tetra_max_df['sag_id'] = sag_id
-            tetra_max_df = tetra_max_df[['sag_id', 'subcontig_id', 'contig_id']]
-            tetra_max_list.append(tetra_max_df)
-        tetra_final_max_df = pd.concat(tetra_max_list)
-        tetra_final_max_df.to_csv(o_join(tra_path,
-                                    mg_id + '.' + tetra_id + '.tra_trimmed_recruits.tsv'),
-                                    sep='\t', index=False
-                                    )
-
-        tetra_df_dict[tetra_id] = tetra_final_max_df
-
+    tetra_df_dict = {'gmm': gmm_concat_df, 'svm': svm_concat_df, 'iso': iso_concat_df,
+        'comb': gmm_concat_df
+        }
 
     return tetra_df_dict
 
 
 def run_tetra_ML(p):
-    sag_id, tra_path, minhash_df, mg_tetra_df, rpkm_max_df = p 
+    sag_id, mg_id, mg_headers, tra_path, minhash_df, mg_tetra_df, rpkm_max_df = p 
     #sag_id, sag_file = sag_rec
     if sag_id in list(rpkm_max_df['sag_id']):
-        '''
-        sag_subcontigs = s_utils.get_seqs(sag_file)
-        sag_headers= tuple(sag_subcontigs.keys())
-        sag_subs = tuple([r.seq for r in sag_subcontigs])
-        '''
+
         if (isfile(o_join(tra_path, sag_id + '.gmm_recruits.tsv')) &
             isfile(o_join(tra_path, sag_id + '.svm_recruits.tsv')) &
             isfile(o_join(tra_path, sag_id + '.iso_recruits.tsv')) &
@@ -163,18 +120,6 @@ def run_tetra_ML(p):
             with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'r') as tra_in:
                 comb_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
         else:
-            '''
-            if isfile(o_join(tra_path, sag_id + '.tetras.tsv')):
-                logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % sag_id)
-                sag_tetra_df = pd.read_csv(o_join(tra_path, sag_id + '.tetras.tsv'),
-                                           sep='\t', index_col=0, header=0)
-            else:
-                logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % sag_id)
-                sag_tetra_df = s_utils.tetra_cnt(sag_subs)
-                sag_tetra_df['contig_id'] = sag_headers
-                sag_tetra_df.set_index('contig_id', inplace=True)
-                sag_tetra_df.to_csv(o_join(tra_path, sag_id + '.tetras.tsv'), sep='\t')
-            '''
             # Concat SAGs amd MG for ML Training
             minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id) &
                                             (minhash_df['jacc_sim'] == 1.0)
@@ -200,34 +145,55 @@ def run_tetra_ML(p):
                 
                 #logging.info('[SABer]: Calculating AIC/BIC for GMM components\n')
                 sag_train_vals = [1 for x in sag_tetra_df.index]
-                n_components = np.arange(1, 10, 1)
+                n_components = np.arange(1, 100, 1)
                 models = [GMM(n, random_state=42) for n in n_components]
                 bics = []
                 aics = []
+                min_bic = None
+                min_aic = None
+                bic_counter = 0
+                aic_counter = 0
                 for i, model in enumerate(models):
-                    n_comp = n_components[i]
-                    try:
-                        bic = model.fit(sag_tetra_df.values,
-                                        sag_train_vals).bic(sag_tetra_df.values
-                                                            )
-                        bics.append(bic)
-                    except:
-                        1+1
-                        #logging.info('[WARNING]: BIC failed with %s components\n' % n_comp)
-                    try:
-                        aic = model.fit(sag_tetra_df.values,
-                                        sag_train_vals).aic(sag_tetra_df.values
-                                                            )
-                        aics.append(aic)
-                    except:
-                        1+1
-                        #logging.info('[WARNING]: AIC failed with %s components\n' % n_comp)
+                        n_comp = n_components[i]
+                        if bic_counter <= 5:
+                            try:
+                                bic = model.fit(sag_tetra_df.values,
+                                                sag_train_vals).bic(sag_tetra_df.values
+                                                                    )
+                                bics.append(bic)
+                            except:
+                                1+1
+                                #logging.info('[WARNING]: BIC failed with %s components\n' % n_comp)
+                            if min_bic is None:
+                                min_bic = bic
+                            elif min_bic > bic:
+                                min_bic = bic
+                                bic_counter = 0
+                            else:
+                                bic_counter += 1
 
-                min_bic_comp = n_components[bics.index(min(bics))]
-                min_aic_comp = n_components[aics.index(min(aics))]
+                        if aic_counter <= 5:
+                            try:
+                                aic = model.fit(sag_tetra_df.values,
+                                                sag_train_vals).aic(sag_tetra_df.values
+                                                                    )
+                                aics.append(aic)
+                            except:
+                                1+1
+                                #logging.info('[WARNING]: AIC failed with %s components\n' % n_comp)
+                            if min_aic is None:
+                                min_aic = aic
+                            elif min_aic > aic:
+                                min_aic = aic
+                                aic_counter = 0
+                            else:
+                                aic_counter += 1
+                        
+                min_bic_comp = n_components[bics.index(min_bic)]
+                min_aic_comp = n_components[aics.index(min_aic)]
                 #logging.info('[SABer]: Min AIC/BIC at %s/%s, respectively\n' %
-                      #(min_aic_comp, min_bic_comp)
-                      #)
+                #      (min_aic_comp, min_bic_comp)
+                #      )
                 #logging.info('[SABer]: Using BIC as guide for GMM components\n')
                 #logging.info('[SABer]: Training GMM on SAG tetras\n')
                 gmm = GMM(n_components=min_aic_comp, random_state=42
@@ -257,7 +223,7 @@ def run_tetra_ML(p):
 
                 #logging.info('[SABer]: Training OCSVM on SAG tetras\n')
                 # fit OCSVM
-                clf = svm.OneClassSVM(nu=0.9, gamma=1e-06)
+                clf = svm.OneClassSVM(nu=0.9, gamma=0.0001)
                 clf.fit(sag_tetra_df.values)
                 #print(clf.get_params())
                 sag_pred = clf.predict(sag_tetra_df.values)
@@ -289,41 +255,124 @@ def run_tetra_ML(p):
                     if mg_tetra_contig_list.count(md_nm) != 0:
                         iso_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
 
-                gmm_id_list = [x[1] for x in gmm_pass_list]
-                svm_id_list = [x[1] for x in svm_pass_list]
-                iso_id_list = [x[1] for x in iso_pass_list]
-                comb_set_list = list(set(gmm_id_list) & set(svm_id_list) & set(iso_id_list))
-                #comb_set_list = list(set(gmm_id_list) & set(svm_id_list))
+                gmm_df = pd.DataFrame(gmm_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
+                svm_df = pd.DataFrame(svm_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
+                iso_df = pd.DataFrame(iso_pass_list, columns=['sag_id', 'subcontig_id', 'contig_id'])
+
+                gmm_filter_df = filter_tetras(sag_id, mg_headers, 'gmm', gmm_df)
+                svm_filter_df = filter_tetras(sag_id, mg_headers, 'svm', svm_df)
+                iso_filter_df = filter_tetras(sag_id, mg_headers, 'iso', iso_df)
+
+                gmm_id_list = list(gmm_filter_df['subcontig_id'])
+                svm_id_list = list(svm_filter_df['subcontig_id'])
+                iso_id_list = list(iso_filter_df['subcontig_id'])
+
+                ab_set = set(gmm_id_list).intersection(svm_id_list)
+               	ac_set = set(gmm_id_list).intersection(iso_id_list)
+                bc_set = set(svm_id_list).intersection(iso_id_list)
+                comb_set_list = list({*ab_set, *ac_set, *bc_set})
+                #comb_set_list = list(set(list(ab_set) + list(ac_set) + list(bc_set)))
+                #comb_set_list = list(ac_set)
                 comb_pass_list = []
                 for md_nm in comb_set_list:
                     comb_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+                comb_df = pd.DataFrame(comb_pass_list,
+                    columns=['sag_id', 'subcontig_id', 'contig_id']
+                    )
+                comb_filter_df = filter_tetras(sag_id, mg_headers, 'comb', comb_df)
 
-                #logging.info('[SABer]: Recruited %s subcontigs to %s with GMM\n' % (len(gmm_pass_list), sag_id))
-                #logging.info('[SABer]: Recruited %s subcontigs to %s with SVM\n' % (len(svm_pass_list), sag_id))
-                #logging.info('[SABer]: Recruited %s subcontigs to %s with Isolation Forest\n' % (len(iso_pass_list), sag_id))
-                #logging.info('[SABer]: Recruited %s subcontigs to %s with combined methods\n' % (len(comb_pass_list), sag_id))
-
-                with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'w') as tra_out:
-                    tra_out.write('\n'.join(['\t'.join(x) for x in gmm_pass_list]))
-                with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'w') as tra_out:
-                    tra_out.write('\n'.join(['\t'.join(x) for x in svm_pass_list]))
-                with open(o_join(tra_path, sag_id + '.iso_recruits.tsv'), 'w') as tra_out:
-                    tra_out.write('\n'.join(['\t'.join(x) for x in iso_pass_list]))
-                with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'w') as tra_out:
-                    tra_out.write('\n'.join(['\t'.join(x) for x in comb_pass_list]))
-
+                gmm_filter_df.to_csv(o_join(tra_path, sag_id + '.gmm_recruits.tsv'),
+                    sep='\t', index=False
+                    )
+                svm_filter_df.to_csv(o_join(tra_path, sag_id + '.svm_recruits.tsv'),
+                    sep='\t', index=False
+                    )
+                iso_filter_df.to_csv(o_join(tra_path, sag_id + '.iso_recruits.tsv'),
+                    sep='\t', index=False
+                    )
+                comb_filter_df.to_csv(o_join(tra_path, sag_id + '.comb_recruits.tsv'),
+                    sep='\t', index=False
+                    )
             else:
                 gmm_pass_list = []
                 svm_pass_list = []
                 iso_pass_list = []
                 comb_pass_list = []
+                gmm_filter_df = pd.DataFrame(gmm_pass_list,
+                    columns=['sag_id', 'subcontig_id', 'contig_id']
+                    )
+                svm_filter_df = pd.DataFrame(svm_pass_list,
+                    columns=['sag_id', 'subcontig_id', 'contig_id']
+                    )
+                iso_filter_df = pd.DataFrame(iso_pass_list,
+                    columns=['sag_id', 'subcontig_id', 'contig_id']
+                    )
+                comb_filter_df = pd.DataFrame(comb_pass_list,
+                    columns=['sag_id', 'subcontig_id', 'contig_id']
+                    )
 
-        return gmm_pass_list, svm_pass_list, iso_pass_list, comb_pass_list
+        return gmm_filter_df, svm_filter_df, iso_filter_df, comb_filter_df
 
     else:
-        return [], [], [], []
+        gmm_pass_list = []
+        svm_pass_list = []
+        iso_pass_list = []
+        comb_pass_list = []
+        gmm_filter_df = pd.DataFrame(gmm_pass_list,
+            columns=['sag_id', 'subcontig_id', 'contig_id']
+            )
+        svm_filter_df = pd.DataFrame(svm_pass_list,
+            columns=['sag_id', 'subcontig_id', 'contig_id']
+            )
+        iso_filter_df = pd.DataFrame(iso_pass_list,
+            columns=['sag_id', 'subcontig_id', 'contig_id']
+            )
+        comb_filter_df = pd.DataFrame(comb_pass_list,
+            columns=['sag_id', 'subcontig_id', 'contig_id']
+            )
+        return gmm_filter_df, svm_filter_df, iso_filter_df, comb_filter_df
 
 
+def filter_tetras(sag_id, mg_headers, tetra_id, tetra_df):
+    #tetra_df = tetra_df_dict[tetra_id]
+    # Count # of subcontigs recruited to each SAG
+    cnt_df = tetra_df.groupby(['sag_id', 'contig_id']).count().reset_index()
+    cnt_df.columns = ['sag_id', 'contig_id', 'subcontig_recruits']
+    # Build subcontig count for each MG contig
+    mg_contig_list = [x.rsplit('_', 1)[0] for x in mg_headers]
+    mg_tot_df = pd.DataFrame(zip(mg_contig_list, mg_headers),
+                             columns=['contig_id', 'subcontig_id'])
+    mg_tot_cnt_df = mg_tot_df.groupby(['contig_id']).count().reset_index()
+    mg_tot_cnt_df.columns = ['contig_id', 'subcontig_total']
+    mg_recruit_df = cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
+    mg_recruit_df['percent_recruited'] = mg_recruit_df['subcontig_recruits'] / \
+                                         mg_recruit_df['subcontig_total']
+    mg_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
+    # Only pass contigs that have the magjority of subcontigs recruited (>= N%)
+    if tetra_id == 'svm':
+        mg_recruit_filter_df = mg_recruit_df.loc[
+            #mg_recruit_df['percent_recruited'] >= 0.51
+            mg_recruit_df['subcontig_recruits'] >= 3
+            ]
+    elif tetra_id == 'comb':
+    	mg_recruit_filter_df = mg_recruit_df.loc[
+            mg_recruit_df['percent_recruited'] >= 0.51
+            ]
+    else:
+        mg_recruit_filter_df = mg_recruit_df.loc[
+            mg_recruit_df['percent_recruited'] >= 0.51
+            ]
+    tetra_max_list = []
+    sag_max_only_df = mg_recruit_filter_df.loc[
+        mg_recruit_filter_df['sag_id'] == sag_id
+        ]
+    tetra_max_df = mg_tot_df[mg_tot_df['contig_id'].isin(
+            list(sag_max_only_df['contig_id'])
+            )]
+    tetra_max_df['sag_id'] = sag_id
+    tetra_max_df = tetra_max_df[['sag_id', 'subcontig_id', 'contig_id']]
+
+    return tetra_max_df
 
 
 

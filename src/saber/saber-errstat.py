@@ -264,19 +264,19 @@ src_mock_err_df = pd.read_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABe
 
 # MinHash
 mh_file = joinpath(files_path, 'minhash_recruits/' + \
-                'CAMI_high_GoldStandardAssembly.mhr_trimmed_recruits.tsv'
+                'CAMI_high_GoldStandardAssembly.3000.mhr_trimmed_recruits.tsv'
                 )
 mh_concat_df = pd.read_csv(mh_file, sep='\t', header=0)
 
 # TPM
 tpm_file = joinpath(files_path,
-    'abund_recruits/CAMI_high_GoldStandardAssembly.abr_trimmed_recruits.tsv'
+    'abund_recruits/CAMI_high_GoldStandardAssembly.3000.abr_trimmed_recruits.tsv'
     )
 tpm_concat_df = pd.read_csv(tpm_file, sep='\t', header=0)
 
 # Tetra GMM
 gmm_file = joinpath(files_path,
-    'tetra_recruits/CAMI_high_GoldStandardAssembly.gmm.tra_trimmed_recruits.tsv'
+    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.gmm.tra_trimmed_recruits.tsv'
     )
 gmm_concat_df = pd.read_csv(gmm_file, sep='\t', header=0)
 gmm_concat_df['subcontig_id'] = None
@@ -284,7 +284,7 @@ gmm_concat_df = gmm_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # Tetra OCSVM
 svm_file = joinpath(files_path,
-    'tetra_recruits/CAMI_high_GoldStandardAssembly.svm.tra_trimmed_recruits.tsv'
+    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.svm.tra_trimmed_recruits.tsv'
     )
 svm_concat_df = pd.read_csv(svm_file, sep='\t', header=0)
 svm_concat_df['subcontig_id'] = None
@@ -292,7 +292,7 @@ svm_concat_df = svm_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # Tetra Isolation Forest
 iso_file = joinpath(files_path,
-    'tetra_recruits/CAMI_high_GoldStandardAssembly.iso.tra_trimmed_recruits.tsv'
+    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.iso.tra_trimmed_recruits.tsv'
     )
 iso_concat_df = pd.read_csv(iso_file, sep='\t', header=0)
 iso_concat_df['subcontig_id'] = None
@@ -300,7 +300,7 @@ iso_concat_df = iso_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # Tetra Combined
 comb_file = joinpath(files_path,
-    'tetra_recruits/CAMI_high_GoldStandardAssembly.comb.tra_trimmed_recruits.tsv'
+    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.comb.tra_trimmed_recruits.tsv'
     )
 comb_concat_df = pd.read_csv(comb_file, sep='\t', header=0)
 comb_concat_df['subcontig_id'] = None
