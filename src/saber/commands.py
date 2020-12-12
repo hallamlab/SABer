@@ -70,6 +70,7 @@ def recruit(sys_args):
     recruit_s.gmm_per_pass = float(args.gmm_per_pass)
     recruit_s.mh_per_pass = float(args.mh_per_pass)
     recruit_s.nthreads = int(args.nthreads)
+    recruit_s.forcerun = args.forcerun
     # Build save dir structure
     save_dirs_dict = s_utils.check_out_dirs(recruit_s.save_path)
     # Find the SAGs!
@@ -93,20 +94,22 @@ def recruit(sys_args):
     									   save_dirs_dict['minhash_recruits'],
                                            sag_sub_files, mg_sub_file,
                                            recruit_s.jacc_thresh, recruit_s.mh_per_pass,
-                                           recruit_s.nthreads
+                                           recruit_s.nthreads, recruit_s.forcerun
                                            )
     # Abundance Recruit Module
     logging.info('[SABer]: Starting Abundance Recruitment Step\n')
     abund_df = abr.runAbundRecruiter(save_dirs_dict['subcontigs'],
     								   save_dirs_dict['abund_recruits'], mg_sub_file,
                                        recruit_s.mg_raw_file_list, minhash_df,
-                                       recruit_s.abund_per_pass, recruit_s.nthreads
+                                       recruit_s.abund_per_pass, recruit_s.nthreads,
+                                       recruit_s.forcerun
                                        )
     # Tetranucleotide Hz Recruit Module
     logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
     tetra_df_dict = tra.run_tetra_recruiter(save_dirs_dict['tetra_recruits'],
     										sag_sub_files, mg_sub_file, abund_df,
-                                            minhash_df, recruit_s.gmm_per_pass, recruit_s.nthreads
+                                            minhash_df, recruit_s.gmm_per_pass, recruit_s.nthreads,
+                                            recruit_s.forcerun
                                        		)
     # Collect and join all recruits
     logging.info('[SABer]: Combining All Recruits\n')

@@ -82,4 +82,8 @@ class SABerArgumentParser(argparse.ArgumentParser):
                                  dest="nthreads",
                                  help="Number of threads [1]."
                                  )
+        self.optopt.add_argument("--force", required=False, default=False,
+                                 dest="forcerun",
+                                 help="Force SABer to run even if final recruits files exist [False]"
+                                 )
         return
