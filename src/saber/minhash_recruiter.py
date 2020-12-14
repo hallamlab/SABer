@@ -199,7 +199,6 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                 merge_df = pd.DataFrame(merge_list, columns=['sag_id', 'subcontig_id', 'contig_id',
                                                               'jacc_sim', 'recruit_bool'
                                                               ])
-                print(merge_df.head())
                 merge_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
                 merge_df.drop_duplicates(subset='subcontig_id', inplace=True)
                 merge_df.to_csv(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), sep='\t',
