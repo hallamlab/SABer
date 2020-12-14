@@ -69,7 +69,7 @@ def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_file, te
             # Use BBTools dedupe.sh to deduplicate the extend SAG file
             dedupe_SAG = o_join(ext_path, sag_id + '.' + tetra_id + '.extended_SAG.fasta')
             dedupe_cmd = ['dedupe.sh', 'in=' + final_rec, 'out=' + dedupe_SAG,
-                            'threads=8', 'minidentity=97', 'overwrite=true']
+                            'threads=8', 'minidentity=100', 'overwrite=true']
             run_dedupe = Popen(dedupe_cmd, stdout=PIPE)
             print(run_dedupe.communicate()[0].decode())
             de_header_list = []
