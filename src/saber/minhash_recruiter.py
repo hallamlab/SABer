@@ -16,7 +16,7 @@ pd.set_option('display.max_columns', None)
 
 def build_signature(p):
     header, seq = p
-    mg_minhash = sourmash.MinHash(n=0, ksize=51, scaled=100)
+    mg_minhash = sourmash.MinHash(n=10, ksize=51) # , scaled=100)
     mg_minhash.add_sequence(str(seq), force=True)
     mg_sig = sourmash.SourmashSignature(mg_minhash, name=header)
 
