@@ -223,11 +223,11 @@ def recruitSubs(p):
     #minhash_90_list = list(minhash_sag_df['subcontig_id'].loc[
     #                        minhash_sag_df['jacc_sim_max'] >= 0.90]
     #                        )
-    #minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]
+    minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]
 
     #mh_jacc_list = list(set(minhash_filter_df['contig_id']))
     
-    if len(minhash_sag_df['sag_id']) != 0:
+    if len(minhash_filter_df['sag_id']) != 0:
         #sag_mh_pass_df = minhash_sag_df.loc[minhash_sag_df['contig_id'].isin(mh_jacc_list)]
         overall_recruit_list = []
         mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t', index_col=['contigName'])
@@ -236,7 +236,7 @@ def recruitSubs(p):
         scaled_data = scale.transform(mg_covm_df.values)
         std_merge_df = pd.DataFrame(scaled_data, index=mg_covm_df.index)
         recruit_contigs_df = std_merge_df.loc[std_merge_df.index.isin(
-                                        list(minhash_sag_df['subcontig_id']))
+                                        list(minhash_filter_df['subcontig_id']))
                                         ]
         nonrecruit_filter_df = std_merge_df.loc[~std_merge_df.index.isin(
                                                 recruit_contigs_df.index)

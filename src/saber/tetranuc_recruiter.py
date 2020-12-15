@@ -111,25 +111,25 @@ def run_tetra_ML(p):
             isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv'))
             ):
             #logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
-            with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
-                gmm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
-            with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'r') as tra_in:
-                svm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
-            with open(o_join(tra_path, sag_id + '.iso_recruits.tsv'), 'r') as tra_in:
-                iso_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
-            with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'r') as tra_in:
-                comb_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
-            gmm_filter_df = pd.DataFrame(gmm_pass_list,
-                                         columns=['sag_id', 'subcontig_id', 'contig_id']
+            #with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
+            #    gmm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+            #with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'r') as tra_in:
+            #    svm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+            #with open(o_join(tra_path, sag_id + '.iso_recruits.tsv'), 'r') as tra_in:
+            #    iso_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+            #with open(o_join(tra_path, sag_id + '.comb_recruits.tsv'), 'r') as tra_in:
+            #    comb_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
+            gmm_filter_df = pd.read_csv(o_join(tra_path, sag_id + '.gmm_recruits.tsv'),
+                                         sep='\t', header=0
                                          )
-            svm_filter_df = pd.DataFrame(svm_pass_list,
-                                         columns=['sag_id', 'subcontig_id', 'contig_id']
+            svm_filter_df = pd.read_csv(o_join(tra_path, sag_id + '.svm_recruits.tsv'),
+                                         sep='\t', header=0
                                          )
-            iso_filter_df = pd.DataFrame(iso_pass_list,
-                                         columns=['sag_id', 'subcontig_id', 'contig_id']
+            iso_filter_df = pd.read_csv(o_join(tra_path, sag_id + '.iso_recruits.tsv'),
+                                         sep='\t', header=0
                                          )
-            comb_filter_df = pd.DataFrame(comb_pass_list,
-                                          columns=['sag_id', 'subcontig_id', 'contig_id']
+            comb_filter_df = pd.read_csv(o_join(tra_path, sag_id + '.comb_recruits.tsv'),
+                                          sep='\t', header=0
                                           ) 
 
         else:
@@ -168,7 +168,7 @@ def run_tetra_ML(p):
                 aic_counter = 0
                 for i, model in enumerate(models):
                         n_comp = n_components[i]
-                        if bic_counter <= 5:
+                        if bic_counter <= 20:
                             try:
                                 bic = model.fit(sag_tetra_df.values,
                                                 sag_train_vals).bic(sag_tetra_df.values
@@ -185,7 +185,7 @@ def run_tetra_ML(p):
                             else:
                                 bic_counter += 1
 
-                        if aic_counter <= 5:
+                        if aic_counter <= 20:
                             try:
                                 aic = model.fit(sag_tetra_df.values,
                                                 sag_train_vals).aic(sag_tetra_df.values

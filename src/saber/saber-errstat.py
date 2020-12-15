@@ -391,6 +391,7 @@ final_concat_df = pd.concat([mh_concat_df, tpm_concat_df,
                             comb_final_df,
                             exSAG_concat_df
                             ])
+
 final_group_df = final_concat_df.groupby(['sag_id', 'algorithm', 'contig_id'])[
                                             'subcontig_id'].count().reset_index()
 
