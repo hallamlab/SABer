@@ -134,9 +134,9 @@ def run_tetra_ML(p):
 
         else:
             # Concat SAGs amd MG for ML Training
-            minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id) &
-                                            (minhash_df['jacc_sim'] == 1.0)
-                                            ]
+            minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id)]# &
+                                            #(minhash_df['jacc_sim'] == 1.0)
+                                            #]
             if minhash_sag_df.shape[0] != 0:
                 
                 scale = StandardScaler().fit(mg_tetra_df.values)
@@ -168,7 +168,7 @@ def run_tetra_ML(p):
                 aic_counter = 0
                 for i, model in enumerate(models):
                         n_comp = n_components[i]
-                        if bic_counter <= 20:
+                        if bic_counter <= 10:
                             try:
                                 bic = model.fit(sag_tetra_df.values,
                                                 sag_train_vals).bic(sag_tetra_df.values
@@ -185,7 +185,7 @@ def run_tetra_ML(p):
                             else:
                                 bic_counter += 1
 
-                        if aic_counter <= 20:
+                        if aic_counter <= 10:
                             try:
                                 aic = model.fit(sag_tetra_df.values,
                                                 sag_train_vals).aic(sag_tetra_df.values
