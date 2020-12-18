@@ -238,9 +238,9 @@ def recruitSubs(p):
         recruit_contigs_df = std_merge_df.loc[std_merge_df.index.isin(
                                         list(minhash_filter_df['subcontig_id']))
                                         ]
-        nonrecruit_filter_df = std_merge_df.loc[~std_merge_df.index.isin(
-                                                recruit_contigs_df.index)
-                                                ]
+        nonrecruit_filter_df = std_merge_df.copy() #.loc[~std_merge_df.index.isin(
+                                                #recruit_contigs_df.index)
+                                                #]
         #recruit_contigs_df.set_index('contigName', inplace=True)
         #nonrecruit_filter_df.set_index('contigName', inplace=True)
 
