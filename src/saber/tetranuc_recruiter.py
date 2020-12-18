@@ -282,7 +282,7 @@ def run_tetra_ML(p):
                 iso_id_list = list(iso_filter_df['subcontig_id'])
 
                 ab_set = set(gmm_id_list).intersection(svm_id_list)
-                   ac_set = set(gmm_id_list).intersection(iso_id_list)
+                ac_set = set(gmm_id_list).intersection(iso_id_list)
                 bc_set = set(svm_id_list).intersection(iso_id_list)
                 #comb_set_list = list({*ab_set, *ac_set, *bc_set})
                 #comb_set_list = list(set(list(ab_set) + list(ac_set) + list(bc_set)))
