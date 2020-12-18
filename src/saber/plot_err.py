@@ -83,11 +83,11 @@ sns.set(font_scale=0.75)
 err_path = sys.argv[1]
 
 algo_path = err_path + 'multi-algo'
-if not path.exists(algo_path):
-    makedirs(algo_path)
+if not os.path.exists(algo_path):
+    os.makedirs(algo_path)
 level_path = err_path + 'multi-level'
-if not path.exists(level_path):
-    makedirs(level_path)
+if not os.path.exists(level_path):
+    os.makedirs(level_path)
 
 
 
@@ -125,7 +125,7 @@ trim_df['percent'] = [x*100 for x in trim_df['score']]
 trim_df['round_percent'] = [myfloor(x) for x in trim_df['percent']]
 trim_df = trim_df[['sag_id', 'algorithm', 'statistic', 'score', 'percent', 'round_percent']]
 sag_df = trim_df[['sag_id', 'percent', 'round_percent']
-				  ].loc[((trim_df['algorithm'] == 'synSAG') & (trim_df['statistic'] == 'sensitivity'))]
+                  ].loc[((trim_df['algorithm'] == 'synSAG') & (trim_df['statistic'] == 'sensitivity'))]
 merge_df = trim_df.merge(sag_df, on=['sag_id'])
 merge_df.columns = ['sag_id', 'stage', 'statistic', 'score', 'stage_score', 'stage_round_score',
                     'synSAG_score', 'synSAG_score_cat'
@@ -134,25 +134,24 @@ filter_df = merge_df.loc[merge_df['stage'] != 'synSAG']
 sensitivity_df = filter_df.loc[filter_df['statistic'] == 'sensitivity']
 precision_df = filter_df.loc[filter_df['statistic'] == 'precision']
 synSAG_df = merge_df.loc[((merge_df['stage'] == 'synSAG') &
-						  (merge_df['statistic'] == 'sensitivity')
-						  )]
-print(sensitivity_df.head())
-print(precision_df.head())
-print(synSAG_df.head())
-
+                          (merge_df['statistic'] == 'sensitivity')
+                          )]
 
 sensitivity_df['datatype'] = 'stage_Sensitivity'
 precision_df['datatype'] = 'stage_Precision'
 synSAG_df['datatype'] = 'synSAG_Sensitivity'
+syn_stage_sense_df = pd.concat([sensitivity_df, synSAG_df])
+
+
 df_list = []
 df_list.extend([sensitivity_df, precision_df])
 for algo in set(filter_df['stage']):
-	tmp_df = synSAG_df.copy()
-	tmp_df['stage'] = algo
-	df_list.append(tmp_df)
+    tmp_df = synSAG_df.copy()
+    tmp_df['stage'] = algo
+    df_list.append(tmp_df)
 concat_df = pd.concat(df_list)
 g = sns.relplot(x='synSAG_score_cat', y='stage_score', hue='datatype', style='datatype',
-				col='stage', kind='line', col_wrap=5, ci='sd',
+                col='stage', kind='line', col_wrap=5, ci='sd',
                 col_order=['MinHash', 'MBN-Abund', 'Isolation Forest', 'OCSVM', 'GMM',
                            'Tetra Ensemble', 'Final Isolation Forest', 'Final OCSVM', 'Final GMM',
                            'Final Ensemble'
@@ -176,7 +175,7 @@ sns.set(font_scale=0.75)
 stage_list = ['MinHash', 'Final Ensemble']
 sens_trim_df = sensitivity_df.loc[sensitivity_df['stage'].isin(stage_list)]
 g = sns.relplot(x='stage', y='stage_score', hue='synSAG_score_cat', style='synSAG_score_cat',
-				kind='line', ci=None, data=sens_trim_df, palette='muted'
+                kind='line', ci=None, data=sens_trim_df, palette='muted'
                 )
 plt.ylim(0, 100)
 #plt.xlim(0, 1)
@@ -188,43 +187,41 @@ g.savefig("SABer_MinHash_relplot.png", bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
-'''
-for algo in set(merge_df['stage']):
-	# Plot Before and after SAG -> xPG completness
-	algo_list = ['synSAG', algo]
-	sub_trim_df = merge_df.loc[merge_df['stage'].isin(algo_list)]
+for algo in set(syn_stage_sense_df['stage']):
+    # Plot Before and after SAG -> xPG completness
+    algo_list = ['synSAG', algo]
+    sub_trim_df = syn_stage_sense_df.loc[syn_stage_sense_df['stage'].isin(algo_list)]
+    sns.set_context("poster")
+    sns.set_style('whitegrid')
+    sns.set(font_scale=0.75)
+    g = sns.JointGrid(data=sub_trim_df, x='synSAG_score', y='stage_score', hue='stage',
+                      ylim=(0, 101)
+                      )
+    g.plot_joint(sns.scatterplot)
+    g.plot_marginals(sns.histplot, kde=True)
 
-	sns.set_context("poster")
-	sns.set_style('whitegrid')
-	sns.set(font_scale=0.75)
-	g = sns.JointGrid(data=sub_trim_df, x='synSAG_score', y='score', hue='stage',
-					  ylim=(0, 101)
-					  )
-	g.plot_joint(sns.scatterplot)
-	g.plot_marginals(sns.histplot, kde=True)
-
-	#g = sns.jointplot(x='synSAG_Completeness', y='Completeness', hue='algorithm', data=sub_trim_df)
-	#plt.ylim(0, 1)
-	#plt.xlim(0, 1)
+    #g = sns.jointplot(x='synSAG_Completeness', y='Completeness', hue='algorithm', data=sub_trim_df)
+    #plt.ylim(0, 1)
+    #plt.xlim(0, 1)
 
 
-	g.savefig('Comp_plots/' + algo + "_synSAG_Completeness.png", bbox_inches='tight', dpi=300)
-	plt.clf()
-	plt.close()
+    g.savefig('Comp_plots/' + algo + "_synSAG_Completeness.png", bbox_inches='tight', dpi=300)
+    plt.clf()
+    plt.close()
 
-	sns.set_context("poster")
-	sns.set_style('whitegrid')
-	sns.set(font_scale=0.75)
-	g = sns.catplot(x='synSAG_score_cat', y='score', hue='stage', kind='box',
-	                data=sub_trim_df, linewidth=0.5
-	                )
-	plt.ylim=(0, 100)
-	#plt.xlim(0, 1)
+    sns.set_context("poster")
+    sns.set_style('whitegrid')
+    sns.set(font_scale=0.75)
+    g = sns.catplot(x='synSAG_score_cat', y='stage_score', hue='stage', kind='box',
+                    data=sub_trim_df, linewidth=0.5
+                    )
+    #plt.ylim=(0, 100)
+    #plt.xlim(0, 1)
 
-	g.savefig('Comp_plots/' + algo + "_synSAG_Completeness_box.png", bbox_inches='tight', dpi=300)
-	plt.clf()
-	plt.close()
-'''
+    g.savefig('Comp_plots/' + algo + "_synSAG_Completeness_box.png", bbox_inches='tight', dpi=300)
+    plt.clf()
+    plt.close()
+
 
 
 
