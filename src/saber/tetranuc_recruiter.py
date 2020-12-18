@@ -164,10 +164,11 @@ def run_tetra_ML(p):
                 aics = []
                 min_bic = None
                 min_aic = None
-                bic_counter = 0
+                #bic_counter = 0
                 aic_counter = 0
                 for i, model in enumerate(models):
                         n_comp = n_components[i]
+                        '''
                         if bic_counter <= 10:
                             try:
                                 bic = model.fit(sag_tetra_df.values,
@@ -184,7 +185,7 @@ def run_tetra_ML(p):
                                 bic_counter = 0
                             else:
                                 bic_counter += 1
-
+                        '''
                         if aic_counter <= 10:
                             try:
                                 aic = model.fit(sag_tetra_df.values,
@@ -202,7 +203,7 @@ def run_tetra_ML(p):
                             else:
                                 aic_counter += 1
                         
-                min_bic_comp = n_components[bics.index(min_bic)]
+                #min_bic_comp = n_components[bics.index(min_bic)]
                 min_aic_comp = n_components[aics.index(min_aic)]
                 #logging.info('[SABer]: Min AIC/BIC at %s/%s, respectively\n' %
                 #      (min_aic_comp, min_bic_comp)
@@ -281,7 +282,7 @@ def run_tetra_ML(p):
                 iso_id_list = list(iso_filter_df['subcontig_id'])
 
                 ab_set = set(gmm_id_list).intersection(svm_id_list)
-               	ac_set = set(gmm_id_list).intersection(iso_id_list)
+                   ac_set = set(gmm_id_list).intersection(iso_id_list)
                 bc_set = set(svm_id_list).intersection(iso_id_list)
                 #comb_set_list = list({*ab_set, *ac_set, *bc_set})
                 #comb_set_list = list(set(list(ab_set) + list(ac_set) + list(bc_set)))
@@ -369,7 +370,7 @@ def filter_tetras(sag_id, mg_headers, tetra_id, tetra_df):
             mg_recruit_df['subcontig_recruits'] >= 3
             ]
     elif ((tetra_id == 'comb') or (tetra_id == 'iso')):
-    	mg_recruit_filter_df = mg_recruit_df.loc[
+        mg_recruit_filter_df = mg_recruit_df.loc[
             mg_recruit_df['percent_recruited'] >= 0.51
             ]
     tetra_max_list = []
