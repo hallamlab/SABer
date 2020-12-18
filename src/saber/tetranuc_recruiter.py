@@ -94,7 +94,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
         )
 
     tetra_df_dict = {'gmm': gmm_concat_df, 'svm': svm_concat_df, 'iso': iso_concat_df,
-        'comb': gmm_concat_df
+        'comb': comb_concat_df
         }
 
     return tetra_df_dict
@@ -283,8 +283,9 @@ def run_tetra_ML(p):
                 ab_set = set(gmm_id_list).intersection(svm_id_list)
                	ac_set = set(gmm_id_list).intersection(iso_id_list)
                 bc_set = set(svm_id_list).intersection(iso_id_list)
-                comb_set_list = list({*ab_set, *ac_set, *bc_set})
+                #comb_set_list = list({*ab_set, *ac_set, *bc_set})
                 #comb_set_list = list(set(list(ab_set) + list(ac_set) + list(bc_set)))
+                comb_set_list = list(set(list(gmm_id_list) + list(svm_id_list) + list(iso_id_list)))
                 #comb_set_list = list(ac_set)
                 comb_pass_list = []
                 for md_nm in comb_set_list:
@@ -362,17 +363,13 @@ def filter_tetras(sag_id, mg_headers, tetra_id, tetra_df):
                                          mg_recruit_df['subcontig_total']
     mg_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
     # Only pass contigs that have the magjority of subcontigs recruited (>= N%)
-    if tetra_id == 'svm':
+    if ((tetra_id == 'svm') or (tetra_id == 'gmm')):
         mg_recruit_filter_df = mg_recruit_df.loc[
             #mg_recruit_df['percent_recruited'] >= 0.51
             mg_recruit_df['subcontig_recruits'] >= 3
             ]
-    elif tetra_id == 'comb':
+    elif ((tetra_id == 'comb') or (tetra_id == 'iso')):
     	mg_recruit_filter_df = mg_recruit_df.loc[
-            mg_recruit_df['percent_recruited'] >= 0.51
-            ]
-    else:
-        mg_recruit_filter_df = mg_recruit_df.loc[
             mg_recruit_df['percent_recruited'] >= 0.51
             ]
     tetra_max_list = []
