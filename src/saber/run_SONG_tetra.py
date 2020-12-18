@@ -22,7 +22,7 @@ def get_kmer(seq, n):
             yield result
 
 
-
+'''
 fasta_file = '/home/rmclaughlin/sharknado/Sandbox/Ryan/SABer/SABer_stdout_3000/subcontigs/CAMI_high_GoldStandardAssembly.3000.subcontigs.fasta'
 
 fasta = pyfastx.Fasta(fasta_file)
@@ -96,24 +96,25 @@ print(clr_df.head())
 clr_df.reset_index().to_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.compliment.tetras.tsv', sep='\t',
                             index=False
                             )
-sys.exit()
-#mg_tetra_file = sys.argv[1]
-#mg_tetra_df = pd.read_csv(mg_tetra_file, header=0, sep='\t', index_col=['contig_id'])
-
+'''
+clr_df = pd.read_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.compliment.tetras.tsv', sep='\t',
+                     header=0, index_col='contig_id'
+                     )
 for n in [10, 20, 40, 80]:
-    print('Transforming data with SONG, using ' + str(n) + ' components')
-    song_model = SONG(n_components=n) #, min_dist=0, n_neighbors=1)
-    song_trans = song_model.fit_transform(clr_df.values)
-    song_df = pd.DataFrame(song_trans, index=clr_df.index.values)
-    song_df.reset_index().to_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.SONG.' + str(n) + '.tsv',
-                                 sep='\t', index=False
-                                 )
+    #print('Transforming data with SONG, using ' + str(n) + ' components')
+    #song_model = SONG(n_components=n) #, min_dist=0, n_neighbors=1)
+    #song_trans = song_model.fit_transform(clr_df.values)
+    #song_df = pd.DataFrame(song_trans, index=clr_df.index.values)
+    #song_df.reset_index().to_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.SONG.' + str(n) + '.tsv',
+    #                             sep='\t', index=False
+    #                             )
     
     print('Transforming data with PCA, using ' + str(n) + ' components')
     pca = decomposition.PCA(n_components=n)
     pca.fit(clr_df.values)
     pca_trans = pca.transform(clr_df.values)
+    print('Explained variance = ', sum(pca.explained_variance_ratio_))
     pca_df = pd.DataFrame(pca_trans, index=clr_df.index.values)
-    pca_df.reset_index().to_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.PCA.' + str(n) + '.tsv',
+    pca_df.reset_index().to_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.compliment.PCA.' + str(n) + '.tsv',
                                 sep='\t', index=False
                                 )
