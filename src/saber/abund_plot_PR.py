@@ -1,22 +1,19 @@
-import pandas as pd
 import matplotlib
+import pandas as pd
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import seaborn as sns; sns.set(style="ticks", color_codes=True)
-import numpy as np
-import sys
-import os
-from os import listdir, makedirs, path
+import seaborn as sns;
+
+sns.set(style="ticks", color_codes=True)
+
 pd.set_option('display.max_columns', None)
-from sklearn.metrics import auc
-import math
+
 pd.set_option('mode.chained_assignment', None)
-import itertools
 
 sns.set_context("poster")
 sns.set_style('whitegrid')
 sns.set(font_scale=1.0)
-
 
 pred_file = 'CAMI_high_GoldStandardAssembly.SCORES.filtered.tsv'
 src2sag_file = 'src2sag_map.tsv'
@@ -49,9 +46,9 @@ pred_df['CAMI_genomeID'] = [sag2src_dict[x] for x in pred_df['sag_id']]
 pred_df = pd.merge(pred_df, src_count_df, on='CAMI_genomeID', how='left')
 pred_df = pred_df.dropna()
 pred_df = pred_df.loc[((pred_df['TP'] > 0) | (pred_df['FP'] > 0))]
-pred_df['nu_gamma'] = [str(x[0]) + '_' + str(x[1]) for x in 
-                                zip(pred_df['nu'], pred_df['gamma'])
-                                ]
+pred_df['nu_gamma'] = [str(x[0]) + '_' + str(x[1]) for x in
+                       zip(pred_df['nu'], pred_df['gamma'])
+                       ]
 pred_df = pred_df.sort_values(['MCC'], ascending=[False])
 PR_df = pred_df.drop_duplicates(subset=['sag_id'], keep='first')
 PR_df = PR_df[['sag_id', 'MCC']]
@@ -61,8 +58,8 @@ filter_df = merge_df.loc[(merge_df['MCC'] >= merge_df['best_MCC'])]
 incl_dict = {'majority': 0, 'all': 1}
 lev_dict = {'strain': 0, 'exact': 1}
 trans_dict = {'StandardScaler': 0, 'MinMaxScaler': 1, 'raw': 2}
-gamma_dict = {'scale':0, '1e-06':1, '1e-05':2, '0.0001':3, '0.001':4, '0.01':5, '0.1':6,
-              '1':7, '10':8, '100':9, '1000':10, '10000':11, '100000':12
+gamma_dict = {'scale': 0, '1e-06': 1, '1e-05': 2, '0.0001': 3, '0.001': 4, '0.01': 5, '0.1': 6,
+              '1': 7, '10': 8, '100': 9, '1000': 10, '10000': 11, '100000': 12
               }
 filter_df['inclusion_sorter'] = [incl_dict[x] for x in filter_df['inclusion']]
 filter_df['level_sorter'] = [lev_dict[x] for x in filter_df['level']]
@@ -70,20 +67,20 @@ filter_df['transformation_sorter'] = [trans_dict[x] for x in filter_df['transfor
 filter_df['gamma_sorter'] = [gamma_dict[x] for x in filter_df['gamma']]
 filter_df = filter_df.sort_values(['nu', 'gamma_sorter', 'transformation_sorter',
                                    'inclusion_sorter', 'level_sorter'],
-                                   ascending=[False, True, True, True, True]
-                                   )
+                                  ascending=[False, True, True, True, True]
+                                  )
 num_1_df = filter_df.drop_duplicates(subset=['sag_id'], keep='first')
 
 keep_list = ['sag_id', 'level', 'inclusion', 'transformation', 'gamma', 'nu', 'precision', 'MCC', 'sensitivity']
 pred_stack_df = num_1_df[keep_list].set_index(['sag_id', 'level', 'inclusion',
-                                              'transformation', 'gamma', 'nu']).stack().reset_index()
+                                               'transformation', 'gamma', 'nu']).stack().reset_index()
 pred_stack_df.columns = ['sag_id', 'level', 'inclusion', 'transformation',
                          'gamma', 'nu', 'metric', 'score'
                          ]
 pred_stack_df['combo'] = [x[0] + '_' + x[1] + '_' + x[2] for x in zip(pred_stack_df['level'],
                                                                       pred_stack_df['inclusion'],
                                                                       pred_stack_df['transformation'])
-                                                                       ]
+                          ]
 
 mean_df = pred_stack_df.groupby(['level', 'inclusion', 'transformation', 'metric']
                                 )['score'].mean().unstack('metric').reset_index()
@@ -92,44 +89,44 @@ mean_df = mean_df.sort_values(['round_MCC'], ascending=[False])
 mean_df.to_csv('PR_plots/Mean_stats.tsv', sep='\t', index=False)
 
 flierprops = dict(markerfacecolor='0.75', markersize=5, markeredgecolor='w',
-              linestyle='none')
+                  linestyle='none')
 
 ax = sns.catplot(x="metric", y="score", hue="level", kind='box',
-                    data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
-                    flierprops=flierprops)
+                 data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
+                 flierprops=flierprops)
 plt.savefig('PR_plots/level_boxplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
 ax = sns.catplot(x="metric", y="score", hue="inclusion", kind='box',
-                    data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
-                    flierprops=flierprops)
+                 data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
+                 flierprops=flierprops)
 plt.savefig('PR_plots/inclusion_boxplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
 ax = sns.catplot(x="metric", y="score", hue="transformation", kind='box',
-                    data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
-                    flierprops=flierprops)
+                 data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
+                 flierprops=flierprops)
 plt.savefig('PR_plots/transformation_boxplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
 ax = sns.catplot(x="metric", y="score", hue="combo", kind='box',
-                    data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
-                    flierprops=flierprops)
+                 data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
+                 flierprops=flierprops)
 plt.savefig('PR_plots/combo_boxplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
 count_df = num_1_df[['level', 'inclusion', 'transformation', 'sag_id']
-                         ].groupby(['level', 'inclusion', 'transformation']
-                                   ).count().reset_index()
+].groupby(['level', 'inclusion', 'transformation']
+          ).count().reset_index()
 count_df.columns = ['level', 'inclusion', 'transformation', 'count']
 count_df['combo'] = [x[0] + '_' + x[1] + '_' + x[2] for x in zip(count_df['level'],
-                                                                      count_df['inclusion'],
-                                                                      count_df['transformation'])
-                                                                       ]
+                                                                 count_df['inclusion'],
+                                                                 count_df['transformation'])
+                     ]
 
 count_df = count_df.sort_values(['count'], ascending=[False])
 g = sns.barplot(data=count_df, x="count", y="combo")
@@ -141,9 +138,9 @@ top_level = count_df['level'].iloc[0]
 top_inclusion = count_df['inclusion'].iloc[0]
 top_transformation = count_df['transformation'].iloc[0]
 top_df = pred_df.loc[((pred_df['level'] == top_level) &
-                       (pred_df['inclusion'] == top_inclusion) &
-                       (pred_df['transformation'] == top_transformation))
-                       ]
+                      (pred_df['inclusion'] == top_inclusion) &
+                      (pred_df['transformation'] == top_transformation))
+]
 
 '''
 PR_top_df = top_df.drop_duplicates(subset=['sag_id'],
@@ -177,36 +174,36 @@ for sag_id in set(top_df['sag_id']):
     rank_sub_list.append(rank_df)
 
 concat_df = pd.concat(best_sub_list)
-#concat_df = concat_df.loc[concat_df['gamma'] != 'scale']
-#concat_df['gamma'] = pd.to_numeric(concat_df['gamma'], errors='coerce')
+# concat_df = concat_df.loc[concat_df['gamma'] != 'scale']
+# concat_df['gamma'] = pd.to_numeric(concat_df['gamma'], errors='coerce')
 # select the config that overfits the least
 concat_df['gamma_sorter'] = [gamma_dict[x] for x in concat_df['gamma']]
 concat_df = concat_df.sort_values(['round_MCC', 'nu', 'gamma_sorter'],
-                                   ascending=[False, False, True])
+                                  ascending=[False, False, True])
 sag_dedup_df = concat_df.drop_duplicates(subset='sag_id', keep='first')
 
-keep_list = ['sag_id', 'level', 'inclusion', 'transformation', 'gamma', 'nu', 'precision','MCC', 'sensitivity']
+keep_list = ['sag_id', 'level', 'inclusion', 'transformation', 'gamma', 'nu', 'precision', 'MCC', 'sensitivity']
 pred_stack_df = sag_dedup_df[keep_list].set_index(['sag_id', 'level', 'inclusion',
-                                              'transformation', 'gamma', 'nu']).stack().reset_index()
+                                                   'transformation', 'gamma', 'nu']).stack().reset_index()
 pred_stack_df.columns = ['sag_id', 'level', 'inclusion', 'transformation',
                          'gamma', 'nu', 'metric', 'score'
                          ]
-pred_stack_df['nu_gamma'] = [str(x[0]) + '_' + str(x[1]) for x in 
+pred_stack_df['nu_gamma'] = [str(x[0]) + '_' + str(x[1]) for x in
                              zip(pred_stack_df['nu'], pred_stack_df['gamma'])
                              ]
 pred_stack_df['gamma_sorter'] = [gamma_dict[x] for x in pred_stack_df['gamma']]
 pred_stack_df = pred_stack_df.sort_values(['nu', 'gamma_sorter'], ascending=[True, True])
 
 ax = sns.catplot(x="metric", y="score", hue="gamma", kind='box',
-                    data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
-                    flierprops=flierprops)
+                 data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
+                 flierprops=flierprops)
 plt.savefig('PR_plots/gamma_boxplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
 ax = sns.catplot(x="metric", y="score", hue="nu", kind='box',
-                    data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
-                    flierprops=flierprops)
+                 data=pred_stack_df, aspect=2, palette=sns.light_palette("black"),
+                 flierprops=flierprops)
 plt.savefig('PR_plots/nu_boxplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
@@ -226,36 +223,35 @@ plt.close()
 
 # Rank the configs per sag
 rank_concat_df = pd.concat(rank_sub_list)
-#rank_concat_df = rank_concat_df.loc[rank_concat_df['gamma'] != 'scale']
-#rank_concat_df['gamma'] = pd.to_numeric(rank_concat_df['gamma'], errors='coerce')
+# rank_concat_df = rank_concat_df.loc[rank_concat_df['gamma'] != 'scale']
+# rank_concat_df['gamma'] = pd.to_numeric(rank_concat_df['gamma'], errors='coerce')
 best_config_df = rank_concat_df.loc[((rank_concat_df['nu'] == top_nu) &
                                      (rank_concat_df['gamma'] == top_gamma)
                                      )]
-mean_P = best_config_df['precision'].mean()*100
-mean_MCC = best_config_df['MCC'].mean()*100
-mean_R = best_config_df['sensitivity'].mean()*100
-max_P = best_config_df['precision'].max()*100
-max_MCC = best_config_df['MCC'].max()*100
-max_R = best_config_df['sensitivity'].max()*100
-min_P = best_config_df['precision'].min()*100
-min_MCC = best_config_df['MCC'].min()*100
-min_R = best_config_df['sensitivity'].min()*100
-#tot_count = len(best_config_df['sag_id'])
-#top_5 = (len(best_config_df['rank'].loc[best_config_df['rank'] <= 5])/tot_count)*100
-#top_10 = (len(best_config_df['rank'].loc[best_config_df['rank'] <= 10])/tot_count)*100
-#top_20 = (len(best_config_df['rank'].loc[best_config_df['rank'] <= 20])/tot_count)*100
+mean_P = best_config_df['precision'].mean() * 100
+mean_MCC = best_config_df['MCC'].mean() * 100
+mean_R = best_config_df['sensitivity'].mean() * 100
+max_P = best_config_df['precision'].max() * 100
+max_MCC = best_config_df['MCC'].max() * 100
+max_R = best_config_df['sensitivity'].max() * 100
+min_P = best_config_df['precision'].min() * 100
+min_MCC = best_config_df['MCC'].min() * 100
+min_R = best_config_df['sensitivity'].min() * 100
+# tot_count = len(best_config_df['sag_id'])
+# top_5 = (len(best_config_df['rank'].loc[best_config_df['rank'] <= 5])/tot_count)*100
+# top_10 = (len(best_config_df['rank'].loc[best_config_df['rank'] <= 10])/tot_count)*100
+# top_20 = (len(best_config_df['rank'].loc[best_config_df['rank'] <= 20])/tot_count)*100
 g = sns.displot(best_config_df, x="rank")
 text_str = ''.join(['Mean:\n  P=', str(mean_P.round(2)), '\n  R=', str(mean_R.round(2)),
                     '\n  MCC=', str(mean_MCC.round(2)),
-                    #'\nMax:\n  P=', str(max_P.round(2)), '\n  R=', str(max_R.round(2)),
-                    #'\n  MCC=', str(max_MCC.round(2)),
-                    #'\nMin:\n  P=', str(min_P.round(2)), '\n  R=', str(min_R.round(2)),
-                    #'\n  MCC=', str(min_MCC.round(2))
+                    # '\nMax:\n  P=', str(max_P.round(2)), '\n  R=', str(max_R.round(2)),
+                    # '\n  MCC=', str(max_MCC.round(2)),
+                    # '\nMin:\n  P=', str(min_P.round(2)), '\n  R=', str(min_R.round(2)),
+                    # '\n  MCC=', str(min_MCC.round(2))
                     ])
 for ax in g.axes.flat:
-  ax.text(30, 800, text_str, fontsize=9)
+    ax.text(30, 800, text_str, fontsize=9)
 plt.savefig('PR_plots/best_config_histo.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 print(top_level, top_inclusion, top_transformation, top_nu, top_gamma)
-

@@ -1,22 +1,21 @@
 import logging
-import sourmash
-from os.path import isfile
-from os.path import join as o_join
-import pandas as pd
-import saber.utilities as s_utils
 import multiprocessing
 import sys
-from psutil import virtual_memory
+from os.path import isfile
+from os.path import join as o_join
+
 import numpy as np
+import pandas as pd
+import saber.utilities as s_utils
+import sourmash
 from tqdm import tqdm
-from subprocess import Popen
-import time
 
 pd.set_option('display.max_columns', None)
 
+
 def build_signature(p):
     header, seq = p
-    mg_minhash = sourmash.MinHash(n=10, ksize=51) # , scaled=100)
+    mg_minhash = sourmash.MinHash(n=10, ksize=51)  # , scaled=100)
     mg_minhash.add_sequence(str(seq), force=True)
     mg_sig = sourmash.SourmashSignature(mg_minhash, name=header)
 
@@ -25,8 +24,8 @@ def build_signature(p):
 
 def compare_sigs(p):
     sag_id, sag_sig_list, mhr_path, sig_path, mg_sig_list, jacc_threshold = p
-    #sag_subcontigs = s_utils.get_seqs(sag_file)
-    #sag_headers = tuple(sag_subcontigs.keys())
+    # sag_subcontigs = s_utils.get_seqs(sag_file)
+    # sag_headers = tuple(sag_subcontigs.keys())
 
     # Calculate\Load MinHash Signatures with SourMash for SAG subseqs
     '''
@@ -57,7 +56,7 @@ def compare_sigs(p):
         with open(o_join(sig_path, sag_id + '.SAG.sig'), 'w') as sags_out:
             sourmash.signature.save_signatures([sag_sig], fp=sags_out)
     '''
-    #logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
+    # logging.info('[SABer]: Comparing  %s and MetaG signature\n' % sag_id)
     pass_list = []
     for sag_sig in sag_sig_list:
         for mg_sig in mg_sig_list:
@@ -65,7 +64,7 @@ def compare_sigs(p):
             mg_nm = mg_sig.name()
             if jacc_sim >= jacc_threshold:
                 pass_list.append([sag_id, mg_nm, mg_nm.rsplit('_', 1)[0], str(jacc_sim), True])
-            #else:
+            # else:
             #    pass_list.append([sag_id, mg_nm, mg_nm.rsplit('_', 1)[0], str(jacc_sim), 'False'])
     pass_list = tuple(pass_list)
 
@@ -73,14 +72,14 @@ def compare_sigs(p):
 
 
 def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
-                            jacc_threshold, mh_per_pass, nthreads, force
-                            ):
+                          jacc_threshold, mh_per_pass, nthreads, force
+                          ):
     logging.info('[SABer]: MinHash Recruitment Algorithm\n')
     # Calculate/Load MinHash Signatures with SourMash for MG subseqs
     mg_id = mg_sub_file[0]
     if ((isfile(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'))) &
-        (force == False)
-        ):
+            (force == False)
+    ):
         minhash_filter_df = pd.read_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), header=0,
                                         sep='\t'
                                         )
@@ -97,15 +96,15 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         for i, sag_rec in enumerate(sag_sub_files):
             sag_id, sag_file = sag_rec
             if isfile(o_join(mhr_path, sag_id + '.mhr_recruits.tsv')):
-                #logging.info('[SABer]: Loading %s and MetaG signature recruit list\n' % sag_id)
+                # logging.info('[SABer]: Loading %s and MetaG signature recruit list\n' % sag_id)
                 pass_df = pd.read_csv(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), header=0,
                                       sep='\t'
                                       )
                 minhash_pass_list.append(pass_df)
-                l+=1
+                l += 1
             else:
                 build_list.append(sag_rec)
-                b+=1
+                b += 1
             logging.info('\r[SABer]: Loading/Comparing SAG and MetaG signatures: {}/{} done'.format(l, b))
         logging.info('\n')
         if b != 0:
@@ -113,20 +112,20 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                 logging.info('[SABer]: Loading %s Signatures\n' % mg_id)
                 mg_sig_list = tuple(sourmash.signature.load_signatures(o_join(sig_path, mg_id + \
                                                                               '.metaG.sig')
-                                                                                ))
+                                                                       ))
             else:
                 logging.info('[SABer]: Building Signatures for %s\n' % mg_id)
-                pool = multiprocessing.Pool(processes=nthreads) # TODO: convert to Ray
+                pool = multiprocessing.Pool(processes=nthreads)  # TODO: convert to Ray
                 arg_list = []
                 for i, mg_head in enumerate(mg_headers):
-                    logging.info('\r[SABer]: Building multi-pool: {0:.0%} done'.format(i/len(mg_subcontigs)))
+                    logging.info('\r[SABer]: Building multi-pool: {0:.0%} done'.format(i / len(mg_subcontigs)))
                     arg_list.append([mg_head, str(mg_subcontigs[mg_head].seq)])
                 logging.info('\n')
                 results = pool.imap_unordered(build_signature, arg_list)
                 logging.info('\r[SABer]: Executing multi-pool:')
                 mg_sig_list = []
                 for i, mg_sig in enumerate(results):
-                    logging.info('\r[SABer]: Executing multi-pool: {0:.0%} done'.format(i/len(arg_list)))
+                    logging.info('\r[SABer]: Executing multi-pool: {0:.0%} done'.format(i / len(arg_list)))
                     mg_sig_list.append(mg_sig)
                 logging.info('\n')
                 pool.close()
@@ -144,23 +143,23 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                 if isfile(o_join(sig_path, sag_id + '.SAG.sig')):
                     logging.info('[SABer]: Loading Signature for %s\n' % sag_id)
                     sag_sig_list = tuple(sourmash.signature.load_signatures(o_join(sig_path,
-                                                                         sag_id + '.SAG.sig')
-                                                                    ))
+                                                                                   sag_id + '.SAG.sig')
+                                                                            ))
                 else:
                     logging.info('[SABer]: Building Signatures for %s\n' % sag_id)
                     sag_subcontigs = s_utils.get_seqs(sag_file)
                     sag_headers = tuple(sag_subcontigs.keys())
-                    pool = multiprocessing.Pool(processes=nthreads) # TODO: convert to Ray
+                    pool = multiprocessing.Pool(processes=nthreads)  # TODO: convert to Ray
                     arg_list = []
                     for i, sag_head in enumerate(sag_headers):
-                        logging.info('\r[SABer]: Building multi-pool: {0:.0%} done'.format(i/len(sag_subcontigs)))
+                        logging.info('\r[SABer]: Building multi-pool: {0:.0%} done'.format(i / len(sag_subcontigs)))
                         arg_list.append([sag_head, str(sag_subcontigs[sag_head].seq)])
                     logging.info('\n')
                     results = pool.imap_unordered(build_signature, arg_list)
                     logging.info('\r[SABer]: Executing multi-pool:')
                     sag_sig_list = []
                     for i, sag_sig in enumerate(results):
-                        logging.info('\r[SABer]: Executing multi-pool: {0:.0%} done'.format(i/len(arg_list)))
+                        logging.info('\r[SABer]: Executing multi-pool: {0:.0%} done'.format(i / len(arg_list)))
                         sag_sig_list.append(sag_sig)
                     logging.info('\n')
                     pool.close()
@@ -194,16 +193,16 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                 logging.info('[SABer]: Comparing Signature for %s\n' % sag_id)
                 merge_list = []
                 for i, o_list in enumerate(results):
-                    sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
+                    sys.stderr.write('\rdone {0:.0%}'.format(i / len(arg_list)))
                     merge_list.extend(o_list)
                 merge_df = pd.DataFrame(merge_list, columns=['sag_id', 'subcontig_id', 'contig_id',
-                                                              'jacc_sim', 'recruit_bool'
-                                                              ])
+                                                             'jacc_sim', 'recruit_bool'
+                                                             ])
                 merge_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
                 merge_df.drop_duplicates(subset='subcontig_id', inplace=True)
                 merge_df.to_csv(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), sep='\t',
-                                 index=False
-                                 )
+                                index=False
+                                )
                 pool.close()
                 pool.join()
                 minhash_pass_list.append(merge_df)
@@ -224,7 +223,6 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         mh_max_df = minhash_recruit_df.groupby(['sag_id', 'contig_id'])['jacc_sim'].max().reset_index()
         mh_max_df.columns = ['sag_id', 'contig_id', 'jacc_sim_max']
 
-
         # Build subcontig count for each MG contig
         mg_contig_list = [x.rsplit('_', 1)[0] for x in mg_headers]
         mg_tot_df = pd.DataFrame(zip(mg_contig_list, mg_headers),
@@ -233,10 +231,10 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         mg_tot_cnt_df.columns = ['contig_id', 'subcontig_total']
         mh_recruit_df = mh_cnt_df.merge(mg_tot_cnt_df, how='left', on='contig_id')
         mh_recruit_df['percent_recruited'] = mh_recruit_df['subcontig_recruits'] / \
-                                               mh_recruit_df['subcontig_total']
+                                             mh_recruit_df['subcontig_total']
         mh_jacc_merge_df = mh_recruit_df.merge(mh_avg_df, how='left', on=['sag_id', 'contig_id'])
         mh_max_merge_df = mh_jacc_merge_df.merge(mh_max_df, how='left', on=['sag_id', 'contig_id'])
-        #mh_recruit_filter_df = mh_max_merge_df.loc[(mh_max_merge_df['jacc_sim_avg'] == 1.0) |
+        # mh_recruit_filter_df = mh_max_merge_df.loc[(mh_max_merge_df['jacc_sim_avg'] == 1.0) |
         #                                            ((mh_max_merge_df['jacc_sim_avg'] >= 0.10) &
         #                                             (mh_max_merge_df['percent_recruited'] >= 0.10)
         #                                              )]
@@ -271,20 +269,20 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             mh_max_list.append(sag_merge_df)
         mh_final_max_df = pd.concat(mh_max_list)
         merge_jacc_df = mh_final_max_df.merge(minhash_df, how='left',
-                                              on=['sag_id', 'subcontig_id','contig_id']
+                                              on=['sag_id', 'subcontig_id', 'contig_id']
                                               )
 
         minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] >= 0.40) &
                                                (merge_jacc_df['subcontig_recruits'] > 3)) |
                                               (merge_jacc_df['jacc_sim_max'] >= 0.99)
-                                              ] # |
-                                              #(merge_jacc_df['percent_recruited'] >= 0.25) |
-                                              #(merge_jacc_df['jacc_sim_avg'] >= 0.25)
-                                              #]
+                                              ]  # |
+        # (merge_jacc_df['percent_recruited'] >= 0.25) |
+        # (merge_jacc_df['jacc_sim_avg'] >= 0.25)
+        # ]
 
         minhash_filter_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t',
-                            index=False
-                            )
+                                 index=False
+                                 )
     logging.info('[SABer]: MinHash Recruitment Algorithm Complete\n')
 
     return minhash_filter_df

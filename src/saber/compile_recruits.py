@@ -1,17 +1,15 @@
 import matplotlib
+
 matplotlib.use('agg')
 from os.path import join as o_join
 from os.path import basename
 import pandas as pd
-from subprocess import Popen, PIPE
 import saber.utilities as s_utils
-
 
 
 def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_file, tetra_df_dict,
                          minhash_df, sag_list
-                             ):
-
+                         ):
     mg_contigs_dict = s_utils.get_seqs(mg_file)
     mg_contigs = tuple([(r.name, r.seq) for r in mg_contigs_dict])
 

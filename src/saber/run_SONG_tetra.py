@@ -1,25 +1,19 @@
-from song.song import SONG
-import sys
+from itertools import islice
+
 import pandas as pd
 from sklearn import decomposition
-import numpy as np
-from skbio.stats.composition import clr
-import pyfastx
-from collections import Counter
-from itertools import product, islice
-
 
 
 def get_kmer(seq, n):
-        "Returns a sliding window (of width n) over data from the iterable"
-        "   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                "
-        it = iter(seq)
-        result = tuple(islice(it, n))
-        if len(result) == n:
-            yield result
-        for elem in it:
-            result = result[1:] + (elem,)
-            yield result
+    "Returns a sliding window (of width n) over data from the iterable"
+    "   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                "
+    it = iter(seq)
+    result = tuple(islice(it, n))
+    if len(result) == n:
+        yield result
+    for elem in it:
+        result = result[1:] + (elem,)
+        yield result
 
 
 '''
@@ -101,14 +95,14 @@ clr_df = pd.read_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.compliment.te
                      header=0, index_col='contig_id'
                      )
 for n in [10, 20, 40, 80]:
-    #print('Transforming data with SONG, using ' + str(n) + ' components')
-    #song_model = SONG(n_components=n) #, min_dist=0, n_neighbors=1)
-    #song_trans = song_model.fit_transform(clr_df.values)
-    #song_df = pd.DataFrame(song_trans, index=clr_df.index.values)
-    #song_df.reset_index().to_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.SONG.' + str(n) + '.tsv',
+    # print('Transforming data with SONG, using ' + str(n) + ' components')
+    # song_model = SONG(n_components=n) #, min_dist=0, n_neighbors=1)
+    # song_trans = song_model.fit_transform(clr_df.values)
+    # song_df = pd.DataFrame(song_trans, index=clr_df.index.values)
+    # song_df.reset_index().to_csv('clr_trans/CAMI_high_GoldStandardAssembly.CLR.SONG.' + str(n) + '.tsv',
     #                             sep='\t', index=False
     #                             )
-    
+
     print('Transforming data with PCA, using ' + str(n) + ' components')
     pca = decomposition.PCA(n_components=n)
     pca.fit(clr_df.values)

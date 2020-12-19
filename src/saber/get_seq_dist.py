@@ -1,38 +1,22 @@
-import saber.utilities as s_utils
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import sys
-import os
-import math
-
-import warnings
-import numpy as np
-import scipy.stats as st
-import statsmodels.api as sm
-import matplotlib
-from scipy.stats._continuous_distns import _distn_names
-from scipy.stats._continuous_distns import _distn_names
-#from scipy.stats._discrete_distns import _distn_names as _d_distn_names
-
-from sklearn import linear_model
-#from minepy import MINE
-
-from collections import Counter
-
-from scipy.linalg import eigh, cholesky
-
-from statsmodels.sandbox.stats.runs import runstest_2samp
-
 import logging
-
+import math
 import multiprocessing
-
+import os
 import random
+import sys
+import warnings
 
-import statistics as stat
-
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import saber.utilities as s_utils
+import scipy.stats as st
+import seaborn as sns
 from scipy import interpolate
+from scipy.stats._continuous_distns import _distn_names
+
+# from scipy.stats._discrete_distns import _distn_names as _d_distn_names
+# from minepy import MINE
 
 pd.set_option('float_format', '{:f}'.format)
 pd.options.mode.chained_assignment = None
@@ -79,22 +63,22 @@ def best_fit_distribution(data, bins, num_cores=multiprocessing.cpu_count()):
     x = (x + np.roll(x, -1))[:-1] / 2.0
 
     # Distributions to check
-    DISTRIBUTIONS = [(d,getattr(st, d), data, x, y) for d in _distn_names
-                        if 'levy_stable' not in d
-                        ]
+    DISTRIBUTIONS = [(d, getattr(st, d), data, x, y) for d in _distn_names
+                     if 'levy_stable' not in d
+                     ]
     # Best holders
     best_distribution = st.norm
     best_params = (0.0, 1.0)
     best_sse = np.inf
     best_isf = []
 
-    #print("Building multiprocessing pool")
+    # print("Building multiprocessing pool")
     pool = multiprocessing.Pool(processes=num_cores)
     results = pool.imap_unordered(build_dist, DISTRIBUTIONS)
-    #print("Executing pool")
+    # print("Executing pool")
     merge_list = []
     for i, o in enumerate(results):
-        sys.stderr.write('\r   done {0:.0%}'.format(i/len(DISTRIBUTIONS)))
+        sys.stderr.write('\r   done {0:.0%}'.format(i / len(DISTRIBUTIONS)))
         merge_list.append(o)
     pool.close()
     pool.join()
@@ -114,13 +98,13 @@ def test_dist_fit(data, orig_data, method):
     if method == 'ad':
         stat_results = st.anderson_ksamp([orig_data, data])
     elif method == 'ks':
-        stat_results = st.ks_2samp(orig_data, data) #
+        stat_results = st.ks_2samp(orig_data, data)  #
 
     return stat_results
 
 
 def ks_crit_val(n_trials, alpha):
-    return st.ksone.ppf(1-alpha/2, n_trials)
+    return st.ksone.ppf(1 - alpha / 2, n_trials)
 
 
 def make_pdf(dist, params, size=200):
@@ -134,10 +118,10 @@ def make_pdf(dist, params, size=200):
     # Get sane start and end points of distribution
     start = dist.ppf(0.01, *arg, loc=loc, scale=scale
                      ) if arg else dist.ppf(0.01, loc=loc, scale=scale
-                     )
+                                            )
     end = dist.ppf(0.99, *arg, loc=loc, scale=scale,
-                    ) if arg else dist.ppf(0.99, loc=loc, scale=scale
-                    )
+                   ) if arg else dist.ppf(0.99, loc=loc, scale=scale
+                                          )
 
     # Build PDF and turn into pandas Series
     x = np.linspace(start, end, size)
@@ -150,13 +134,12 @@ def make_pdf(dist, params, size=200):
 def build_syn_count(syn_N, best_dist, best_fit_params, orig_data, min_contigs, max_contigs,
                     num_cores=multiprocessing.cpu_count()
                     ):
-
-    best_syn_stats = False # Dummy values for stats
+    best_syn_stats = False  # Dummy values for stats
     best_syn_contigs = []
 
     syn_param_list = [(best_dist, best_fit_params, orig_data, min_contigs, max_contigs) for x in
-                        range(syn_N)
-                        ]
+                      range(syn_N)
+                      ]
 
     print("Building multiprocessing pool")
     pool = multiprocessing.Pool(processes=num_cores)
@@ -164,7 +147,7 @@ def build_syn_count(syn_N, best_dist, best_fit_params, orig_data, min_contigs, m
     print("Executing pool")
     merge_list = []
     for i, o in enumerate(results):
-        sys.stderr.write('\rdone {0:.0%}'.format(i/len(syn_param_list)))
+        sys.stderr.write('\rdone {0:.0%}'.format(i / len(syn_param_list)))
         merge_list.append(o)
     pool.close()
     pool.join()
@@ -175,8 +158,8 @@ def build_syn_count(syn_N, best_dist, best_fit_params, orig_data, min_contigs, m
             best_syn_contigs = synth_contig_count
 
         elif ((comp_stats.significance_level > best_syn_stats.significance_level) &
-            (comp_stats.statistic < best_syn_stats.statistic)
-            ):
+              (comp_stats.statistic < best_syn_stats.statistic)
+        ):
             best_syn_stats = comp_stats
             best_syn_contigs = synth_contig_count
 
@@ -187,8 +170,8 @@ def syn_count_dist(p):
     best_dist, best_fit_params, orig_data, min_contigs, max_contigs = p
     synth_contig_count = [int(abs(x)) for x in
                           gen_random(best_dist, best_fit_params, len(orig_data), min_contigs,
-                                        max_contigs
-                                        )
+                                     max_contigs
+                                     )
                           ]
     comp_stats = test_dist_fit(synth_contig_count, list(orig_data))
 
@@ -217,19 +200,19 @@ def gen_random(dist, params, size, min_int=0, max_int=0):
     return v
 
 
-logging.basicConfig(filename='build_synthetic_dataset.log',level=logging.DEBUG)
+logging.basicConfig(filename='build_synthetic_dataset.log', level=logging.DEBUG)
 
 # magic values
 step = 1000
 contig_len_min = 2000
 ######################
 
- # open all SAGs FASTAs and count contigs and lengths
+# open all SAGs FASTAs and count contigs and lengths
 if sys.argv[1] == 'True':
     fasta_dir1 = sys.argv[2]
     fasta_list1 = [os.path.join(fasta_dir1, x) for x in os.listdir(fasta_dir1) if (('.fasta' in x)
-                  | ('.fna' in x))
-                  ]
+                                                                                   | ('.fna' in x))
+                   ]
     '''
     fasta_dir2 = sys.argv[3]
     fasta_list2 = [os.path.join(fasta_dir2, x) for x in os.listdir(fasta_dir2) if (('.fasta' in x)
@@ -252,14 +235,14 @@ if sys.argv[1] == 'True':
         j = 0
         for z, seq_rec in enumerate(fasta_dat):
             header, seq = seq_rec
-            if len(seq) >= contig_len_min: # removes seqs shorter than N bp
+            if len(seq) >= contig_len_min:  # removes seqs shorter than N bp
                 seq_rec_list.append([sag_id, j, len(seq), orig_cont_cnt, contig_cnt])
                 j += 1
         sag_seq_list.extend(seq_rec_list)
 
     sag_seq_df = pd.DataFrame(sag_seq_list, columns=['sag_id', 'contig_id', 'seq_len', 'orig_cont_cnt',
-                                                    'contig_cnt']
-                                                    )
+                                                     'contig_cnt']
+                              )
     sag_seq_df.to_csv('Real-SAG_contig_length.tsv', sep='\t', index=False)
 
 else:
@@ -270,7 +253,7 @@ max_len = roundup(max(list(sag_seq_df['seq_len'])), step)
 # trim out outlier high contig count SAGs
 max_contigs = max(list(sag_seq_df['contig_cnt']))
 trim_cnt_list = []
-contig_temp_list = range(1, max_contigs+1)
+contig_temp_list = range(1, max_contigs + 1)
 for m in contig_temp_list:
     if m in list(sag_seq_df['contig_cnt']):
         trim_cnt_list.append(True)
@@ -283,7 +266,7 @@ for i, v in enumerate(trim_cnt_list):
     else:
         false_cnt.append(v)
     if len(false_cnt) >= 10:
-        max_contigs = contig_temp_list[i-10]
+        max_contigs = contig_temp_list[i - 10]
         break
 sag_seq_df = sag_seq_df.loc[sag_seq_df['contig_cnt'] <= max_contigs]
 
@@ -318,7 +301,7 @@ for r in range(1, max_contigs + 1):
         cnt_min = sag_cnt_df['seq_len'].min()
         sag_min_max_dict[r] = (cnt_min, cnt_max)
     else:
-        sag_min_max_dict[r] = sag_min_max_dict[r-1]
+        sag_min_max_dict[r] = sag_min_max_dict[r - 1]
 
 # Calc covariance, pearson, spearman, and MIC for contig count vs. contig len
 X = sag_seq_df['contig_cnt'].values
@@ -381,23 +364,23 @@ plt.clf()
 # Create a custom distribution using the real data
 data2 = sag_contig_df['contig_cnt']
 cont_occ_df = sag_contig_df['contig_cnt'].value_counts().rename_axis('unique_values').reset_index(name='counts')
-cont_occ_dict = {x[0]:x[1] for x in zip(cont_occ_df['unique_values'], cont_occ_df['counts'])}
-cont_occ_df['Hz'] = [x/cont_occ_df['counts'].sum() for x in cont_occ_df['counts']]
+cont_occ_dict = {x[0]: x[1] for x in zip(cont_occ_df['unique_values'], cont_occ_df['counts'])}
+cont_occ_df['Hz'] = [x / cont_occ_df['counts'].sum() for x in cont_occ_df['counts']]
 print(cont_occ_df.head())
 cont_occ_df.sort_values(by='unique_values', inplace=True)
-#xk = cont_occ_df['unique_values']
-#pk = cont_occ_df['Hz']
+# xk = cont_occ_df['unique_values']
+# pk = cont_occ_df['Hz']
 
 # build interpolated contig counts
 f = interpolate.interp1d(cont_occ_df['unique_values'], cont_occ_df['counts'])
-xk = np.arange(1, max_contigs+1, 1)
+xk = np.arange(1, max_contigs + 1, 1)
 y_new = [int(round(y)) for y in f(xk)]
 for i, y in enumerate(y_new):
     if y == 1:
         r_int = random.randint(0, 101)
         if r_int < 50:
             y_new[i] = 0
-pk = [y/sum(y_new) for y in y_new]
+pk = [y / sum(y_new) for y in y_new]
 inter_contig_cnt = []
 for x, y in zip(xk, y_new):
     for y1 in range(y):
@@ -405,22 +388,22 @@ for x, y in zip(xk, y_new):
 
 real_cnt_dist = st.rv_discrete(name='cnt_dist', values=(xk, pk))
 
-#fig, ax = plt.subplots(1, 1)
-#ax.plot(xk, custm.pmf(xk), 'ro', ms=12, mec='r')
-#ax.vlines(xk, 0, custm.pmf(xk), colors='r', lw=4)
+# fig, ax = plt.subplots(1, 1)
+# ax.plot(xk, custm.pmf(xk), 'ro', ms=12, mec='r')
+# ax.vlines(xk, 0, custm.pmf(xk), colors='r', lw=4)
 
 pmf = pd.Series(real_cnt_dist.pmf(xk), xk)
 # Display
-plt.figure(figsize=(12,8))
-#ax = pmf.plot(lw=2, label='PMF', legend=True)
+plt.figure(figsize=(12, 8))
+# ax = pmf.plot(lw=2, label='PMF', legend=True)
 ax = sns.kdeplot(inter_contig_cnt, color='k')
 data2.plot(kind='hist', bins=max_contigs, density=True, alpha=1.0,
            label='Data', legend=False, ax=ax, color='orange'
            )
-#param_names = (best_dist.shapes + ', loc, scale').split(', ') if best_dist.shapes else ['loc', 'scale']
-#param_str = ', '.join(['{}={:0.2f}'.format(k,v) for k,v in zip(param_names, best_fit_params)])
-#dist_str = '{}({})'.format(best_fit_name, param_str)
-#ax.set_title(u'SAG Catelog Contig Count with best fit distribution \n' + dist_str)
+# param_names = (best_dist.shapes + ', loc, scale').split(', ') if best_dist.shapes else ['loc', 'scale']
+# param_str = ', '.join(['{}={:0.2f}'.format(k,v) for k,v in zip(param_names, best_fit_params)])
+# dist_str = '{}({})'.format(best_fit_name, param_str)
+# ax.set_title(u'SAG Catelog Contig Count with best fit distribution \n' + dist_str)
 ax.set_xlabel(u'Contig Count')
 ax.set_ylabel('Frequency')
 plt.savefig('Real_SAGs_Dist_Contig_Count.pdf')
@@ -450,41 +433,41 @@ syn_N = 1000
 best_syn_stats = False
 best_syn_contigs = []
 for N in range(syn_N):
-    sys.stderr.write('\r Count {0:.0%}'.format(N/syn_N))
+    sys.stderr.write('\r Count {0:.0%}'.format(N / syn_N))
     syn_contig_cnt = pd.Series([int(x) for x in real_cnt_dist.rvs(size=len(inter_contig_cnt))])
     comp_stats = test_dist_fit(syn_contig_cnt, data2, 'ad')
     if best_syn_stats == False:
         best_syn_stats = comp_stats
         best_syn_contigs = syn_contig_cnt
-    elif best_syn_stats.statistic > comp_stats.statistic: # best_len_stats.significance_level < comp_stats.significance_level: # ((
+    elif best_syn_stats.statistic > comp_stats.statistic:  # best_len_stats.significance_level < comp_stats.significance_level: # ((
         best_syn_stats = comp_stats
         best_syn_contigs = syn_contig_cnt
-#best_syn_contigs = pd.Series([int(x) for x in real_cnt_dist.rvs(size=len(data2))])
-#best_syn_stats = test_dist_fit(data2, best_syn_contigs, 'ad')
+# best_syn_contigs = pd.Series([int(x) for x in real_cnt_dist.rvs(size=len(data2))])
+# best_syn_stats = test_dist_fit(data2, best_syn_contigs, 'ad')
 
 crit_vals = [str(round(c, 4)) for c in best_syn_stats.critical_values]
 print('\n\nAnderson-Darling 2 sample test for synthetic data: statistic=%s, p-value=%s, critical_values=%s'
-        % (round(best_syn_stats.statistic, 4), round(best_syn_stats.significance_level, 2), ', '.join(crit_vals))
-        )
+      % (round(best_syn_stats.statistic, 4), round(best_syn_stats.significance_level, 2), ', '.join(crit_vals))
+      )
 logging.info('\n\nAnderson-Darling 2 sample test for synthetic data: statistic=%s, p-value=%s, critical_values=%s'
-        % (round(best_syn_stats.statistic, 4), round(best_syn_stats.significance_level, 2), ', '.join(crit_vals))
-        )
+             % (round(best_syn_stats.statistic, 4), round(best_syn_stats.significance_level, 2), ', '.join(crit_vals))
+             )
 
 # Plot Real SAG best dist fitted to synthetic data
 syn_contig_df = pd.DataFrame(best_syn_contigs, columns=['syn_contig_cnt'])
 data = syn_contig_df['syn_contig_cnt']
 # Display
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(12, 8))
 ax = sns.kdeplot(inter_contig_cnt, color='k')
 syn_contig_df.plot(kind='hist', bins=max(list(syn_contig_df['syn_contig_cnt'])),
-                    density=True, alpha=0.5,
-                    label='Data', legend=True, ax=ax, color='b'
-                    )
-#param_names = (best_dist.shapes + ', loc, scale').split(', ') if best_dist.shapes else ['loc', 'scale']
-#param_str = ', '.join(['{}={:0.2f}'.format(k,v) for k,v in zip(param_names, best_fit_params)])
-#dist_str = '{}({})'.format(best_fit_name, param_str)
+                   density=True, alpha=0.5,
+                   label='Data', legend=True, ax=ax, color='b'
+                   )
+# param_names = (best_dist.shapes + ', loc, scale').split(', ') if best_dist.shapes else ['loc', 'scale']
+# param_str = ', '.join(['{}={:0.2f}'.format(k,v) for k,v in zip(param_names, best_fit_params)])
+# dist_str = '{}({})'.format(best_fit_name, param_str)
 stat_str = 'Anderson-Darling 2 sample test for synthetic data: statistic=%s, p-value=%s' \
-        % (round(best_syn_stats.statistic, 4), round(best_syn_stats.significance_level, 2))
+           % (round(best_syn_stats.statistic, 4), round(best_syn_stats.significance_level, 2))
 ax.set_title(u'Synthetic SAG Contig Count with best fit distribution \n' + stat_str)
 ax.set_xlabel(u'Contig Count')
 ax.set_ylabel('Frequency')
@@ -579,25 +562,26 @@ for each in range(1, max_contigs + 1):
     sag_sub_df = sag_seq_df.loc[sag_seq_df['contig_cnt'] == each]
     if sag_sub_df.shape[0] != 0:
         max_sagcont_len = max(list(sag_sub_df['seq_len']))
-        sag_len_interval = pd.interval_range(start=min_contig_len-1, freq=step, end=roundup(max_sagcont_len+step, step))
+        sag_len_interval = pd.interval_range(start=min_contig_len - 1, freq=step,
+                                             end=roundup(max_sagcont_len + step, step))
         sag_sub_df['intervals'] = pd.cut(sag_sub_df['seq_len'], bins=sag_len_interval)
         sag_sub_df['left'] = [x.left for x in sag_sub_df['intervals']]
         # Create a custom distribution using the real data
         len_data = sag_sub_df['left']
         cont_len_df = sag_sub_df['left'].value_counts().rename_axis('unique_values').reset_index(name='counts')
-        cont_len_dict = {x[0]:x[1] for x in zip(cont_len_df['unique_values'], cont_len_df['counts'])}
-        cont_len_df['Hz'] = [x/cont_len_df['counts'].sum() for x in cont_len_df['counts']]
+        cont_len_dict = {x[0]: x[1] for x in zip(cont_len_df['unique_values'], cont_len_df['counts'])}
+        cont_len_df['Hz'] = [x / cont_len_df['counts'].sum() for x in cont_len_df['counts']]
         cont_len_df.sort_values(by='unique_values', inplace=True)
         xk = cont_len_df['unique_values']
         pk = cont_len_df['Hz']
         real_len_dist = st.rv_discrete(name='len_dist', values=(xk, pk))
         pmf = pd.Series(real_len_dist.pmf(xk), xk)
         # Display
-        plt.figure(figsize=(12,8))
+        plt.figure(figsize=(12, 8))
         ax = sns.kdeplot(len_data, color='k')
         len_data.plot(kind='hist', bins=len(sag_len_interval), density=True, alpha=1.0,
-                   label='Data', legend=True, ax=ax, color='orange'
-                   )
+                      label='Data', legend=True, ax=ax, color='orange'
+                      )
         ax.set_xlabel(u'Contig Length')
         ax.set_ylabel('Frequency')
         plt.savefig('real_length_plots/Real_SAGs_Dist_Contig_Length_' + str(each) + '.pdf')
@@ -613,21 +597,21 @@ for each in range(1, max_contigs + 1):
         '''
     else:
         sag_len_dist_dict[each] = sag_len_dist_dict[each - 1]
-        #sag_count_dist_dict[each] = sag_count_dist_dict[each - 1]
+        # sag_count_dist_dict[each] = sag_count_dist_dict[each - 1]
 
 # Building syn_N number of synthetic distributions and then select the best fitting one.
 syn_N = 100
-#best_len_stats = False
-best_sag_dict = {x[0]:(False, []) for x in zip(range(len(best_syn_contigs)), best_syn_contigs)}
+# best_len_stats = False
+best_sag_dict = {x[0]: (False, []) for x in zip(range(len(best_syn_contigs)), best_syn_contigs)}
 real_len_dat = list(sag_seq_df['seq_len'])
 real_len_dat.sort(reverse=False)
-break_list = [x for x in range(len(best_syn_contigs))]*10
+break_list = [x for x in range(len(best_syn_contigs))] * 10
 print('\n')
 for N in range(syn_N):
     # get lengths for all synth contigs
     syn_sag_list = []
     syn_contig_list = []
-    #for i, synth_sag in enumerate(best_syn_contigs):
+    # for i, synth_sag in enumerate(best_syn_contigs):
     for i in break_list:
         synth_sag = best_syn_contigs[i]
         sys.stderr.write('\r                             ')
@@ -656,10 +640,10 @@ for N in range(syn_N):
         comp_stats = test_dist_fit(cont_len_list, sag_i_len, 'ad')
         if best_len_stats == False:
             best_sag_dict[i] = (comp_stats, cont_len_list)
-        elif ((0.05 <= comp_stats.significance_level) & # best_len_stats.significance_level
-                (sum(cont_len_list) > sum(best_sag_dict[i][1]) &
-                (comp_stats.statistic < comp_stats.critical_values[2]))
-                ): # best_len_stats.statistic > comp_stats.statistic
+        elif ((0.05 <= comp_stats.significance_level) &  # best_len_stats.significance_level
+              (sum(cont_len_list) > sum(best_sag_dict[i][1]) &
+               (comp_stats.statistic < comp_stats.critical_values[2]))
+        ):  # best_len_stats.statistic > comp_stats.statistic
             best_sag_dict[i] = (comp_stats, cont_len_list)
             break_list.remove(i)
     '''
@@ -691,9 +675,9 @@ for k in best_sag_dict.keys():
     i_sag_stats, i_sag_len = best_sag_dict[k]
     for s, i_cont in enumerate(i_sag_len):
         r_list = [k, s, i_cont, len(i_sag_len), i_sag_stats.statistic,
-                    i_sag_stats.significance_level,
-                    ','.join([str(x) for x in i_sag_stats.critical_values])
-                    ]
+                  i_sag_stats.significance_level,
+                  ','.join([str(x) for x in i_sag_stats.critical_values])
+                  ]
         syn_sag_list.append(r_list)
 '''
 crit_vals = [str(round(c, 4)) for c in best_len_stats.critical_values]
@@ -705,8 +689,8 @@ logging.info('\n\nAnderson-Darling 2 sample test for synthetic data: statistic=%
         )
 '''
 syn_sag_df = pd.DataFrame(syn_sag_list, columns=['sag_id', 'contig_id', 'seq_len', 'contig_cnt',
-                            'statistic', 'p_value', 'crit_values']
-                            )
+                                                 'statistic', 'p_value', 'crit_values']
+                          )
 syn_sag_df.to_csv('Synth-SAG_contig_length.tsv', sep='\t', index=False)
 
 # Print basic metrics for synthetic SAGs
@@ -727,7 +711,6 @@ print('Max contig length: %s' % max_contig_len)
 logging.info('Max contig length: %s' % max_contig_len)
 print('Min contig length: %s' % min_contig_len)
 logging.info('Min contig length: %s' % min_contig_len)
-
 
 # Calc covariance, pearson, spearman, and MIC for contig count vs. contig len
 X = syn_sag_df['contig_cnt'].values
@@ -763,37 +746,20 @@ plt.savefig('Synthetic_SAGs_scatter.pdf')
 plt.clf()
 plt.close()
 
-
 sys.exit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Plot Real SAG best dist fitted to synthetic data
 data = syn_sag_df['seq_len']
 # Make PDF with best params
 pdf = make_pdf(best_dist, best_fit_params, size=len(data))
 # Display
-plt.figure(figsize=(12,8))
+plt.figure(figsize=(12, 8))
 ax = pdf.plot(lw=2, label='PDF', legend=True)
 data.plot(kind='hist', bins=len(sag_len_interval), density=True, alpha=0.5,
           label='Data', legend=True, ax=ax
           )
 param_names = (best_dist.shapes + ', loc, scale').split(', ') if best_dist.shapes else ['loc', 'scale']
-param_str = ', '.join(['{}={:0.2f}'.format(k,v) for k,v in zip(param_names, best_fit_params)])
+param_str = ', '.join(['{}={:0.2f}'.format(k, v) for k, v in zip(param_names, best_fit_params)])
 dist_str = '{}({})'.format(best_fit_name, param_str)
 ax.set_title(u'Synthetic SAG Contig Length with best fit distribution \n' + dist_str)
 ax.set_xlabel(u'Contig Length (bp)')
@@ -805,7 +771,7 @@ plt.close()
 # Reproduce correlation b/t Contig count and length
 # Choice of cholesky or eigenvector method.
 method = 'cholesky'
-#method = 'eigenvectors'
+# method = 'eigenvectors'
 
 # We need a matrix `c` for which `c*c^T = r`.  We can use, for example,
 # the Cholesky decomposition, or the we can construct `c` from the
@@ -852,4 +818,3 @@ mine = MINE(alpha=0.6, c=15, est="mic_approx")
 mine.compute_score(X, y)
 print_stats(mine)
 '''
-

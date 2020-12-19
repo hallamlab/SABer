@@ -1,9 +1,11 @@
-import pandas as pd
 import os
 import sys
-from os.path import join as joinpath
 from os import listdir, makedirs, path
+from os.path import join as joinpath
+
+import pandas as pd
 from Bio import SeqIO
+
 pd.set_option('display.max_columns', None)
 from tqdm import tqdm
 import multiprocessing
@@ -13,26 +15,26 @@ def calc_err(df):
     # build error type df for each filter separately
     group_df = df.copy()
     group_df['precision'] = group_df['TruePos'] / \
-                                (group_df['TruePos'] + group_df['FalsePos'])
+                            (group_df['TruePos'] + group_df['FalsePos'])
     group_df['sensitivity'] = group_df['TruePos'] / \
-                                (group_df['TruePos'] + group_df['FalseNeg'])
+                              (group_df['TruePos'] + group_df['FalseNeg'])
     group_df['specificity'] = group_df['TrueNeg'] / \
-                                (group_df['TrueNeg'] + group_df['FalsePos'])
+                              (group_df['TrueNeg'] + group_df['FalsePos'])
     group_df['type1_error'] = group_df['FalsePos'] / \
-                                (group_df['FalsePos'] + group_df['TrueNeg'])
+                              (group_df['FalsePos'] + group_df['TrueNeg'])
     group_df['type2_error'] = group_df['FalseNeg'] / \
-                                (group_df['FalseNeg'] + group_df['TruePos'])
+                              (group_df['FalseNeg'] + group_df['TruePos'])
     group_df['F1_score'] = 2 * ((group_df['precision'] * group_df['sensitivity']) / \
                                 (group_df['precision'] + group_df['sensitivity']))
     group_df['N'] = group_df['TrueNeg'] + group_df['TruePos'] + \
                     group_df['FalseNeg'] + group_df['FalsePos']
     group_df['S'] = (group_df['TruePos'] + group_df['FalseNeg']) / group_df['N']
     group_df['P'] = (group_df['TruePos'] + group_df['FalsePos']) / group_df['N']
-    group_df['MCC'] = ((group_df['TruePos']/group_df['N'])-group_df['S']*group_df['P']) / \
-                        ((group_df['S']*group_df['P'])*(1-group_df['S'])*(1-group_df['P']))**(1/2)
+    group_df['MCC'] = ((group_df['TruePos'] / group_df['N']) - group_df['S'] * group_df['P']) / \
+                      ((group_df['S'] * group_df['P']) * (1 - group_df['S']) * (1 - group_df['P'])) ** (1 / 2)
     group_df.set_index(['sag_id', 'algorithm', 'level'], inplace=True)
     stats_df = group_df[['precision', 'sensitivity', 'specificity', 'type1_error',
-                            'type2_error', 'F1_score', 'MCC']]
+                         'type2_error', 'F1_score', 'MCC']]
     stack_df = stats_df.stack().reset_index()
     stack_df.columns = ['sag_id', 'algorithm', 'level', 'statistic', 'score']
     return stack_df
@@ -43,7 +45,7 @@ def get_seqs(fasta_file):
     with open(fasta_file, 'r') as fasta_in:
         for record in SeqIO.parse(fasta_in, 'fasta'):
             f_id = record.id
-            #f_description = record.description
+            # f_description = record.description
             f_seq = str(record.seq)
             if f_seq != '':
                 fa_recs.append((f_id, f_seq))
@@ -86,32 +88,32 @@ def collect_error(p):
         algo_include_contigs = list(algo_sub_df['contig_id'])
         for col in level_list:
             col_key = final_tax_df.loc[final_tax_df['CAMI_genomeID'] == sag_key,
-                                        col].iloc[0]
+                                       col].iloc[0]
             cami_include_ids = list(set(tax_mg_df.loc[tax_mg_df[col] == col_key,
-                                    'CAMI_genomeID'])
+                                                      'CAMI_genomeID'])
                                     )
             mg_include_contigs = list(set(tax_mg_df.loc[tax_mg_df['CAMI_genomeID'
-                                    ].isin(cami_include_ids)]['@@SEQUENCEID'])
-                                    )
+            ].isin(cami_include_ids)]['@@SEQUENCEID'])
+                                      )
             sag_include_contigs = list(set(tax_mg_df.loc[tax_mg_df['CAMI_genomeID'
-                                    ].isin([sag_key])]['@@SEQUENCEID'])
-                                    )
+            ].isin([sag_key])]['@@SEQUENCEID'])
+                                       )
 
             if col == 'CAMI_genomeID':
                 col = 'exact'
                 col_key = sag_key
             err_list = [sag_id, algo, col, 0, 0, 0, 0]
-            #for contig_id, contig_count in zip(tax_mg_df['@@SEQUENCEID'], tax_mg_df['bp_cnt']):
+            # for contig_id, contig_count in zip(tax_mg_df['@@SEQUENCEID'], tax_mg_df['bp_cnt']):
             Pos_cnt_df = tax_mg_df.loc[tax_mg_df['@@SEQUENCEID'].isin(algo_include_contigs)]
             TP_cnt_df = Pos_cnt_df.loc[Pos_cnt_df['@@SEQUENCEID'].isin(mg_include_contigs)]
             FP_cnt_df = Pos_cnt_df.loc[~Pos_cnt_df['@@SEQUENCEID'].isin(mg_include_contigs)]
             Neg_cnt_df = tax_mg_df.loc[~tax_mg_df['@@SEQUENCEID'].isin(algo_include_contigs)]
             FN_cnt_df = Neg_cnt_df.loc[Neg_cnt_df['@@SEQUENCEID'].isin(sag_include_contigs)]
             TN_cnt_df = Neg_cnt_df.loc[~Neg_cnt_df['@@SEQUENCEID'].isin(sag_include_contigs)]
-            err_list[3] = TP_cnt_df['bp_cnt'].sum() # 'TruePos'
-            err_list[4] = FP_cnt_df['bp_cnt'].sum() # 'FalsePos'
-            err_list[5] = FN_cnt_df['bp_cnt'].sum() # 'FalseNeg'
-            err_list[6] = TN_cnt_df['bp_cnt'].sum() # 'TrueNeg'
+            err_list[3] = TP_cnt_df['bp_cnt'].sum()  # 'TruePos'
+            err_list[4] = FP_cnt_df['bp_cnt'].sum()  # 'FalsePos'
+            err_list[5] = FN_cnt_df['bp_cnt'].sum()  # 'FalseNeg'
+            err_list[6] = TN_cnt_df['bp_cnt'].sum()  # 'TrueNeg'
             error_list.append(err_list)
             if col == 'strain':
                 tp_df = TP_cnt_df.copy()
@@ -121,6 +123,7 @@ def collect_error(p):
 
     return error_list, tp_list
 
+
 def extSAG_bp_cnt(p):
     extSAG_file, extSAG_path, alg2algo = p
     file_path = os.path.join(extSAG_path, extSAG_file)
@@ -129,7 +132,7 @@ def extSAG_bp_cnt(p):
     header_list = []
     for line in data:
         if '>' in line:
-            header = line.replace('>','').strip('\n')
+            header = line.replace('>', '').strip('\n')
             prefix = file_path.split('/')[-1].replace('.extended_SAG.fasta', '')
             sag_id = prefix.rsplit('.', 1)[0]
             alg = alg2algo[prefix.rsplit('.', 1)[1]]
@@ -147,16 +150,16 @@ sag_taxmap_df = pd.read_csv(sag_tax_map, sep='\t', header=0)
 sag_taxmap_df['sp_taxid'] = [int(x) for x in sag_taxmap_df['@@TAXID']]
 sag_taxmap_df['sp_name'] = [x.split('|')[-2] for x in sag_taxmap_df['TAXPATHSN']]
 taxpath_list = [[str(x) for x in x.split('.')[0].split('|')]
-                    for x in sag_taxmap_df['TAXPATH']
-                    ]
+                for x in sag_taxmap_df['TAXPATH']
+                ]
 taxpath_df = pd.DataFrame(taxpath_list, columns=['domain', 'phylum', 'class', 'order',
-                                                    'family', 'genus', 'species', 'strain'
-                                                    ])
+                                                 'family', 'genus', 'species', 'strain'
+                                                 ])
 taxpath_df['CAMI_genomeID'] = [x for x in sag_taxmap_df['_CAMI_genomeID']]
 # fix empty species id's
 taxpath_df['species'] = [x[1] if str(x[0]) == '' else x[0] for x in
-                            zip(taxpath_df['species'], taxpath_df['genus'])
-                            ]
+                         zip(taxpath_df['species'], taxpath_df['genus'])
+                         ]
 # Map MetaG contigs to their genomes
 mg_contig_map = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/' + \
                 'gsa_mapping_pool.binning'
@@ -165,11 +168,11 @@ mg_contig_map_df['TAXID'] = [str(x) for x in mg_contig_map_df['TAXID']]
 
 # Merge contig map and taxpath DFs
 tax_mg_df = taxpath_df.merge(mg_contig_map_df, left_on='CAMI_genomeID', right_on='BINID',
-                                how='right'
-                                )
+                             how='right'
+                             )
 tax_mg_df = tax_mg_df[['@@SEQUENCEID', 'CAMI_genomeID', 'domain', 'phylum', 'class', 'order',
-                        'family', 'genus', 'species', 'strain'
-                        ]]
+                       'family', 'genus', 'species', 'strain'
+                       ]]
 
 files_path = sys.argv[1]
 err_path = files_path + '/error_analysis'
@@ -189,9 +192,9 @@ src_genome_path = '/home/rmclaughlin/Ryan/CAMI_I_HIGH/source_genomes'
 mocksag_path = sys.argv[2]
 # list all source genomes
 src_genome_list = [joinpath(src_genome_path, f) for f in listdir(src_genome_path)
-            if ((f.split('.')[-1] == 'fasta' or f.split('.')[-1] == 'fna') and
-                'Sample' not in f)
-            ]
+                   if ((f.split('.')[-1] == 'fasta' or f.split('.')[-1] == 'fna') and
+                       'Sample' not in f)
+                   ]
 '''
 # list all mockSAGs
 mocksag_list = [joinpath(mocksag_path, f) for f in listdir(mocksag_path)
@@ -258,50 +261,50 @@ src_mock_err_df.to_csv(files_path + 'final_recruits/src_mock_df.tsv', index=Fals
 
 '''
 src_mock_err_df = pd.read_csv('/home/rmclaughlin/Ryan/test_SABer/SAG_models/SABer_stdout/' + \
-                                'final_recruits/src_mock_df.tsv',
-                                sep='\t', header=0
-                                )
+                              'final_recruits/src_mock_df.tsv',
+                              sep='\t', header=0
+                              )
 
 # MinHash
 mh_file = joinpath(files_path, 'minhash_recruits/' + \
-                'CAMI_high_GoldStandardAssembly.3000.mhr_trimmed_recruits.tsv'
-                )
+                   'CAMI_high_GoldStandardAssembly.3000.mhr_trimmed_recruits.tsv'
+                   )
 mh_concat_df = pd.read_csv(mh_file, sep='\t', header=0)
 
 # TPM
 tpm_file = joinpath(files_path,
-    'abund_recruits/CAMI_high_GoldStandardAssembly.3000.abr_trimmed_recruits.tsv'
-    )
+                    'abund_recruits/CAMI_high_GoldStandardAssembly.3000.abr_trimmed_recruits.tsv'
+                    )
 tpm_concat_df = pd.read_csv(tpm_file, sep='\t', header=0)
 
 # Tetra GMM
 gmm_file = joinpath(files_path,
-    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.gmm.tra_trimmed_recruits.tsv'
-    )
+                    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.gmm.tra_trimmed_recruits.tsv'
+                    )
 gmm_concat_df = pd.read_csv(gmm_file, sep='\t', header=0)
 gmm_concat_df['subcontig_id'] = None
 gmm_concat_df = gmm_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # Tetra OCSVM
 svm_file = joinpath(files_path,
-    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.svm.tra_trimmed_recruits.tsv'
-    )
+                    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.svm.tra_trimmed_recruits.tsv'
+                    )
 svm_concat_df = pd.read_csv(svm_file, sep='\t', header=0)
 svm_concat_df['subcontig_id'] = None
 svm_concat_df = svm_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # Tetra Isolation Forest
 iso_file = joinpath(files_path,
-    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.iso.tra_trimmed_recruits.tsv'
-    )
+                    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.iso.tra_trimmed_recruits.tsv'
+                    )
 iso_concat_df = pd.read_csv(iso_file, sep='\t', header=0)
 iso_concat_df['subcontig_id'] = None
 iso_concat_df = iso_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # Tetra Combined
 comb_file = joinpath(files_path,
-    'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.comb.tra_trimmed_recruits.tsv'
-    )
+                     'tetra_recruits/CAMI_high_GoldStandardAssembly.3000.comb.tra_trimmed_recruits.tsv'
+                     )
 comb_concat_df = pd.read_csv(comb_file, sep='\t', header=0)
 comb_concat_df['subcontig_id'] = None
 comb_concat_df = comb_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
@@ -309,34 +312,34 @@ comb_concat_df = comb_concat_df[['sag_id', 'subcontig_id', 'contig_id']]
 # GMM Final Recruits
 gmm_final_file = joinpath(files_path, 'final_recruits/gmm.final_recruits.tsv')
 print('loading GMM combined files')
-gmm_final_df = pd.read_csv(gmm_final_file, sep='\t', header=0,# index_col=0,
-                            names=['sag_id', 'contig_id']
-                            )
+gmm_final_df = pd.read_csv(gmm_final_file, sep='\t', header=0,  # index_col=0,
+                           names=['sag_id', 'contig_id']
+                           )
 gmm_final_df['subcontig_id'] = None
 gmm_final_df = gmm_final_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # OCSVM Final Recruits
 svm_final_file = joinpath(files_path, 'final_recruits/svm.final_recruits.tsv')
 print('loading OCSVM combined files')
-svm_final_df = pd.read_csv(svm_final_file, sep='\t', header=0,# index_col=0,
-                            names=['sag_id', 'contig_id']
-                            )
+svm_final_df = pd.read_csv(svm_final_file, sep='\t', header=0,  # index_col=0,
+                           names=['sag_id', 'contig_id']
+                           )
 svm_final_df['subcontig_id'] = None
 svm_final_df = svm_final_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # ISO Final Recruits
 iso_final_file = joinpath(files_path, 'final_recruits/iso.final_recruits.tsv')
 print('loading ISO combined files')
-iso_final_df = pd.read_csv(iso_final_file, sep='\t', header=0,# index_col=0,
-                            names=['sag_id', 'contig_id']
-                            )
+iso_final_df = pd.read_csv(iso_final_file, sep='\t', header=0,  # index_col=0,
+                           names=['sag_id', 'contig_id']
+                           )
 iso_final_df['subcontig_id'] = None
 iso_final_df = iso_final_df[['sag_id', 'subcontig_id', 'contig_id']]
 
 # Combined Final Recruits
 comb_final_file = joinpath(files_path, 'final_recruits/comb.final_recruits.tsv')
 print('loading Combined combined files')
-comb_final_df = pd.read_csv(comb_final_file, sep='\t', header=0,# index_col=0,
+comb_final_df = pd.read_csv(comb_final_file, sep='\t', header=0,  # index_col=0,
                             names=['sag_id', 'contig_id']
                             )
 comb_final_df['subcontig_id'] = None
@@ -350,8 +353,8 @@ extSAG_file_list = [x for x in os.listdir(extSAG_path)
                     ]
 print('loading extended SAG files')
 
-alg2algo = {'gmm':'gmm_extend', 'svm':'svm_extend',
-            'iso':'iso_extend', 'comb':'comb_extend'
+alg2algo = {'gmm': 'gmm_extend', 'svm': 'svm_extend',
+            'iso': 'iso_extend', 'comb': 'comb_extend'
             }
 
 ####
@@ -383,43 +386,43 @@ iso_final_df['algorithm'] = 'iso_combined'
 comb_final_df['algorithm'] = 'comb_combined'
 
 final_concat_df = pd.concat([mh_concat_df, tpm_concat_df,
-                            gmm_concat_df, svm_concat_df,
-                            iso_concat_df,
-                            comb_concat_df,
-                            gmm_final_df, svm_final_df,
-                            iso_final_df,
-                            comb_final_df,
-                            exSAG_concat_df
-                            ])
+                             gmm_concat_df, svm_concat_df,
+                             iso_concat_df,
+                             comb_concat_df,
+                             gmm_final_df, svm_final_df,
+                             iso_final_df,
+                             comb_final_df,
+                             exSAG_concat_df
+                             ])
 
 final_group_df = final_concat_df.groupby(['sag_id', 'algorithm', 'contig_id'])[
-                                            'subcontig_id'].count().reset_index()
+    'subcontig_id'].count().reset_index()
 
 print('merging all')
 final_tax_df = final_group_df.merge(tax_mg_df, left_on='contig_id', right_on='@@SEQUENCEID',
-                                how='left'
-                                )
+                                    how='left'
+                                    )
 
 sag_cnt_dict = final_tax_df.groupby('sag_id')['sag_id'].count().to_dict()
 
 algo_list = ['MinHash', 'TPM', 'tetra_gmm', 'tetra_svm', 'tetra_iso', 'tetra_comb',
-                'gmm_combined', 'svm_combined', 'iso_combined', 'comb_combined',
-                'gmm_extend', 'svm_extend', 'iso_extend', 'comb_extend'
-                ]
+             'gmm_combined', 'svm_combined', 'iso_combined', 'comb_combined',
+             'gmm_extend', 'svm_extend', 'iso_extend', 'comb_extend'
+             ]
 level_list = ['domain', 'phylum', 'class', 'order', 'family',
-                'genus', 'species', 'strain', 'CAMI_genomeID'
-                ]
+              'genus', 'species', 'strain', 'CAMI_genomeID'
+              ]
 ####
 pool = multiprocessing.Pool(processes=10)
 arg_list = []
 for sag_id in list(final_concat_df['sag_id'].unique()):
     arg_list.append([sag_id, tax_mg_df, final_tax_df, algo_list, level_list])
 results = pool.imap_unordered(collect_error, arg_list)
-#logging.info('[SABer]: Comparing Signature for %s\n' % sag_id)
+# logging.info('[SABer]: Comparing Signature for %s\n' % sag_id)
 
 tot_error_list = []
 tot_tp_list = []
-#for i, output in enumerate(results):
+# for i, output in enumerate(results):
 #    sys.stderr.write('\rdone {0:.0%}'.format(i/len(arg_list)))
 for output in tqdm(results):
     tot_error_list.extend(output[0])
@@ -490,9 +493,9 @@ tpm_concat_df = pd.concat(tot_tp_list)
 tpm_concat_df.to_csv(err_path + '/TruePos_table.tsv', index=False, sep='\t')
 
 mg_err_df = pd.DataFrame(tot_error_list, columns=['sag_id', 'algorithm', 'level',
-                                                    'TruePos', 'FalsePos',
-                                                    'FalseNeg', 'TrueNeg'
-                                                    ])
+                                                  'TruePos', 'FalsePos',
+                                                  'FalseNeg', 'TrueNeg'
+                                                  ])
 
 final_err_df = pd.concat([src_mock_err_df, mg_err_df])
 final_err_df.to_csv(err_path + '/All_error_count.tsv', index=False, sep='\t')

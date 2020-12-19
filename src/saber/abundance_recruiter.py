@@ -1,14 +1,13 @@
+import argparse
 import logging
-import pandas as pd
-import os
 from os.path import isfile, basename, getsize
 from os.path import join as o_join
 from subprocess import Popen
+
+import pandas as pd
 import saber.utilities as s_utils
-import numpy as np
-from tqdm import tqdm
-import argparse
 from sklearn import svm
+
 pd.set_option('display.max_columns', None)
 pd.options.mode.chained_assignment = None
 import multiprocessing
@@ -16,18 +15,16 @@ import sys
 from sklearn.preprocessing import StandardScaler
 
 
-
 def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
-                        minhash_df, covm_per_pass, nthreads, force
-                        ):
-
+                      minhash_df, covm_per_pass, nthreads, force
+                      ):
     mg_id = mg_sub_file[0]
     if ((isfile(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'))) &
-        (force == False)
-        ):
+            (force == False)
+    ):
         mh_covm_df = pd.read_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), header=0,
-                                        sep='\t'
-                                        )
+                                 sep='\t'
+                                 )
     else:
         mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
         mg_headers = tuple(mg_subcontigs.keys())
@@ -46,7 +43,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         arg_list = []
         for sag_id in set(minhash_df['sag_id']):
             if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
-                #logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
+                # logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
                 final_pass_df = pd.read_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
                                             header=None,
                                             names=['sag_id', 'subcontig_id', 'contig_id'],
@@ -64,8 +61,8 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         pool.close()
         pool.join()
         ####
-        
-        #for sag_id in tqdm(set(minhash_df['sag_id'])):
+
+        # for sag_id in tqdm(set(minhash_df['sag_id'])):
         #    final_pass_df = recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out)
         #    covm_pass_dfs.append(final_pass_df)
         covm_df = pd.concat(covm_pass_dfs)
@@ -85,7 +82,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         covm_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
         # Only pass contigs that have the magjority of subcontigs recruited (>= 51%)
         covm_recruit_filter_df = covm_recruit_df.loc[covm_recruit_df['subcontig_recruits'] != 0]
-        #covm_recruit_filter_df = covm_recruit_df.loc[covm_recruit_df['percent_recruited'] >=
+        # covm_recruit_filter_df = covm_recruit_df.loc[covm_recruit_df['percent_recruited'] >=
         #                                             float(covm_per_pass)
         #                                             ]
 
@@ -102,8 +99,8 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                                 ])
         mh_covm_df.drop_duplicates(inplace=True)
         mh_covm_df.to_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'),
-                                        sep='\t', index=False
-                                        )
+                          sep='\t', index=False
+                          )
 
     return mh_covm_df
 
@@ -127,7 +124,6 @@ def procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path, n
     mg_covm_out = runCovM(abr_path, mg_id, nthreads, sorted_bam_list)
 
     return mg_covm_out
-
 
 
 def buildBWAindex(abr_path, mg_id, mg_sub_path):
@@ -154,13 +150,13 @@ def runBWAmem(abr_path, subcontig_path, mg_id, raw_file_list, nthreads):
         pe2 = raw_file_list[1]
         mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
                    o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
-                   ] #TODO: add support for specifying number of threads
-    else: # if the fastq is interleaved
+                   ]  # TODO: add support for specifying number of threads
+    else:  # if the fastq is interleaved
         logging.info('[SABer]: Raw reads in interleaved file...\n')
         pe1 = raw_file_list[0]
         mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
                    o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
-                   ] #TODO: how to get install path for executables?
+                   ]  # TODO: how to get install path for executables?
     pe_basename = basename(pe1)
     pe_id = pe_basename.split('.')[0]
     # BWA sam file exists?
@@ -199,9 +195,9 @@ def runSamTools(abr_path, pe_id, nthreads, mg_id, mg_sam_out):
 def runCovM(abr_path, mg_id, nthreads, sorted_bam_list):
     # run coverm on sorted bams
     mg_covm_out = o_join(abr_path, mg_id + '.metabat.tsv')
-    try: # if file exists but is empty
+    try:  # if file exists but is empty
         covm_size = getsize(mg_covm_out)
-    except: # if file doesn't exist
+    except:  # if file doesn't exist
         covm_size = -1
     if covm_size <= 0:
         logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
@@ -219,16 +215,16 @@ def runCovM(abr_path, mg_id, nthreads, sorted_bam_list):
 def recruitSubs(p):
     abr_path, sag_id, minhash_sag_df, mg_covm_out = p
     # subset df for sag_id
-    #minhash_sag_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
-    #minhash_90_list = list(minhash_sag_df['subcontig_id'].loc[
+    # minhash_sag_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
+    # minhash_90_list = list(minhash_sag_df['subcontig_id'].loc[
     #                        minhash_sag_df['jacc_sim_max'] >= 0.90]
     #                        )
     minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]
 
-    #mh_jacc_list = list(set(minhash_filter_df['contig_id']))
-    
+    # mh_jacc_list = list(set(minhash_filter_df['contig_id']))
+
     if len(minhash_filter_df['sag_id']) != 0:
-        #sag_mh_pass_df = minhash_sag_df.loc[minhash_sag_df['contig_id'].isin(mh_jacc_list)]
+        # sag_mh_pass_df = minhash_sag_df.loc[minhash_sag_df['contig_id'].isin(mh_jacc_list)]
         overall_recruit_list = []
         mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t', index_col=['contigName'])
         mg_covm_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
@@ -236,19 +232,19 @@ def recruitSubs(p):
         scaled_data = scale.transform(mg_covm_df.values)
         std_merge_df = pd.DataFrame(scaled_data, index=mg_covm_df.index)
         recruit_contigs_df = std_merge_df.loc[std_merge_df.index.isin(
-                                        list(minhash_filter_df['subcontig_id']))
-                                        ]
-        nonrecruit_filter_df = std_merge_df.copy() #.loc[~std_merge_df.index.isin(
-                                                #recruit_contigs_df.index)
-                                                #]
-        #recruit_contigs_df.set_index('contigName', inplace=True)
-        #nonrecruit_filter_df.set_index('contigName', inplace=True)
+            list(minhash_filter_df['subcontig_id']))
+        ]
+        nonrecruit_filter_df = std_merge_df.copy()  # .loc[~std_merge_df.index.isin(
+        # recruit_contigs_df.index)
+        # ]
+        # recruit_contigs_df.set_index('contigName', inplace=True)
+        # nonrecruit_filter_df.set_index('contigName', inplace=True)
 
-        #keep_cols = [x for x in recruit_contigs_df.columns
+        # keep_cols = [x for x in recruit_contigs_df.columns
         #             if x.rsplit('.', 1)[1] != 'bam-var'
         #             ]
-        #recruit_bam_df = recruit_contigs_df[keep_cols]
-        #nonrecruit_bam_df = nonrecruit_filter_df[keep_cols]
+        # recruit_bam_df = recruit_contigs_df[keep_cols]
+        # nonrecruit_bam_df = nonrecruit_filter_df[keep_cols]
         final_pass_list = runOCSVM(recruit_contigs_df, nonrecruit_filter_df, sag_id)
         final_pass_df = pd.DataFrame(final_pass_list,
                                      columns=['sag_id', 'subcontig_id', 'contig_id']
@@ -257,11 +253,11 @@ def recruitSubs(p):
                              header=False, index=False, sep='\t'
                              )
         print("There are {} total subcontigs, {} contigs".format(
-              len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
-              )
+            len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
+        )
         logging.info("There are {} total subcontigs, {} contigs".format(
-              len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
-              )
+            len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
+        )
     else:
         final_pass_df = pd.DataFrame([], columns=['sag_id', 'subcontig_id', 'contig_id'])
 
@@ -275,22 +271,22 @@ def runOCSVM(sag_df, mg_df, sag_id):
     mg_pred = clf.predict(mg_df.values)
     contig_id_list = [x.rsplit('_', 1)[0] for x in mg_df.index.values]
     pred_df = pd.DataFrame(zip(mg_df.index.values, contig_id_list, mg_pred),
-                            columns=['subcontig_id', 'contig_id', 'ocsvm_pred']
-                            )
+                           columns=['subcontig_id', 'contig_id', 'ocsvm_pred']
+                           )
     key_cnts = pred_df.groupby('contig_id')['ocsvm_pred'].count().reset_index()
     val_perc = pred_df.groupby('contig_id')['ocsvm_pred'].value_counts(
-                                            normalize=True).reset_index(name='precent')
+        normalize=True).reset_index(name='precent')
     pos_perc = val_perc.loc[val_perc['ocsvm_pred'] == 1]
     major_df = pos_perc.loc[pos_perc['precent'] >= 0.51]
     major_pred = [1 if x in list(major_df['contig_id']) else -1
-                    for x in contig_id_list
-                    ]
+                  for x in contig_id_list
+                  ]
     pred_df['major_pred'] = major_pred
     svm_pass_list = []
-    #for md_nm in svm_pass_df.index.values:
+    # for md_nm in svm_pass_df.index.values:
     sub_mg_df = pred_df.loc[pred_df['major_pred'] == 1]
     for md_nm in sub_mg_df['subcontig_id']:
-            svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+        svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
 
     return svm_pass_list
 
@@ -301,33 +297,33 @@ if __name__ == '__main__':
     parser.add_argument(
         '--abr_path', help='path to abundance output directory',
         required=True
-        )
+    )
     parser.add_argument(
         '--sub_path',
         help='path to SAG subcontigs file(s)', required=True
-        )
+    )
     parser.add_argument(
         '--mg_sub_file',
         help='path to metagenome subcontigs file', required=True
-        )
+    )
     parser.add_argument(
         '--raw_fastqs',
         help='path to raw metagenomes, comma separated list', required=True
-        )
+    )
     parser.add_argument(
         '--minh_df',
         help='path to output dataframe from abundance recruiter', required=True
-        )
+    )
     parser.add_argument(
         '--per_pass',
         help='pass percentage of subcontigs to pass complete contig [0.70]', required=True,
         default='0.70'
-        )
+    )
     parser.add_argument(
         '--threads',
         help='number of threads to use [1]', required=True,
         default='1'
-        )
+    )
     parser.add_argument("-v", "--verbose", action="store_true", default=False,
                         help="Prints a more verbose runtime log"
                         )
@@ -346,5 +342,4 @@ if __name__ == '__main__':
     minhash_recruit_df = pd.read_csv(minhash_recruit_file, header=0, sep='\t')
 
     runAbundRecruiter(subcontig_path, abr_path, [mg_id, mg_sub_file],
-                        minhash_recruit_df, per_pass, nthreads)
-
+                      minhash_recruit_df, per_pass, nthreads)

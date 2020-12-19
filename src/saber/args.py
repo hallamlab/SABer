@@ -8,6 +8,7 @@ class SABerArgumentParser(argparse.ArgumentParser):
     A base argparse ArgumentParser for SABer with functions to furnish with common arguments.
     This standardizes the interface for a unified aesthetic across all sub-commands
     """
+
     def __init__(self, **kwargs):
         """
         Instantiate the argparse argument-parser and create three broad argument groups:
@@ -38,18 +39,18 @@ class SABerArgumentParser(argparse.ArgumentParser):
         self.reqs.add_argument("-s", "--sag", required=True, dest="sag_path",
                                help="Path to reference SAG FASTA file or directory "
                                     "containing only FASTA files."
-                                )
+                               )
         self.reqs.add_argument("-m", "--metag", required=True, dest="mg_file",
                                help="Path to a metagenome assembly [FASTA format only]."
                                )
         self.reqs.add_argument("-l", "--metaraw", required=True, dest="mg_raw_file_list",
-                                 help="Text file containing paths to raw FASTQ files for samples. "
-                                      "One file per line, supports interleaved and separate PE reads. "
-                                      "For separate PE files, both file paths on one line sep by [tab]."
-                                      )
+                               help="Text file containing paths to raw FASTQ files for samples. "
+                                    "One file per line, supports interleaved and separate PE reads. "
+                                    "For separate PE files, both file paths on one line sep by [tab]."
+                               )
         self.reqs.add_argument("-o", "--output-dir", required=True, dest="save_path",
-                                 help="Path to directory for all outputs."
-                                 )
+                               help="Path to directory for all outputs."
+                               )
         self.optopt.add_argument("--max_contig_len", required=False, default=10000,
                                  dest="max_contig_len",
                                  help="Max subcontig length in basepairs [10000]."

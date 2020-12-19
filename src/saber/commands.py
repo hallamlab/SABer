@@ -1,17 +1,18 @@
 __author__ = 'Ryan J McLaughlin'
 
-
-from pip._internal.operations import freeze
 import logging
+
 import saber
+import saber.abundance_recruiter as abr
 import saber.args as s_args
 import saber.classy as s_class
-import saber.logger as s_log
-import saber.utilities as s_utils
-import saber.minhash_recruiter as mhr
-import saber.abundance_recruiter as abr
-import saber.tetranuc_recruiter as tra
 import saber.compile_recruits as com
+import saber.logger as s_log
+import saber.minhash_recruiter as mhr
+import saber.tetranuc_recruiter as tra
+import saber.utilities as s_utils
+from pip._internal.operations import freeze
+
 
 def info(sys_args):
     """
@@ -30,17 +31,16 @@ def info(sys_args):
     logging.info("SABer version " + saber.version + ".\n")
 
     # Write the version of all python deps
-    py_deps = {x.split('==')[0]:x.split('==')[1] for x in freeze.freeze()}
-
+    py_deps = {x.split('==')[0]: x.split('==')[1] for x in freeze.freeze()}
 
     logging.info("Python package dependency versions:\n\t" +
                  "\n\t".join([k + ": " + v for k, v in py_deps.items()]) + "\n")
 
     # Write the version of executable deps
     info_s.furnish_with_arguments(args)
-    logging.info(s_utils.executable_dependency_versions(info_s.executables)) # TODO: needs updating for SABer exe
+    logging.info(s_utils.executable_dependency_versions(info_s.executables))  # TODO: needs updating for SABer exe
 
-    if args.verbose: # TODO: look at TS to determine what this is for.
+    if args.verbose:  # TODO: look at TS to determine what this is for.
         pass
         # logging.info(summary_str)
 
@@ -77,21 +77,21 @@ def recruit(sys_args):
     sag_list = s_utils.get_SAGs(recruit_s.sag_path)
 
     # Build subcontiges for SAGs and MG
-    logging.info('[SABer]: Loading/Building subcontigs\n') # TODO: add logging to track this
+    logging.info('[SABer]: Loading/Building subcontigs\n')  # TODO: add logging to track this
     sag_sub_files = s_utils.build_subcontigs(sag_list,
-                                               save_dirs_dict['subcontigs'],
-                                               recruit_s.max_contig_len,
-                                               recruit_s.overlap_len
-                                               )
-    mg_sub_file = s_utils.build_subcontigs([recruit_s.mg_file],
                                              save_dirs_dict['subcontigs'],
                                              recruit_s.max_contig_len,
                                              recruit_s.overlap_len
-                                            )[0]
+                                             )
+    mg_sub_file = s_utils.build_subcontigs([recruit_s.mg_file],
+                                           save_dirs_dict['subcontigs'],
+                                           recruit_s.max_contig_len,
+                                           recruit_s.overlap_len
+                                           )[0]
     # Run MinHash recruiting algorithm
     logging.info('[SABer]: Starting Kmer Recruitment Step\n')
     minhash_df = mhr.run_minhash_recruiter(save_dirs_dict['signatures'],
-    									   save_dirs_dict['minhash_recruits'],
+                                           save_dirs_dict['minhash_recruits'],
                                            sag_sub_files, mg_sub_file,
                                            recruit_s.jacc_thresh, recruit_s.mh_per_pass,
                                            recruit_s.nthreads, recruit_s.force
@@ -99,18 +99,18 @@ def recruit(sys_args):
     # Abundance Recruit Module
     logging.info('[SABer]: Starting Abundance Recruitment Step\n')
     abund_df = abr.runAbundRecruiter(save_dirs_dict['subcontigs'],
-    								   save_dirs_dict['abund_recruits'], mg_sub_file,
-                                       recruit_s.mg_raw_file_list, minhash_df,
-                                       recruit_s.abund_per_pass, recruit_s.nthreads,
-                                       recruit_s.force
-                                       )
+                                     save_dirs_dict['abund_recruits'], mg_sub_file,
+                                     recruit_s.mg_raw_file_list, minhash_df,
+                                     recruit_s.abund_per_pass, recruit_s.nthreads,
+                                     recruit_s.force
+                                     )
     # Tetranucleotide Hz Recruit Module
     logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
     tetra_df_dict = tra.run_tetra_recruiter(save_dirs_dict['tetra_recruits'],
-    										sag_sub_files, mg_sub_file, abund_df,
+                                            sag_sub_files, mg_sub_file, abund_df,
                                             minhash_df, recruit_s.gmm_per_pass, recruit_s.nthreads,
                                             recruit_s.force
-                                       		)
+                                            )
     # Collect and join all recruits
     logging.info('[SABer]: Combining All Recruits\n')
     com.run_combine_recruits(save_dirs_dict['final_recruits'], save_dirs_dict['extend_SAGs'],
@@ -118,6 +118,5 @@ def recruit(sys_args):
                              recruit_s.mg_file, tetra_df_dict, minhash_df, sag_list
                              )
     # Re-assemble SAG with MG recruits
-
 
     return

@@ -1,13 +1,14 @@
-from sklearn import svm
 import sys
+
 import pandas as pd
+from sklearn import svm
+
 pd.set_option('display.max_columns', None)
 pd.options.mode.chained_assignment = None
 from sklearn.metrics import precision_recall_curve
-from sklearn.metrics import auc #, f1_score, matthews_corrcoef
+from sklearn.metrics import auc  # , f1_score, matthews_corrcoef
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import multiprocessing
-
 
 
 def predict_recruits(p):
@@ -16,34 +17,34 @@ def predict_recruits(p):
     ocsvm_pred = ocsvm.predict(X_test)
     key = t_key + '_' + str(gam) + '_' + str(n)
     pred_df = pd.DataFrame(zip(X_test_df.index.values, contig_id_list, ocsvm_pred),
-                            columns=['subcontig_id', 'contig_id', key]
-                            )
-    
+                           columns=['subcontig_id', 'contig_id', key]
+                           )
+
     key_cnts = pred_df.groupby('contig_id')[key].count().reset_index()
     val_perc = pred_df.groupby('contig_id')[key].value_counts(
-                                            normalize=True).reset_index(name='precent')
+        normalize=True).reset_index(name='precent')
     pos_perc = val_perc.loc[val_perc[key] == 1]
     major_df = pos_perc.loc[pos_perc['precent'] >= 0.51]
     major_pred = [1 if x in list(major_df['contig_id']) else -1
-                    for x in contig_id_list
-                    ]
+                  for x in contig_id_list
+                  ]
     pos_pred_list = list(set(pred_df.loc[pred_df[key] == 1]['contig_id']))
     all_pred = [1 if x in pos_pred_list else -1
-                    for x in contig_id_list
-                    ]
+                for x in contig_id_list
+                ]
     pred_df['all_pred'] = all_pred
     pred_df['major_pred'] = major_pred
     pred_df['truth'] = y_test
     pred_df['truth_strain'] = y_test_strain
-     # ALL Recruits
+    # ALL Recruits
     # calculate for hybrid exact/strain-level matches
     TP = calc_tp(pred_df['truth'], pred_df['all_pred'])
     FP = calc_fp(pred_df['truth_strain'], pred_df['all_pred'])
     TN = calc_tn(pred_df['truth'], pred_df['all_pred'])
     FN = calc_fn(pred_df['truth'], pred_df['all_pred'])
     all_str_list = calc_stats(sag_id, 'strain', 'all', gam, n, t_key, TP, FP, TN, FN,
-                          pred_df['truth_strain'], pred_df['all_pred']
-                          )
+                              pred_df['truth_strain'], pred_df['all_pred']
+                              )
     # ALL Recruits
     # calculate for exact-level match
     TP = calc_tp(pred_df['truth'], pred_df['all_pred'])
@@ -51,8 +52,8 @@ def predict_recruits(p):
     TN = calc_tn(pred_df['truth'], pred_df['all_pred'])
     FN = calc_fn(pred_df['truth'], pred_df['all_pred'])
     all_x_list = calc_stats(sag_id, 'exact', 'all', gam, n, t_key, TP, FP, TN, FN,
-                        pred_df['truth'], pred_df['all_pred']
-                        )
+                            pred_df['truth'], pred_df['all_pred']
+                            )
 
     # Majority-Rule Recruits
     # calculate for hybrid exact/strain-level matches
@@ -61,8 +62,8 @@ def predict_recruits(p):
     TN = calc_tn(pred_df['truth'], pred_df['major_pred'])
     FN = calc_fn(pred_df['truth'], pred_df['major_pred'])
     maj_str_list = calc_stats(sag_id, 'strain', 'majority', gam, n, t_key, TP, FP, TN, FN,
-                          pred_df['truth_strain'], pred_df['major_pred']
-                          )
+                              pred_df['truth_strain'], pred_df['major_pred']
+                              )
     # Majority-Rule Recruits
     # calculate for exact-level match
     TP = calc_tp(pred_df['truth'], pred_df['major_pred'])
@@ -70,36 +71,35 @@ def predict_recruits(p):
     TN = calc_tn(pred_df['truth'], pred_df['major_pred'])
     FN = calc_fn(pred_df['truth'], pred_df['major_pred'])
     maj_x_list = calc_stats(sag_id, 'exact', 'majority', gam, n, t_key, TP, FP, TN, FN,
-                        pred_df['truth'], pred_df['major_pred']
-                        )
-
+                            pred_df['truth'], pred_df['major_pred']
+                            )
 
     return all_str_list, all_x_list, maj_str_list, maj_x_list
 
 
 def calc_tp(y_truth, y_pred):
-    tp_list = pd.Series([1 if ((x[0]==1) & (x[1]==1)) else 0 for x in zip(y_truth, y_pred)])
+    tp_list = pd.Series([1 if ((x[0] == 1) & (x[1] == 1)) else 0 for x in zip(y_truth, y_pred)])
     TP = tp_list.sum()
 
     return TP
 
 
 def calc_fp(y_truth, y_pred):
-    fp_list = pd.Series([1 if ((x[0]==-1) & (x[1]==1)) else 0 for x in zip(y_truth, y_pred)])
+    fp_list = pd.Series([1 if ((x[0] == -1) & (x[1] == 1)) else 0 for x in zip(y_truth, y_pred)])
     FP = fp_list.sum()
 
     return FP
 
 
 def calc_tn(y_truth, y_pred):
-    tn_list = pd.Series([1 if ((x[0]==-1) & (x[1]==-1)) else 0 for x in zip(y_truth, y_pred)])
+    tn_list = pd.Series([1 if ((x[0] == -1) & (x[1] == -1)) else 0 for x in zip(y_truth, y_pred)])
     TN = tn_list.sum()
 
     return TN
 
 
 def calc_fn(y_truth, y_pred):
-    fn_list = pd.Series([1 if ((x[0]==1) & (x[1]==-1)) else 0 for x in zip(y_truth, y_pred)])
+    fn_list = pd.Series([1 if ((x[0] == 1) & (x[1] == -1)) else 0 for x in zip(y_truth, y_pred)])
     FN = fn_list.sum()
 
     return FN
@@ -111,10 +111,10 @@ def calc_stats(sag_id, level, include, gam, n, t_key, TP, FP, TN, FN, y_truth, y
     N = TN + TP + FN + FP
     S = (TP + FN) / N
     P = (TP + FP) / N
-    D = ((S*P)*(1-S)*(1-P))**(1/2)
+    D = ((S * P) * (1 - S) * (1 - P)) ** (1 / 2)
     if D == 0:
         D = 1
-    MCC = ((TP/N)-S*P) / D
+    MCC = ((TP / N) - S * P) / D
     F1 = 2 * (precision * sensitivity) / (precision + sensitivity)
     oc_precision, oc_recall, _ = precision_recall_curve(y_truth, y_pred)
     AUC = auc(oc_recall, oc_precision)
@@ -125,14 +125,12 @@ def calc_stats(sag_id, level, include, gam, n, t_key, TP, FP, TN, FN, y_truth, y
     return stat_list
 
 
-
-
 minhash_file = sys.argv[1]
 mg_tetra_file = sys.argv[2]
 abund_recruits_file = sys.argv[3]
 src2sag_file = sys.argv[4]
 sag_id_file = sys.argv[5]
-#score_file_out = sys.argv[6]
+# score_file_out = sys.argv[6]
 nthreads = int(sys.argv[6])
 
 minhash_df = pd.read_csv(minhash_file, header=0, sep='\t')
@@ -164,7 +162,7 @@ for sag_id in sag_id_list:
     mg_abund_df = mg_tetra_df.loc[mg_tetra_df['contig_id'].isin(list(major_abund_df['contig_id']))]
     mg_abund_df.drop(columns=['contig_id'], inplace=True)
     mg_tetra_df.drop(columns=['contig_id'], inplace=True)
-                
+
     minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id) &
                                     (minhash_df['jacc_sim_max'] == 1.0)
                                     ]
@@ -176,7 +174,7 @@ for sag_id in sag_id_list:
         scale = StandardScaler().fit(mg_tetra_df.values)
         scaled_data = scale.transform(mg_tetra_df.values)
         std_merge_df = pd.DataFrame(scaled_data, index=mg_tetra_df.index)
-        
+
         src2contig_df = src2sag_df.loc[src2sag_df['CAMI_genomeID'] == sag2src_dict[sag_id]]
         src2strain_df = src2sag_df.loc[src2sag_df['strain'] == sag2strain_dict[sag_id]]
         src2contig_list = list(set(src2contig_df['@@SEQUENCEID'].values))
@@ -193,8 +191,8 @@ for sag_id in sag_id_list:
         if X_test_df.shape[0] != 0:
             X_test_raw = X_test_df.values
             y_test = [1 if src2contig_list.count(x.rsplit('_', 1)[0]) != 0 else -1
-                        for x in X_test_df.index.values
-                        ]
+                      for x in X_test_df.index.values
+                      ]
             y_test_strain = [1 if src2strain_list.count(x.rsplit('_', 1)[0]) != 0 else -1
                              for x in X_test_df.index.values
                              ]
@@ -208,11 +206,10 @@ for sag_id in sag_id_list:
                                            (std_merge_df.index.isin(list(mg_abund_df.index)))
                                            )]
 
-
             contig_id_list = [x.rsplit('_', 1)[0] for x in X_test_df.index.values]
             gamma_range = [10 ** k for k in range(-6, 6)]
             gamma_range.extend(['scale'])
-            nu_range = [k/10 for k in range(1, 10, 1)]
+            nu_range = [k / 10 for k in range(1, 10, 1)]
             score_list = []
             print('Running data on OCSVM')
             train_dict = {'raw': [X_train_raw, X_test_raw], 'normalized': [X_train_norm, X_test_norm],
@@ -222,14 +219,14 @@ for sag_id in sag_id_list:
             pool = multiprocessing.Pool(processes=nthreads)
             arg_list = []
             for gam in gamma_range:
-                    for n in nu_range:
-                        for t_key in train_dict.keys():
-                            X_train = train_dict[t_key][0]
-                            X_test = train_dict[t_key][1]
-                            ocsvm = svm.OneClassSVM(gamma=gam, nu=n)
-                            arg_list.append([sag_id, gam, n, t_key, X_train, X_test, ocsvm, contig_id_list,
-                                             y_test, y_test_strain])
-            
+                for n in nu_range:
+                    for t_key in train_dict.keys():
+                        X_train = train_dict[t_key][0]
+                        X_test = train_dict[t_key][1]
+                        ocsvm = svm.OneClassSVM(gamma=gam, nu=n)
+                        arg_list.append([sag_id, gam, n, t_key, X_train, X_test, ocsvm, contig_id_list,
+                                         y_test, y_test_strain])
+
             results = pool.imap_unordered(predict_recruits, arg_list)
             for i, output in enumerate(results):
                 score_list.append(output[0])

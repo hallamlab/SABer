@@ -1,6 +1,6 @@
-import pandas as pd
 import sys
 
+import pandas as pd
 
 input_file = sys.argv[1]
 input_df = pd.read_csv(input_file, header=0, sep='\t')
@@ -20,21 +20,21 @@ sag_taxmap_df['sp_name'] = [x.split('|')[-2] for x in sag_taxmap_df['TAXPATHSN']
 sag_taxmap_df['TAXID_substr'] = sag_taxmap_df['@@TAXID']
 sag_taxmap_df['@@TAXID'] = [str(x).split('.')[0] for x in sag_taxmap_df['@@TAXID']]
 sag_taxmap_df.columns = ['_TAXID_', '_RANK_', '_TAXPATH_', '_TAXPATHSN_', '_PERCENTAGE_',
-								'BINID', '_CAMI_OTU_', '_sp_taxid_', '_sp_name_',
-								'_TAXID_substr_'
-								]
+                         'BINID', '_CAMI_OTU_', '_sp_taxid_', '_sp_name_',
+                         '_TAXID_substr_'
+                         ]
 
 amber_tax_df = pd.merge(amber_df, sag_taxmap_df, on='BINID')
 amber_tax_df = amber_tax_df[['@@SEQUENCEID', 'BINID', '_TAXID_', '_RANK_', '_TAXPATH_',
-								'_TAXPATHSN_', '_PERCENTAGE_', '_CAMI_OTU_',
-								'_sp_taxid_', '_sp_name_','_TAXID_substr_'
-								]]
+                             '_TAXPATHSN_', '_PERCENTAGE_', '_CAMI_OTU_',
+                             '_sp_taxid_', '_sp_name_', '_TAXID_substr_'
+                             ]]
 
 with open(input_file.rsplit('.', 1)[0] + '.AMBER.binning', 'w') as a_out:
-	a_out.write('@Version:0.9.1\n@SampleID:CAMI_HIGH\n\n')
+    a_out.write('@Version:0.9.1\n@SampleID:CAMI_HIGH\n\n')
 
 amber_tax_df.to_csv(input_file.rsplit('.', 1)[0] + '.AMBER.binning', index=False, sep='\t',
-						mode='a')
+                    mode='a')
 
 '''
 for bin_id in set(amber_tax_df['BINID']):

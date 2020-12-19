@@ -1,13 +1,13 @@
 __author__ = 'Ryan J McLaughlin'
 
-from Bio import SeqIO
+import logging
 import os
 import re
-import sys
 import subprocess
-import logging
-from itertools import product, islice
+import sys
 from collections import Counter
+from itertools import product, islice
+
 import pandas as pd
 import pyfastx
 
@@ -73,8 +73,8 @@ def executable_dependency_versions(exe_dict):
     # Format the string with the versions of all software
     ##
     for exe in sorted(versions_dict):
-        n_spaces = 12-len(exe)
-        versions_string += "\t" + exe + ' '*n_spaces + versions_dict[exe] + "\n"
+        n_spaces = 12 - len(exe)
+        versions_string += "\t" + exe + ' ' * n_spaces + versions_dict[exe] + "\n"
 
     return versions_string
 
@@ -120,8 +120,8 @@ def check_out_dirs(save_path):
         os.makedirs(save_path)
 
     sd_list = ['subcontigs', 'signatures', 'minhash_recruits',
-                     'abund_recruits', 'tetra_recruits', 'xPGs'
-                     ]
+               'abund_recruits', 'tetra_recruits', 'xPGs'
+               ]
     sd_dict = {}
     for sd in sd_list:
         sd_path = os.path.join(save_path, sd)
@@ -138,7 +138,7 @@ def get_SAGs(sag_path):
         logging.info('[SABer]: Directory specified, looking for SAGs\n')
         sag_list = [os.path.join(sag_path, f) for f in
                     os.listdir(sag_path) if ((f.split('.')[-1] == 'fasta' or
-                    f.split('.')[-1] == 'fna') and 'Sample' not in f)
+                                              f.split('.')[-1] == 'fna') and 'Sample' not in f)
                     ]
         logging.info('[SABer]: Found %s SAGs in directory\n'
                      % str(len(sag_list))
@@ -154,7 +154,6 @@ def get_SAGs(sag_path):
 
 
 def build_subcontigs(in_fasta_list, subcontig_path, max_contig_len, overlap_len):
-
     sub_list = []
     for i, in_fasta in enumerate(in_fasta_list):
         basename = os.path.basename(in_fasta)
@@ -164,16 +163,16 @@ def build_subcontigs(in_fasta_list, subcontig_path, max_contig_len, overlap_len)
             # get contigs from fasta file
             contigs = get_seqs(in_fasta)
             # remove any that are smaller that the max_contig_len
-            #trim_contigs = [x for x in contigs if len(x[1]) >= int(max_contig_len)]
+            # trim_contigs = [x for x in contigs if len(x[1]) >= int(max_contig_len)]
             headers, subs = kmer_slide(contigs, int(max_contig_len),
-                                                int(overlap_len)
-                                                )
+                                       int(overlap_len)
+                                       )
             with open(sub_file, 'w') as sub_out:
-                    sub_out.write('\n'.join(['\n'.join(['>'+rec[0], rec[1]]) for rec in
-                                    zip(headers, subs)]) + '\n'
-                                 )
+                sub_out.write('\n'.join(['\n'.join(['>' + rec[0], rec[1]]) for rec in
+                                         zip(headers, subs)]) + '\n'
+                              )
         sub_list.append((samp_id, sub_file))
-        logging.info('\r[SABer]: Loading/Building subcontigs: {} done'.format(i+1))
+        logging.info('\r[SABer]: Loading/Building subcontigs: {} done'.format(i + 1))
     logging.info('\n')
     sub_list = tuple(sub_list)
     return sub_list
@@ -189,8 +188,8 @@ def kmer_slide(scd_db, n, o_lap):
             clean_seq = str(seq).upper()
             sub_list = slidingWindow(clean_seq, n, o_lap)
             sub_headers = [header + '_' + str(i) for i, x in
-                            enumerate(sub_list, start=0)
-                            ]
+                           enumerate(sub_list, start=0)
+                           ]
             all_sub_seqs.extend(sub_list)
             all_sub_headers.extend(sub_headers)
 
@@ -205,24 +204,26 @@ def get_frags(seq, l_max, o_lap):
     if (l_max != 0) and (len(seq) > l_max):
         offset = l_max - o_lap
         for i in range(0, len(seq), offset):
-            if i+l_max < len(seq):
-                frag = seq[i:i+l_max]
+            if i + l_max < len(seq):
+                frag = seq[i:i + l_max]
                 seq_frags.append(frag)
             else:
                 frag = seq[-l_max:]
                 seq_frags.append(frag)
                 break
-    #else:
+    # else:
     #    seq_frags.append(seq)
 
     return seq_frags
 
 
-def slidingWindow(sequence, winSize, step): # pulled source from https://scipher.wordpress.com/2010/12/02/simple-sliding-window-iterator-in-python/
+def slidingWindow(sequence, winSize,
+                  step):  # pulled source from https://scipher.wordpress.com/2010/12/02/simple-sliding-window-iterator-in-python/
 
     seq_frags = []
     # Verify the inputs
-    try: it = iter(sequence)
+    try:
+        it = iter(sequence)
     except TypeError:
         raise Exception("**ERROR** sequence must be iterable.")
     if not ((type(winSize) == type(0)) and (type(step) == type(0))):
@@ -230,10 +231,10 @@ def slidingWindow(sequence, winSize, step): # pulled source from https://scipher
     if step > winSize:
         raise Exception("**ERROR** step must not be larger than winSize.")
     if winSize <= len(sequence):
-        numOfChunks = ((len(sequence)-winSize)//step)+1
-        for i in range(0,numOfChunks*step,step):
-            seq_frags.append(sequence[i:i+winSize])
-        seq_frags.append(sequence[-winSize:]) # add the remaining tail
+        numOfChunks = ((len(sequence) - winSize) // step) + 1
+        for i in range(0, numOfChunks * step, step):
+            seq_frags.append(sequence[i:i + winSize])
+        seq_frags.append(sequence[-winSize:])  # add the remaining tail
     else:
         seq_frags.append(sequence)
 
@@ -247,20 +248,20 @@ def get_seqs(fasta_file):
 
 
 def get_kmer(seq, n):
-        "Returns a sliding window (of width n) over data from the iterable"
-        "   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                "
-        it = iter(seq)
-        result = tuple(islice(it, n))
-        if len(result) == n:
-            yield result
-        for elem in it:
-            result = result[1:] + (elem,)
-            yield result
+    "Returns a sliding window (of width n) over data from the iterable"
+    "   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                "
+    it = iter(seq)
+    result = tuple(islice(it, n))
+    if len(result) == n:
+        yield result
+    for elem in it:
+        result = result[1:] + (elem,)
+        yield result
 
 
 def tetra_cnt(seq_list):
     # Dict of all tetramers
-    tetra_cnt_dict = {''.join(x):[] for x in product('atgc', repeat=4)}
+    tetra_cnt_dict = {''.join(x): [] for x in product('atgc', repeat=4)}
     # count up all tetramers and also populate the tetra dict
     for seq in seq_list:
         tmp_dict = {k: 0 for k, v in tetra_cnt_dict.items()}
@@ -276,8 +277,8 @@ def tetra_cnt(seq_list):
         dedup_dict = {}
         for tetra in tmp_dict.keys():
             if (tetra not in dedup_dict.keys()) & (tetra[::-1]
-                not in dedup_dict.keys()
-                ):
+                                                   not in dedup_dict.keys()
+            ):
                 dedup_dict[tetra] = ''
             elif tetra[::-1] in dedup_dict.keys():
                 dedup_dict[tetra[::-1]] = tetra
@@ -285,12 +286,12 @@ def tetra_cnt(seq_list):
         tetra_prop_dict = {}
         for tetra in dedup_dict.keys():
             if dedup_dict[tetra] != '':
-                #tetra_prop_dict[tetra] = tmp_dict[tetra] + tmp_dict[dedup_dict[tetra]]
+                # tetra_prop_dict[tetra] = tmp_dict[tetra] + tmp_dict[dedup_dict[tetra]]
                 t_prop = (tmp_dict[tetra]
-                            + tmp_dict[dedup_dict[tetra]]) / total_kmer_cnt
+                          + tmp_dict[dedup_dict[tetra]]) / total_kmer_cnt
                 tetra_prop_dict[tetra] = t_prop
             else:
-                #tetra_prop_dict[tetra] = tmp_dict[tetra]
+                # tetra_prop_dict[tetra] = tmp_dict[tetra]
                 t_prop = tmp_dict[tetra] / total_kmer_cnt
                 tetra_prop_dict[tetra] = t_prop
         # add to tetra_cnt_dict
@@ -304,4 +305,3 @@ def tetra_cnt(seq_list):
     dedupped_df = tetra_cnt_df.loc[:, (tetra_cnt_df != 0.0).any(axis=0)]
 
     return dedupped_df
-
