@@ -18,12 +18,12 @@ from sklearn.preprocessing import StandardScaler
 
 
 def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
-                        minhash_df, covm_per_pass, nthreads, forcerun
+                        minhash_df, covm_per_pass, nthreads, force
                         ):
 
     mg_id = mg_sub_file[0]
     if ((isfile(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'))) &
-        (forcerun == 'False')
+        (force == False)
         ):
         mh_covm_df = pd.read_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), header=0,
                                         sep='\t'

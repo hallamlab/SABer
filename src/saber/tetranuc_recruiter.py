@@ -16,7 +16,7 @@ from sklearn.preprocessing import StandardScaler
 
 
 def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minhash_df,
-                        per_pass, nthreads
+                        per_pass, nthreads, force
                         ):
     """Returns dataframe of subcontigs recruited via tetranucleotide Hz
 
@@ -65,7 +65,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
     pool = multiprocessing.Pool(processes=nthreads)
     arg_list = []
     for sag_id in set(minhash_df['sag_id']):
-        arg_list.append([sag_id, mg_id, mg_headers, tra_path, minhash_df, mg_tetra_df, rpkm_max_df])
+        arg_list.append([sag_id, mg_id, mg_headers, tra_path, minhash_df, mg_tetra_df, rpkm_max_df, force])
     results = pool.imap_unordered(run_tetra_ML, arg_list)
     for i, output in enumerate(results):
         gmm_df_list.append(output[0])
@@ -101,16 +101,17 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
 
 
 def run_tetra_ML(p):
-    sag_id, mg_id, mg_headers, tra_path, minhash_df, mg_tetra_df, rpkm_max_df = p 
+    sag_id, mg_id, mg_headers, tra_path, minhash_df, mg_tetra_df, rpkm_max_df, force = p 
     #sag_id, sag_file = sag_rec
     if sag_id in list(rpkm_max_df['sag_id']):
 
         if (isfile(o_join(tra_path, sag_id + '.gmm_recruits.tsv')) &
             isfile(o_join(tra_path, sag_id + '.svm_recruits.tsv')) &
             isfile(o_join(tra_path, sag_id + '.iso_recruits.tsv')) &
-            isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv'))
+            isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv')) &
+            force == False
             ):
-            #logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
+            logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
             #with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
             #    gmm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
             #with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'r') as tra_in:
