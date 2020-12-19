@@ -7,7 +7,7 @@ import pandas as pd
 import saber.utilities as s_utils
 
 
-def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_file, tetra_df_dict,
+def run_combine_recruits(xpg_path, mg_file, tetra_df_dict,
                          minhash_df, sag_list
                          ):
     mg_contigs_dict = s_utils.get_seqs(mg_file)
@@ -28,17 +28,17 @@ def run_combine_recruits(final_path, ext_path, asm_path, check_path, mg_file, te
                 on=['sag_id', 'contig_id']
             ).drop_duplicates()
 
-            mh_gmm_merge_df.to_csv(o_join(final_path, tetra_id + '.xPG.tsv'), sep='\t', index=True)
+            mh_gmm_merge_df.to_csv(o_join(xpg_path, tetra_id + '.xPG.tsv'), sep='\t', index=True)
             mg_contigs_df = pd.DataFrame(mg_contigs, columns=['contig_id', 'seq'])
             sag_de_df_list = []
             for sag_id in set(mh_gmm_merge_df['sag_id']):
-                final_rec = o_join(final_path, sag_id + '.' + tetra_id + '.xPG.fasta')
+                final_rec = o_join(xpg_path, sag_id + '.' + tetra_id + '.xPG.fasta')
 
                 sub_merge_df = mh_gmm_merge_df.loc[mh_gmm_merge_df['sag_id'] == sag_id]
                 print('[SABer]: Recruited %s contigs from entire analysis for %s' %
                       (sub_merge_df.shape[0], sag_id)
                       )
-                with open(o_join(final_path, sag_id + '.' + tetra_id + '.xPG.fasta'), 'w') as final_out:
+                with open(o_join(xpg_path, sag_id + '.' + tetra_id + '.xPG.fasta'), 'w') as final_out:
                     mg_sub_filter_df = mg_contigs_df.loc[mg_contigs_df['contig_id'
                     ].isin(sub_merge_df['contig_id'])
                     ]
