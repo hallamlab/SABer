@@ -89,15 +89,15 @@ if not os.path.exists(algo_path):
 level_path = err_path + 'multi-level'
 if not os.path.exists(level_path):
     os.makedirs(level_path)
+comp_path = err_path + '/Comp_plots/'
+if not os.path.exists(comp_path):
+    os.makedirs(comp_path)
 
-err_file = 'All_stats_count.tsv'
+err_file = err_path + '/All_stats_count.tsv'
 err_df = pd.read_csv(err_file, header=0, sep='\t')
-map_algo = {'synSAG': 'synSAG', 'MinHash': 'MinHash', 'TPM': 'MBN-Abund', 'tetra_gmm': 'GMM',
+map_algo = {'synSAG': 'synSAG', 'minhash': 'MinHash', 'mbn_abund': 'MBN-Abund', 'tetra_gmm': 'GMM',
             'tetra_svm': 'OCSVM', 'tetra_iso': 'Isolation Forest', 'tetra_comb': 'Tetra Ensemble',
-            'gmm_combined': 'Final GMM', 'svm_combined': 'Final OCSVM',
-            'iso_combined': 'Final Isolation Forest', 'comb_combined': 'Final Ensemble',
-            'gmm_extend': 'SABer-GMM', 'svm_extend': 'SABer-OCSVM',
-            'iso_extend': 'SABer-Isolation Forest', 'comb_extend': 'SABer-Ensemble'
+            'xpg': 'SABer-xPG'
             }
 err_df['algorithm'] = [map_algo[x] for x in err_df['algorithm']]
 err_df['level'] = ['exact' if x == 'perfect' else x for x in err_df['level']]
@@ -110,7 +110,7 @@ trim_df = err_trim_df.loc[((err_trim_df['level'].isin(level_list)) &
                            (err_trim_df['statistic'].isin(stat_list))
                            )]
 trim_df['sag_id'] = [x.replace('.synSAG', '') for x in trim_df['sag_id']]
-sagid_list = list(trim_df['sag_id'].loc[trim_df['algorithm'] == 'Final Ensemble'])
+sagid_list = list(trim_df['sag_id'].loc[trim_df['algorithm'] == 'SABer-xPG'])
 trim_df = trim_df.loc[trim_df['sag_id'].isin(sagid_list)]
 
 
@@ -147,43 +147,39 @@ for algo in set(filter_df['stage']):
     df_list.append(tmp_df)
 concat_df = pd.concat(df_list)
 g = sns.relplot(x='synSAG_score_cat', y='stage_score', hue='datatype', style='datatype',
-                col='stage', kind='line', col_wrap=5, ci='sd',
+                col='stage', kind='line', col_wrap=4, ci='sd',
                 col_order=['MinHash', 'MBN-Abund', 'Isolation Forest', 'OCSVM', 'GMM',
-                           'Tetra Ensemble', 'Final Isolation Forest', 'Final OCSVM', 'Final GMM',
-                           'Final Ensemble'
+                           'Tetra Ensemble', 'SABer-xPG'
                            ],
                 sort=True, data=concat_df
                 )
-# plt.ylim(0, 1)
-# plt.xlim(0, 1)
 [plt.setp(ax.texts, text="") for ax in g.axes.flat]
 [plt.setp(ax.get_xticklabels(), rotation=45) for ax in g.axes.flat]
 g.set_titles(row_template='{row_name}', col_template='{col_name}')
 
-g.savefig("SABer_Sensitivity_relplot.png", bbox_inches='tight', dpi=300)
+g.savefig(err_path + '/SABer_Sensitivity_relplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
 sns.set_context("poster")
 sns.set_style('whitegrid')
 sns.set(font_scale=0.75)
-stage_list = ['MinHash', 'Final Ensemble']
+stage_list = ['MinHash', 'SABer-xPG']
 sens_trim_df = sensitivity_df.loc[sensitivity_df['stage'].isin(stage_list)]
 g = sns.relplot(x='stage', y='stage_score', hue='synSAG_score_cat', style='synSAG_score_cat',
                 kind='line', ci=None, data=sens_trim_df, palette='muted'
                 )
 plt.ylim(0, 100)
-# plt.xlim(0, 1)
 [plt.setp(ax.texts, text="") for ax in g.axes.flat]
 [plt.setp(ax.get_xticklabels(), rotation=45) for ax in g.axes.flat]
 g.set_titles(row_template='{row_name}', col_template='{col_name}')
 
-g.savefig("SABer_MinHash_relplot.png", bbox_inches='tight', dpi=300)
+g.savefig(err_path + '/SABer_MinHash_relplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
 for algo in set(syn_stage_sense_df['stage']):
-    # Plot Before and after SAG -> xPG completness
+    # Plot Before and after SAG -> SABer-xPG completness
     algo_list = ['synSAG', algo]
     sub_trim_df = syn_stage_sense_df.loc[syn_stage_sense_df['stage'].isin(algo_list)]
     sns.set_context("poster")
@@ -195,11 +191,7 @@ for algo in set(syn_stage_sense_df['stage']):
     g.plot_joint(sns.scatterplot)
     g.plot_marginals(sns.histplot, kde=True)
 
-    # g = sns.jointplot(x='synSAG_Completeness', y='Completeness', hue='algorithm', data=sub_trim_df)
-    # plt.ylim(0, 1)
-    # plt.xlim(0, 1)
-
-    g.savefig('Comp_plots/' + algo + "_synSAG_Completeness.png", bbox_inches='tight', dpi=300)
+    g.savefig(comp_path + algo + "_synSAG_Completeness.png", bbox_inches='tight', dpi=300)
     plt.clf()
     plt.close()
 
@@ -209,10 +201,7 @@ for algo in set(syn_stage_sense_df['stage']):
     g = sns.catplot(x='synSAG_score_cat', y='stage_score', hue='stage', kind='box',
                     data=sub_trim_df, linewidth=0.5
                     )
-    # plt.ylim=(0, 100)
-    # plt.xlim(0, 1)
-
-    g.savefig('Comp_plots/' + algo + "_synSAG_Completeness_box.png", bbox_inches='tight', dpi=300)
+    g.savefig(comp_path + algo + "_synSAG_Completeness_box.png", bbox_inches='tight', dpi=300)
     plt.clf()
     plt.close()
 
@@ -266,52 +255,11 @@ for algo in set(unstack_df['algorithm']):
             outlier_list.append(outlier_df)
 
 concat_val_df = pd.concat(val_df_list)
-concat_val_df.to_csv('Compiled_stats.tsv', sep='\t', index=False)
+concat_val_df.to_csv(err_path + '/Compiled_stats.tsv', sep='\t', index=False)
 concat_out_df = pd.concat(outlier_list)
-concat_out_df.to_csv('Compiled_outliers.tsv', sep='\t', index=False)
+concat_out_df.to_csv(err_path + '/Compiled_outliers.tsv', sep='\t', index=False)
 level_order = ['domain', 'family', 'class', 'order', 'genus', 'species', 'strain', 'exact']
-'''
-g = sns.FacetGrid(unstack_df, col='level', row='algorithm', aspect=1.5,
-                    col_order=level_order,
-                    row_order=['mockSAG', 'MinHash', 'TPM', 'GMM', 'OCSVM',
-                                'Isolation Forest', 'Tetra Ensemble', 'Final GMM',
-                                'Final OCSVM', 'Final Isolation Forest', 'Final Ensemble',
-                                'SABer-GMM', 'SABer-OCSVM', 'SABer-Isolation Forest',
-                                'SABer-Ensemble'
-                                ]
-                    )
-g = g.map(plt.scatter, 'Precision', 'Sensitivity', color='k', edgecolor='w')
-g.savefig("precision_sensitivity_scatters.pdf", bbox_inches='tight')
-plt.close()
 
-g = sns.FacetGrid(unstack_df, col='level', row='algorithm', aspect=1.5, sharey=False,
-                    sharex=False, xlim=[0, 1.1],
-                    col_order=level_order,
-                    row_order=['mockSAG', 'MinHash', 'TPM', 'GMM', 'OCSVM',
-                                'Isolation Forest', 'Tetra Ensemble', 'Final GMM',
-                                'Final OCSVM', 'Final Isolation Forest', 'Final Ensemble',
-                                'SABer-GMM', 'SABer-OCSVM', 'SABer-Isolation Forest',
-                                'SABer-Ensemble'
-                                ]
-                    )
-g = g.map(plt.hist, 'Precision', bins=np.arange(0, 1.1, 0.02), color='k', edgecolor='w')
-g.savefig("precision_histograms.pdf", bbox_inches='tight')
-plt.close()
-
-g = sns.FacetGrid(unstack_df, col='level', row='algorithm', aspect=1.5, sharey=False,
-                    sharex=False, xlim=[0, 1.1],
-                    col_order=level_order,
-                    row_order=['mockSAG', 'MinHash', 'TPM', 'GMM', 'OCSVM',
-                                'Isolation Forest', 'Tetra Ensemble', 'Final GMM',
-                                'Final OCSVM', 'Final Isolation Forest', 'Final Ensemble',
-                                'SABer-GMM', 'SABer-OCSVM', 'SABer-Isolation Forest',
-                                'SABer-Ensemble'
-                                ]
-                    )
-g = g.map(plt.hist, 'Sensitivity', bins=np.arange(0, 1.1, 0.02), color='k', edgecolor='w')
-g.savefig("sensitivity_histograms.pdf", bbox_inches='tight')
-plt.close()
-'''
 flierprops = dict(markerfacecolor='0.75', markersize=5, markeredgecolor='w',
                   linestyle='none')
 
@@ -329,7 +277,7 @@ for level in set(err_trim_df['level']):
     plt.xlim(-0.5, 3.5)
     # plt.title('SAG-plus CAMI-1-High error analysis')
     ax._legend.set_title('Workflow\nStage')
-    plt.savefig('multi-algo/' + level + '_error_boxplox_count.png',
+    plt.savefig(err_path + '/multi-algo/' + level + '_error_boxplox_count.png',
                 bbox_inches='tight'
                 )
     plt.clf()
@@ -337,13 +285,6 @@ for level in set(err_trim_df['level']):
 
 # build multi-level precision boxplot
 stat_list = ['precision', 'sensitivity', 'MCC']
-'''
-mock_stat_df = err_df.loc[((err_df['algorithm'].isin(['mockSAG'])) &
-                                    (err_df['level'].isin(['genus'])) &
-                                    (err_df['statistic'].isin(stat_list))
-                                    )]
-mock_stat_df['level'] = 'mockSAG'
-'''
 for algo in set(err_trim_df['algorithm']):
     comb_stat_df = err_trim_df.loc[((err_trim_df['algorithm'] == algo) &
                                     (err_trim_df['level'].isin(level_order)) &
@@ -363,71 +304,22 @@ for algo in set(err_trim_df['algorithm']):
     # plt.xlim(-0.5, 4.5)
     plt.title('SABer ' + algo + ' by Taxonomic-level')
 
-    plt.savefig('multi-level/' + algo.replace(' ', '_') + '_multi-level_boxplox_count.png',
+    plt.savefig(err_path + '/multi-level/' + algo.replace(' ', '_') + '_multi-level_boxplox_count.png',
                 bbox_inches='tight'
                 )
     plt.clf()
     plt.close()
 
 # Stat by level line plot
-err_deduped_df = err_trim_df.loc[err_trim_df['algorithm'].isin(['Final GMM', 'Final OCSVM',
-                                                                'Final Isolation Forest',
-                                                                'Final Ensemble'])
+err_deduped_df = err_trim_df.loc[err_trim_df['algorithm'].isin(['GMM', 'OCSVM',
+                                                                'Isolation Forest',
+                                                                'Tetra Ensemble', 'SABer-xPG'])
 ]
-'''
-# AMBER Taxonomic
-amber_tax_file = 'AMBER_taxonomic_results.tsv'
-amber_tax_df = pd.read_csv(amber_tax_file, header=0, sep='\t')
-amber_tax_df = amber_tax_df[['sample_id', 'Taxon ID', 'Scientific name', 'Taxonomic rank',
-                                    'algorithm', 'Purity (bp)', 'Completeness (bp)'
-                                    ]]
-amber_tax_df.columns = ['sample_id', 'taxid', 'clade', 'level', 'algorithm',
-                            'precision', 'sensitivity'
-                            ]
 
-amber_filter_df = amber_tax_df[['level', 'algorithm', 'precision', 'sensitivity']]
-amber_filter_df = amber_filter_df[np.isfinite(amber_filter_df['precision'])]
-amber_filter_df = amber_filter_df.loc[((amber_filter_df['precision'] != 0) &
-                                        (amber_filter_df['sensitivity'] != 0)
-                                        )]
-#amber_filter_df = amber_filter_df.loc[((amber_filter_df['Purity (bp)'] != '') &
-#                                        (amber_filter_df['Completeness (bp)'] != '') &
-#                                        (amber_filter_df['Purity (bp)'] != 0) &
-#                                        (amber_filter_df['Completeness (bp)'] != 0)
-#                                        )]
-
-amber_stack_df = amber_filter_df.set_index(['level', 'algorithm']).stack().reset_index()
-amber_stack_df.columns = ['level', 'algorithm', 'statistic', 'score'
-                            ]
-amber_stack_df['level'] = ['domain' if x=='superkingdom' else x
-                                for x in amber_stack_df['level']
-                                ]
-err_deduped_filter_df = err_deduped_df[['level', 'algorithm', 'statistic', 'score']]
-err_deduped_filter_df = err_deduped_filter_df.loc[err_deduped_filter_df['statistic'].isin([
-                                                    'precision', 'sensitivity']
-                                                    )]
-concat_tax_df = pd.concat([err_deduped_filter_df, amber_stack_df])
-concat_tax_df.dropna(inplace=True)
-concat_tax_df.to_csv('out.tsv', sep='\t')
-
-cat_order = ['Kraken_0.10.5', 'Kraken_0.10.6', 'taxator-tk_1.3.0e', 'taxator-tk_1.4pre1e',
-                'PhyloPythiaS_plus', 'SABer-Isolation Forest', 'SABer-OCSVM', 'SABer-GMM',
-                'SABer-Ensemble'
-                ]
-g = sns.relplot(x='level', y='score', hue='statistic', style='statistic',
-                col='algorithm', kind='line', col_wrap=3,
-                col_order=cat_order,
-                sort=False,
-                data=concat_tax_df
-                )
-g.savefig("AMBER_SABer_relplot.png", bbox_inches='tight', dpi=300)
-plt.close()
-'''
 sns.set(font_scale=1.5)  # crazy big
 g = sns.relplot(x='level', y='score', hue='statistic', style='statistic',
-                col='algorithm', kind='line', col_wrap=4,
-                col_order=['Final Isolation Forest', 'Final OCSVM', 'Final GMM',
-                           'Final Ensemble'],
+                col='algorithm', kind='line', col_wrap=5,
+                col_order=['Isolation Forest', 'OCSVM', 'GMM', 'Tetra Ensemble', 'SABer-xPG'],
                 sort=False,
                 data=err_deduped_df
                 )
@@ -435,15 +327,14 @@ g = sns.relplot(x='level', y='score', hue='statistic', style='statistic',
 [plt.setp(ax.get_xticklabels(), rotation=45) for ax in g.axes.flat]
 g.set_titles(row_template='{row_name}', col_template='{col_name}')
 
-g.savefig("SABer_relplot.png", bbox_inches='tight', dpi=300)
+g.savefig(err_path + '/SABer_relplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
 g = sns.relplot(x='level', y='score', hue='statistic', style='statistic',
-                col='algorithm', kind='line', col_wrap=5,
+                col='algorithm', kind='line', col_wrap=4,
                 col_order=['MinHash', 'MBN-Abund', 'Isolation Forest', 'OCSVM', 'GMM',
-                           'Tetra Ensemble', 'Final Isolation Forest',
-                           'Final OCSVM', 'Final GMM', 'Final Ensemble'],
+                           'Tetra Ensemble', 'SABer-xPG'],
                 sort=False,
                 data=err_trim_df
                 )
@@ -453,30 +344,15 @@ plt.ylim(0, 1)
 [plt.setp(ax.get_xticklabels(), rotation=45) for ax in g.axes.flat]
 g.set_titles(row_template='{row_name}', col_template='{col_name}')
 
-g.savefig("SABer_AllSteps_relplot.png", bbox_inches='tight', dpi=300)
+g.savefig(err_path + '/SABer_AllSteps_relplot.png', bbox_inches='tight', dpi=300)
 plt.clf()
 plt.close()
 
-'''
-
-# Stat by level line plot
-g = sns.relplot(x='Taxonomic rank', y='score', hue='statistic', style='statistic',
-                col='algorithm', kind='line', col_wrap=2, sort=False, data=amber_stack_df
-                )
-g.set_xticklabels(rotation=45)
-g.savefig("AMBER_tax_relplot.pdf", bbox_inches='tight')
-
-'''
-
 # Open SAG ID to AMBER map
-s2a_map_file = 'SABer2AMBER_map.tsv'
+s2a_map_file = err_path + '/SABer2AMBER_map.tsv'
 s2a_map_df = pd.read_csv(s2a_map_file, header=0, sep='\t')
 s2a_map_df['sag_id'] = [x.rsplit('.', 1)[0] for x in s2a_map_df['sag_id']]
-# deduped_df = unstack_df.loc[unstack_df['algorithm'].isin(['SABer-GMM', 'SABer-OCSVM',
-#                                                            'SABer-Isolation Forest',
-#                                                            'SABer-Ensemble'])
-#                                                            ]
-deduped_df = unstack_df.loc[unstack_df['algorithm'].isin(['Final Ensemble'])]
+deduped_df = unstack_df.loc[unstack_df['algorithm'].isin(['SABer-xPG'])]
 
 deduped_df['synthSAG_id'] = deduped_df['sag_id']
 deduped_df['sag_id'] = [x.rsplit('.', 2)[0] for x in deduped_df['sag_id']]
@@ -488,7 +364,7 @@ strain_df = deduped_amb_df.loc[deduped_amb_df['level'] == 'strain']
 strain_filter_df = strain_df[['bin_id', 'algorithm', 'Precision', 'Sensitivity', 'genome_id']]
 
 # AMBER Genome
-amber_gen_file = 'AMBER_genome_results.tsv'
+amber_gen_file = err_path + '/AMBER_genome_results.tsv'
 amber_gen_df = pd.read_csv(amber_gen_file, header=0, sep='\t')
 amber_gen_df.columns = ['sample_id', 'bin_id', 'genome_id', 'Precision', 'Sensitivity',
                         'Predicted size (bp)', 'True positives (bp)', 'True size (bp)',
@@ -512,39 +388,6 @@ paired_cmap_dict = {'blue': (0.2823529411764706, 0.47058823529411764, 0.81568627
                     'gold': (0.8352941176470589, 0.7333333333333333, 0.403921568627451),
                     'lightblue': (0.5098039215686274, 0.7764705882352941, 0.8862745098039215)
                     }
-'''
-# Plot average stats for algorithm
-color_dict = {'Binsanity-wf_0.2.5.9': paired_cmap_dict['rose'],
-                'Binsanity_0.2.5.9': paired_cmap_dict['rose'],
-                'COCACOLA': paired_cmap_dict['purple'],
-                'CONCOCT_2': paired_cmap_dict['lightblue'],
-                'CONCOCT_CAMI': paired_cmap_dict['lightblue'],
-                'DAS_Tool_1.1': paired_cmap_dict['blue'],
-                'MaxBin_2.0.2_CAMI': paired_cmap_dict['gold'],
-                'MaxBin_2.2.4': paired_cmap_dict['gold'],
-                'MetaBAT_2.11.2': paired_cmap_dict['green'],
-                'MetaBAT_CAMI': paired_cmap_dict['green'],
-                'Metawatt_3.5_CAMI': paired_cmap_dict['brown'],
-                'MyCC_CAMI': paired_cmap_dict['gray'],
-                'SABer-Isolation Forest': paired_cmap_dict['orange'],
-                'SABer-OCSVM': paired_cmap_dict['orange'],
-                'SABer-GMM': paired_cmap_dict['orange'],
-                'SABer-Ensemble': paired_cmap_dict['orange']
-                }
-marker_dict = {'MaxBin_2.0.2_CAMI': 'o', 'MetaBAT_CAMI': 'o',
-                'MaxBin_2.2.4': 'd', 'CONCOCT_2': 'o', 'SABer-GMM': 'o',
-                'Binsanity_0.2.5.9': 'o', 'Binsanity-wf_0.2.5.9': 'd',
-                'SABer-Ensemble': 'd', 'COCACOLA': 'o', 'Metawatt_3.5_CAMI': 'o',
-                'CONCOCT_CAMI': 'd', 'SABer-Isolation Forest': '^',
-                'SABer-OCSVM': 's', 'MyCC_CAMI': 'o', 'DAS_Tool_1.1': 'd',
-                'MetaBAT_2.11.2': 'd'
-                }
-cat_order = ['Binsanity-wf_0.2.5.9', 'Binsanity_0.2.5.9', 'COCACOLA', 'CONCOCT_2',
-                'CONCOCT_CAMI', 'DAS_Tool_1.1', 'MaxBin_2.0.2_CAMI', 'MaxBin_2.2.4',
-                'MetaBAT_2.11.2', 'MetaBAT_CAMI', 'Metawatt_3.5_CAMI', 'MyCC_CAMI',
-                'SABer-Isolation Forest', 'SABer-OCSVM', 'SABer-GMM', 'SABer-Ensemble'
-                ]
-'''
 # Plot average stats for algorithm
 color_dict = {'Binsanity-wf_0.2.5.9': paired_cmap_dict['rose'],
               'Binsanity_0.2.5.9': paired_cmap_dict['rose'],
@@ -558,12 +401,12 @@ color_dict = {'Binsanity-wf_0.2.5.9': paired_cmap_dict['rose'],
               'MetaBAT_CAMI': paired_cmap_dict['green'],
               'Metawatt_3.5_CAMI': paired_cmap_dict['brown'],
               'MyCC_CAMI': paired_cmap_dict['gray'],
-              'Final Ensemble': paired_cmap_dict['orange']
+              'SABer-xPG': paired_cmap_dict['orange']
               }
 marker_dict = {'MaxBin_2.0.2_CAMI': 'o', 'MetaBAT_CAMI': 'o',
                'MaxBin_2.2.4': 'd', 'CONCOCT_2': 'o',
                'Binsanity_0.2.5.9': 'o', 'Binsanity-wf_0.2.5.9': 'd',
-               'Final Ensemble': 'd', 'COCACOLA': 'o', 'Metawatt_3.5_CAMI': 'o',
+               'SABer-xPG': 'd', 'COCACOLA': 'o', 'Metawatt_3.5_CAMI': 'o',
                'CONCOCT_CAMI': 'd',
                'MyCC_CAMI': 'o', 'DAS_Tool_1.1': 'd',
                'MetaBAT_2.11.2': 'd'
@@ -571,7 +414,7 @@ marker_dict = {'MaxBin_2.0.2_CAMI': 'o', 'MetaBAT_CAMI': 'o',
 cat_order = ['Binsanity-wf_0.2.5.9', 'Binsanity_0.2.5.9', 'COCACOLA', 'CONCOCT_2',
              'CONCOCT_CAMI', 'DAS_Tool_1.1', 'MaxBin_2.0.2_CAMI', 'MaxBin_2.2.4',
              'MetaBAT_2.11.2', 'MetaBAT_CAMI', 'Metawatt_3.5_CAMI', 'MyCC_CAMI',
-             'Final Ensemble'
+             'SABer-xPG'
              ]
 g = sns.scatterplot(y='Precision', x='Sensitivity', hue='algorithm', palette=color_dict,
                     style='algorithm', markers=marker_dict, hue_order=cat_order,
@@ -583,7 +426,7 @@ plt.xlim(0, 1)
 plt.ylim(0, 1.05)
 
 plt.legend(edgecolor='b', bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-g.figure.savefig("AMBER_SABer_scatterplot.png", bbox_inches='tight', dpi=300)
+g.figure.savefig(err_path + '/AMBER_SABer_scatterplot.png', bbox_inches='tight', dpi=300)
 
 flierprops = dict(markerfacecolor='0.75', markersize=5, markeredgecolor='w',
                   linestyle='none')
@@ -594,7 +437,7 @@ piv_sab_amb_df.columns = ['bin_id', 'algorithm', 'genome_id', 'statistic', 'scor
 cat_order = ['Binsanity-wf_0.2.5.9', 'Binsanity_0.2.5.9', 'COCACOLA', 'CONCOCT_2',
              'CONCOCT_CAMI', 'DAS_Tool_1.1', 'MaxBin_2.0.2_CAMI', 'MaxBin_2.2.4',
              'MetaBAT_2.11.2', 'MetaBAT_CAMI', 'Metawatt_3.5_CAMI', 'MyCC_CAMI',
-             'Final Isolation Forest', 'Final OCSVM', 'Final GMM', 'Final Ensemble'
+             'Isolation Forest', 'OCSVM', 'GMM', 'Tetra Ensemble', 'SABer-xPG'
              ]
 with sns.axes_style("white"):
     ax = sns.catplot(x="statistic", y="score", hue='algorithm', kind='box',
@@ -608,25 +451,6 @@ with sns.axes_style("white"):
     plt.xlim(-0.5, 1.5)
     # plt.title('SAG-plus CAMI-1-High error analysis')
     ax._legend.set_title('Workflow\nStage')
-    plt.savefig('AMBER_SABer_error_boxplox_count.png', bbox_inches='tight', dpi=300)
+    plt.savefig(err_path + '/AMBER_SABer_error_boxplox_count.png', bbox_inches='tight', dpi=300)
     plt.clf()
     plt.close()
-
-'''
-# Stat by level line plot
-for stat in set(err_df['statistic']):
-    stat_err_df = err_df.loc[err_df['statistic'] == stat]
-    g = sns.relplot(x='level', y='score', hue='statistic', style='statistic',
-                    col='algorithm', kind='line', col_wrap=4,
-                    col_order=['mockSAG', 'MinHash', 'TPM', 'GMM', 'OCSVM',
-                                    'Isolation Forest', 'Tetra Ensemble', 'Final GMM',
-                                    'Final OCSVM', 'Final Isolation Forest', 'Final Ensemble',
-                                    'SABer-GMM', 'SABer-OCSVM', 'SABer-Isolation Forest',
-                                    'SABer-Ensemble'
-                                    ],
-                    sort=False, ci='sd', n_boot=100,
-                    data=stat_err_df
-                    )
-    g.savefig(stat + ".relplot.pdf", bbox_inches='tight')
-
-'''
