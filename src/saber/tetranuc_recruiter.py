@@ -111,7 +111,7 @@ def run_tetra_ML(p):
                 isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv')) &
                 force == False
         ):
-            logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
+            # logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
             # with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
             #    gmm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
             # with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'r') as tra_in:
