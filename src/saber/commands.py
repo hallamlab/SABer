@@ -77,7 +77,7 @@ def recruit(sys_args):
     sag_list = s_utils.get_SAGs(recruit_s.sag_path)
 
     # Build subcontiges for SAGs and MG
-    logging.info('[SABer]: Loading/Building subcontigs\n')  # TODO: add logging to track this
+    logging.info('[SABer]: Loading/Building subcontigs\n')
     sag_sub_files = s_utils.build_subcontigs(sag_list,
                                              save_dirs_dict['subcontigs'],
                                              recruit_s.max_contig_len,
