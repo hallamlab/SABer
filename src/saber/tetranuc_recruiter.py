@@ -285,8 +285,8 @@ def run_tetra_ML(p):
                 ac_set = set(gmm_id_list).intersection(iso_id_list)
                 bc_set = set(svm_id_list).intersection(iso_id_list)
                 #comb_set_list = list({*ab_set, *ac_set, *bc_set})
-                #comb_set_list = list(set(list(ab_set) + list(ac_set) + list(bc_set)))
-                comb_set_list = list(set(list(gmm_id_list) + list(svm_id_list) + list(iso_id_list)))
+                comb_set_list = list(set(list(ab_set) + list(ac_set) + list(bc_set)))
+                #comb_set_list = list(set(list(gmm_id_list) + list(svm_id_list) + list(iso_id_list)))
                 #comb_set_list = list(ac_set)
                 comb_pass_list = []
                 for md_nm in comb_set_list:
