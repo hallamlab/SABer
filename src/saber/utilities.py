@@ -120,8 +120,7 @@ def check_out_dirs(save_path):
         os.makedirs(save_path)
 
     sd_list = ['subcontigs', 'signatures', 'minhash_recruits',
-                     'abund_recruits', 'tetra_recruits', 'final_recruits',
-                     'extend_SAGs', 're_assembled', 'checkM'
+                     'abund_recruits', 'tetra_recruits', 'xPGs'
                      ]
     sd_dict = {}
     for sd in sd_list:
