@@ -109,7 +109,7 @@ def run_tetra_ML(p):
                 isfile(o_join(tra_path, sag_id + '.svm_recruits.tsv')) &
                 isfile(o_join(tra_path, sag_id + '.iso_recruits.tsv')) &
                 isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv')) &
-                force == False
+                (force is False)
         ):
             # logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
             # with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
@@ -135,9 +135,9 @@ def run_tetra_ML(p):
 
         else:
             # Concat SAGs amd MG for ML Training
-            minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id)]  # &
-            # (minhash_df['jacc_sim'] == 1.0)
-            # ]
+            minhash_sag_df = minhash_df.loc[(minhash_df['sag_id'] == sag_id) &
+                                            (minhash_df['jacc_sim'] == 1.0)
+                                            ]
             if minhash_sag_df.shape[0] != 0:
 
                 scale = StandardScaler().fit(mg_tetra_df.values)
