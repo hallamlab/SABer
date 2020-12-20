@@ -170,8 +170,6 @@ g.savefig(err_path + '/SABer_Sensitivity_boxplot.png', bbox_inches='tight', dpi=
 plt.clf()
 plt.close()
 
-sys.exit()
-
 sns.set_context("poster")
 sns.set_style('whitegrid')
 sns.set(font_scale=0.75)
@@ -199,7 +197,7 @@ for algo in set(syn_stage_sense_df['stage']):
     g = sns.JointGrid(data=sub_trim_df, x='synSAG_score', y='stage_score', hue='stage',
                       ylim=(0, 101)
                       )
-    g.plot_joint(sns.scatterplot)
+    g.plot_joint(sns.scatterplot, legend=False)
     g.plot_marginals(sns.histplot, kde=True)
 
     g.savefig(comp_path + algo + "_synSAG_Completeness.png", bbox_inches='tight', dpi=300)
