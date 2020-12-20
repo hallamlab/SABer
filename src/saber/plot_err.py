@@ -116,12 +116,17 @@ sagid_list = list(trim_df['sag_id'].loc[trim_df['algorithm'] == 'SABer-xPG'])
 trim_df = trim_df.loc[trim_df['sag_id'].isin(sagid_list)]
 
 
-def myfloor(x, base=5):
+def myceil(x, base=5):
     return base * math.ceil(x / base)
 
 
+interval_labels = {5: '[0,5]', 10: '(5,10]', 15: '(10,15]', 20: '(15,20]', 25: '(20,25]', 30: '(25,30]',
+                   35: '(30,35]', 40: '[35,40]', 45: '(40,45]', 50: '(45,50]', 55: '(50,55]', 60: '(55,60]',
+                   65: '(60,65]', 70: '(65,70]', 75: '[70,75]', 80: '(75,80]', 85: '(80,85]', 90: '(85,90]',
+                   95: '(90,95]', 100: '(95,100]'
+                   }
 trim_df['percent'] = [x * 100 for x in trim_df['score']]
-trim_df['round_percent'] = [myfloor(x) for x in trim_df['percent']]
+trim_df['round_percent'] = [myceil(x) for x in trim_df['percent']]
 trim_df = trim_df[['sag_id', 'algorithm', 'statistic', 'score', 'percent', 'round_percent']]
 sag_df = trim_df[['sag_id', 'percent', 'round_percent']
 ].loc[((trim_df['algorithm'] == 'synSAG') & (trim_df['statistic'] == 'sensitivity'))]
@@ -129,6 +134,7 @@ merge_df = trim_df.merge(sag_df, on=['sag_id'])
 merge_df.columns = ['sag_id', 'stage', 'statistic', 'score', 'stage_score', 'stage_round_score',
                     'synSAG_score', 'synSAG_score_cat'
                     ]
+merge_df['syn_SAG_label'] = [interval_labels[x] for x in merge_df['synSAG_score_cat']]
 filter_df = merge_df.loc[merge_df['stage'] != 'synSAG']
 sensitivity_df = filter_df.loc[filter_df['statistic'] == 'sensitivity']
 precision_df = filter_df.loc[filter_df['statistic'] == 'precision']
