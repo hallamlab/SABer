@@ -40,49 +40,10 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             for sag_rec in tqdm(build_list):
                 sag_id, sag_file = sag_rec
                 sag_sig_list = load_sag_sigs(nthreads, sag_file, sag_id, sig_path)
-                search_df = compare_sag_sbt(jacc_threshold, mg_sbt, mhr_path, sag_id,
+                search_df = compare_sag_sbt(mg_sbt, mhr_path, sag_id,
                                             sag_sig_list)  # TODO: need to fix stdout and logging
-
-                # compare_sigs_df = compare_sag_mg_sigs(jacc_threshold, mhr_path, nthreads, sag_id, sag_sig_list, sig_path,
-                #                               split_mg_sig_list)
-
                 minhash_pass_list.append(search_df)
-                '''
-                ####### TEST BOOSTING #######
-                top_jacc_df = compare_sigs_df.loc[compare_sigs_df['jacc_sim'] == 1.0]
-                mg_sig_contig_list = [s.name().rsplit('_', 1)[0] for s in mg_sig_list]
-                print(mg_sig_contig_list[0:5])
-                top_jac_sig_list = [s[1] for s in zip(mg_sig_contig_list, mg_sig_list)
-                                    if s[0] in list(top_jacc_df['contig_id'])
-                                    ]
-                print(top_jac_sig_list)
-                pool = multiprocessing.Pool(processes=nthreads)
-                arg_list = []
-                for mg_sig_sub_list in split_mg_sig_list:
-                    arg_list.append([sag_id, top_jac_sig_list, mhr_path, sig_path, mg_sig_sub_list,
-                                     jacc_threshold
-                                     ])
-                results = pool.imap_unordered(compare_sigs, arg_list)
-                logging.info('[SABer]: Comparing Signature for %s\n' % sag_id)
-                merge_list = []
-                for i, o_list in enumerate(results):
-                    sys.stderr.write('\rdone {0:.0%}'.format(i / len(arg_list)))
-                    merge_list.extend(o_list)
-                boost_df = pd.DataFrame(merge_list, columns=['sag_id', 'subcontig_id', 'contig_id',
-                                                             'jacc_sim', 'recruit_bool'
-                                                             ])
-                boost_df['jacc_sim'] = boost_df['jacc_sim'].astype(float)
-                merge_boost_df = pd.concat([compare_sigs_df, boost_df])
-                merge_boost_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
-                merge_boost_df.drop_duplicates(subset='subcontig_id', inplace=True)
-                merge_boost_df.to_csv(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), sep='\t',
-                                index=False
-                                )
-                pool.close()
-                pool.join()
-                minhash_pass_list.append(merge_boost_df)
-                #############################
-                '''
+
         # TODO: everything after this needs a good refactor
         if len(minhash_pass_list) > 1:
             minhash_df = pd.concat(minhash_pass_list)
@@ -146,7 +107,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     return minhash_filter_df
 
 
-def compare_sag_sbt(jacc_threshold, mg_sbt, mhr_path, sag_id, sag_sig_list):
+def compare_sag_sbt(mg_sbt, mhr_path, sag_id, sag_sig_list):
     search_list = []
     for i, sig in enumerate(sag_sig_list):
         sys.stderr.write('\r[SABer]: Searching SBT: {0:.0%}'.format(i / len(sag_sig_list)))
