@@ -150,7 +150,7 @@ def compare_sag_sbt(jacc_threshold, mg_sbt, mhr_path, sag_id, sag_sig_list):
     search_list = []
     for i, sig in enumerate(sag_sig_list):
         sys.stderr.write('\r[SABer]: Searching SBT: {0:.0%}'.format(i / len(sag_sig_list)))
-        sbt_out = mg_sbt.search(sig, threshold=0.51)
+        sbt_out = mg_sbt.search(sig, threshold=0.1)
         for target in sbt_out:
             similarity = target[0]
             t_sig = target[1]
