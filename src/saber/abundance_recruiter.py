@@ -219,7 +219,7 @@ def recruitSubs(p):
     # minhash_90_list = list(minhash_sag_df['subcontig_id'].loc[
     #                        minhash_sag_df['jacc_sim_max'] >= 0.90]
     #                        )
-    minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]
+    minhash_filter_df = minhash_sag_df.copy()  # .loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]
 
     # mh_jacc_list = list(set(minhash_filter_df['contig_id']))
 
