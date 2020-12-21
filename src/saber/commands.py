@@ -77,19 +77,20 @@ def recruit(sys_args):
     sag_list = s_utils.get_SAGs(recruit_s.sag_path)
 
     # Build subcontiges for SAGs and MG
-    logging.info('[SABer]: Loading/Building subcontigs\n')
+    logging.info('[SABer]: Loading/Building subcontigs for SAGs\n')
     sag_sub_files = s_utils.build_subcontigs(sag_list,
                                              save_dirs_dict['subcontigs'],
                                              recruit_s.max_contig_len,
                                              recruit_s.overlap_len
                                              )
+    logging.info('[SABer]: Loading/Building subcontigs for Metagenome\n')
     mg_sub_file = s_utils.build_subcontigs([recruit_s.mg_file],
                                            save_dirs_dict['subcontigs'],
                                            recruit_s.max_contig_len,
                                            recruit_s.overlap_len
-                                           )[0]
+                                           )
     # Run MinHash recruiting algorithm
-    logging.info('[SABer]: Starting Kmer Recruitment Step\n')
+    logging.info('[SABer]: Starting MinHash Recruitment Step\n')
     minhash_df = mhr.run_minhash_recruiter(save_dirs_dict['signatures'],
                                            save_dirs_dict['minhash_recruits'],
                                            sag_sub_files, mg_sub_file,

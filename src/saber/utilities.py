@@ -156,6 +156,7 @@ def get_SAGs(sag_path):
 def build_subcontigs(in_fasta_list, subcontig_path, max_contig_len, overlap_len):
     sub_list = []
     for i, in_fasta in enumerate(in_fasta_list):
+        logging.info('\r[SABer]: Loading/Building subcontigs: {} done'.format(i + 1))
         basename = os.path.basename(in_fasta)
         samp_id = basename.rsplit('.', 1)[0]
         sub_file = os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')
@@ -172,10 +173,13 @@ def build_subcontigs(in_fasta_list, subcontig_path, max_contig_len, overlap_len)
                                          zip(headers, subs)]) + '\n'
                               )
         sub_list.append((samp_id, sub_file))
-        logging.info('\r[SABer]: Loading/Building subcontigs: {} done'.format(i + 1))
     logging.info('\n')
-    sub_list = tuple(sub_list)
-    return sub_list
+    if len(sub_list) == 1:
+        sub_file = sub_list[0]
+        return sub_file
+    else:
+        sub_list = tuple(sub_list)
+        return sub_list
 
 
 def kmer_slide(scd_db, n, o_lap):
