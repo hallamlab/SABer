@@ -25,7 +25,7 @@ def run_combine_recruits(xpg_path, mg_file, tetra_df_dict,
             #    tetra_df[['sag_id', 'contig_id']], how='outer',
             #    on=['sag_id', 'contig_id']
             # ).drop_duplicates()
-            mh_gmm_merge_df = tetra_df[['sag_id', 'contig_id']]  # Maybe Dont merge?
+            mh_gmm_merge_df = tetra_df[['sag_id', 'contig_id']].drop_duplicates()  # Maybe Dont merge?
             mh_gmm_merge_df.to_csv(o_join(xpg_path, 'CONTIG_MAP.xPG.tsv'), sep='\t', index=False)
             mg_contigs_df = pd.DataFrame(mg_contigs, columns=['contig_id', 'seq'])
             sag_de_df_list = []
