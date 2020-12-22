@@ -11,7 +11,6 @@ from sklearn import svm
 pd.set_option('display.max_columns', None)
 pd.options.mode.chained_assignment = None
 import multiprocessing
-import sys
 from sklearn.preprocessing import StandardScaler
 
 
@@ -97,7 +96,10 @@ def abund_recruiter(abr_path, covm_pass_dfs, mg_covm_out, minhash_df, nthreads):
     results = pool.imap_unordered(recruitSubs, arg_list)
     for i, output in enumerate(results):
         covm_pass_dfs.append(output)
-        sys.stderr.write('\rdone {}/{}'.format(i, len(arg_list)))
+        logging.info('\rRecruiting with Abundance Model: {0:.0%}'.format((i + 1) / len(arg_list)))
+        # logging.info("\rThere are {} total subcontigs, {} contigs".format(
+        #    len(output['subcontig_id']), len(output['contig_id'].unique()))
+        # )
     pool.close()
     pool.join()
     covm_df = pd.concat(covm_pass_dfs)
@@ -120,6 +122,7 @@ def procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path, n
         # Build/sorted .bam files
         mg_sort_out = runSamTools(abr_path, pe_id, nthreads, mg_id, mg_sam_out)
         sorted_bam_list.append(mg_sort_out)
+    logging.info('\n')
     mg_covm_out = runCovM(abr_path, mg_id, nthreads, sorted_bam_list)
 
     return mg_covm_out
@@ -151,7 +154,7 @@ def runBWAmem(abr_path, subcontig_path, mg_id, raw_file_list, nthreads):
                    o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
                    ]  # TODO: add support for specifying number of threads
     else:  # if the fastq is interleaved
-        logging.info('Raw reads in interleaved file...\n')
+        logging.info('\rRaw reads in interleaved file...')
         pe1 = raw_file_list[0]
         mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
                    o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
@@ -231,12 +234,6 @@ def recruitSubs(p):
         final_pass_df.to_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
                              header=False, index=False, sep='\t'
                              )
-        print("There are {} total subcontigs, {} contigs".format(
-            len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
-        )
-        logging.info("There are {} total subcontigs, {} contigs".format(
-            len(final_pass_df['subcontig_id']), len(final_pass_df['contig_id'].unique()))
-        )
     else:
         final_pass_df = pd.DataFrame([], columns=['sag_id', 'subcontig_id', 'contig_id'])
 

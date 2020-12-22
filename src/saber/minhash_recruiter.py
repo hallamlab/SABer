@@ -32,7 +32,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         if len(build_list) != 0:
             mg_sbt = build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads)
             for i, sag_rec in enumerate(build_list):
-                logging.info('\rQuerying SAGs Signatures against SBT: {0:.0%}'.format(i / len(build_list)))
+                logging.info('\rQuerying SAGs Signatures against SBT: {0:.0%}'.format((i + 1) / len(build_list)))
                 sag_id, sag_file = sag_rec
                 sag_sig_list = load_sag_sigs(nthreads, sag_file, sag_id, sig_path)
                 search_df = compare_sag_sbt(mg_sbt, mhr_path, sag_id,
@@ -133,11 +133,11 @@ def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads):
         results = pool.imap_unordered(build_leaf, mg_sig_list)
         leaf_list = []
         for i, leaf in enumerate(results):
-            logging.info('\rBuilding leaves for SBT: {0:.0%}'.format(i / len(mg_sig_list)))
+            logging.info('\rBuilding leaves for SBT: {0:.0%}'.format((i + 1) / len(mg_sig_list)))
             leaf_list.append(leaf)
         logging.info('\n')
         for i, lef in enumerate(leaf_list):
-            logging.info('\rAdding leaves to tree: {0:.0%}'.format(i / len(leaf_list)))
+            logging.info('\rAdding leaves to tree: {0:.0%}'.format((i + 1) / len(leaf_list)))
             mg_sbt_tree.add_node(lef)
         logging.info('\n')
         mg_sbt_tree.save(mg_sbt_file)
