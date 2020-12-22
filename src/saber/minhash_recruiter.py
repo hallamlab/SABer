@@ -97,7 +97,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     return minhash_filter_df
 
 
-def compare_sag_sbt(mg_sbt, mhr_path, sag_id, sag_sig_list):
+def compare_sag_sbt(mg_sbt, mhr_path, sag_id, sag_sig_list):  # TODO: There is a memory leak in this method
     search_list = []
     for i, sig in enumerate(sag_sig_list):
         sbt_out = mg_sbt.search(sig, threshold=0.1)
