@@ -213,18 +213,8 @@ def runCovM(abr_path, mg_id, nthreads, sorted_bam_list):
 
 def recruitSubs(p):
     abr_path, sag_id, minhash_sag_df, mg_covm_out = p
-    # subset df for sag_id
-    # minhash_sag_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
-    # minhash_90_list = list(minhash_sag_df['subcontig_id'].loc[
-    #                        minhash_sag_df['jacc_sim_max'] >= 0.90]
-    #                        )
     minhash_filter_df = minhash_sag_df.copy()  # .loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]
-
-    # mh_jacc_list = list(set(minhash_filter_df['contig_id']))
-
     if len(minhash_filter_df['sag_id']) != 0:
-        # sag_mh_pass_df = minhash_sag_df.loc[minhash_sag_df['contig_id'].isin(mh_jacc_list)]
-        overall_recruit_list = []
         mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t', index_col=['contigName'])
         mg_covm_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
         scale = StandardScaler().fit(mg_covm_df.values)
@@ -233,17 +223,7 @@ def recruitSubs(p):
         recruit_contigs_df = std_merge_df.loc[std_merge_df.index.isin(
             list(minhash_filter_df['subcontig_id']))
         ]
-        nonrecruit_filter_df = std_merge_df.copy()  # .loc[~std_merge_df.index.isin(
-        # recruit_contigs_df.index)
-        # ]
-        # recruit_contigs_df.set_index('contigName', inplace=True)
-        # nonrecruit_filter_df.set_index('contigName', inplace=True)
-
-        # keep_cols = [x for x in recruit_contigs_df.columns
-        #             if x.rsplit('.', 1)[1] != 'bam-var'
-        #             ]
-        # recruit_bam_df = recruit_contigs_df[keep_cols]
-        # nonrecruit_bam_df = nonrecruit_filter_df[keep_cols]
+        nonrecruit_filter_df = std_merge_df.copy()
         final_pass_list = runOCSVM(recruit_contigs_df, nonrecruit_filter_df, sag_id)
         final_pass_df = pd.DataFrame(final_pass_list,
                                      columns=['sag_id', 'subcontig_id', 'contig_id']

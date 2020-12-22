@@ -43,7 +43,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             minhash_df = pd.concat(minhash_pass_list)
         else:
             minhash_df = minhash_pass_list[0]
-        '''
+
         minhash_df['jacc_sim'] = minhash_df['jacc_sim'].astype(float)
         recruit_list = list(minhash_df['subcontig_id'].loc[minhash_df['jacc_sim'] >= 0.10])
         minhash_recruit_df = minhash_df.loc[minhash_df['subcontig_id'].isin(recruit_list)]
@@ -85,23 +85,16 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         merge_jacc_df = mh_final_max_df.merge(minhash_df, how='left',
                                               on=['sag_id', 'subcontig_id', 'contig_id']
                                               )
-        print(merge_jacc_df.head())
-
-        # minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] >= 0.40) &
-        #                                       (merge_jacc_df['subcontig_recruits'] > 3)) |
-        #                                      (merge_jacc_df['jacc_sim_max'] >= 0.99)
-        #                                      ]
-        # minhash_filter_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t',
-        #                         index=False
-        #                         )
-        sys.exit()
-        merge_jacc_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t', index=False)
-        '''
-        minhash_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t', index=False)
-
+        minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] > 0.5) &
+                                               (merge_jacc_df['subcontig_recruits'] > 3)) |
+                                              (merge_jacc_df['jacc_sim_max'] >= 0.9)
+                                              ]
+        minhash_filter_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t',
+                                 index=False
+                                 )
+        minhash_filter_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t', index=False)
     logging.info('MinHash Recruitment Algorithm Complete\n')
-
-    return minhash_df
+    return minhash_filter_df
 
 
 def compare_sag_sbt(mg_sbt, mhr_path, sag_id, sag_sig_list):
