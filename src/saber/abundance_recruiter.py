@@ -28,7 +28,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     else:
         mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
         mg_headers = tuple(mg_subcontigs.keys())
-        logging.info('[SABer]: Building %s abundance table\n' % mg_id)
+        logging.info('Building %s abundance table\n' % mg_id)
         mg_sub_path = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
         # Process raw metagenomes to calculate abundances
         mg_covm_out = procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path,
@@ -38,34 +38,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         covm_pass_dfs = []
         minhash_df['jacc_sim'] = minhash_df['jacc_sim'].astype(float)
         logging.info("Starting one-class SVM analysis\n")
-        ####
-        pool = multiprocessing.Pool(processes=nthreads)
-        arg_list = []
-        for sag_id in set(minhash_df['sag_id']):
-            if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
-                # logging.info('[SABer]: Loading Abundance Recruits for  %s\n' % sag_id)
-                final_pass_df = pd.read_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
-                                            header=None,
-                                            names=['sag_id', 'subcontig_id', 'contig_id'],
-                                            sep='\t'
-                                            )
-                covm_pass_dfs.append(final_pass_df)
-            else:
-                mh_sub_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
-                arg_list.append([abr_path, sag_id, mh_sub_df, mg_covm_out])
-        logging.info("{} already complete, {} to run\n".format(len(covm_pass_dfs), len(arg_list)))
-        results = pool.imap_unordered(recruitSubs, arg_list)
-        for i, output in enumerate(results):
-            covm_pass_dfs.append(output)
-            sys.stderr.write('\rdone {}/{}'.format(i, len(arg_list)))
-        pool.close()
-        pool.join()
-        ####
-
-        # for sag_id in tqdm(set(minhash_df['sag_id'])):
-        #    final_pass_df = recruitSubs(abr_path, sag_id, minhash_df, mg_covm_out)
-        #    covm_pass_dfs.append(final_pass_df)
-        covm_df = pd.concat(covm_pass_dfs)
+        covm_df = abund_recruiter(abr_path, covm_pass_dfs, mg_covm_out, minhash_df, nthreads)
 
         # Count # of subcontigs recruited to each SAG via samsum
         covm_cnt_df = covm_df.groupby(['sag_id', 'contig_id']).count().reset_index()
@@ -105,6 +78,32 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     return mh_covm_df
 
 
+def abund_recruiter(abr_path, covm_pass_dfs, mg_covm_out, minhash_df, nthreads):
+    pool = multiprocessing.Pool(processes=nthreads)
+    arg_list = []
+    for sag_id in set(minhash_df['sag_id']):
+        if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
+            # logging.info('Loading Abundance Recruits for  %s\n' % sag_id)
+            final_pass_df = pd.read_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
+                                        header=None,
+                                        names=['sag_id', 'subcontig_id', 'contig_id'],
+                                        sep='\t'
+                                        )
+            covm_pass_dfs.append(final_pass_df)
+        else:
+            mh_sub_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
+            arg_list.append([abr_path, sag_id, mh_sub_df, mg_covm_out])
+    logging.info("{} already complete, {} to run\n".format(len(covm_pass_dfs), len(arg_list)))
+    results = pool.imap_unordered(recruitSubs, arg_list)
+    for i, output in enumerate(results):
+        covm_pass_dfs.append(output)
+        sys.stderr.write('\rdone {}/{}'.format(i, len(arg_list)))
+    pool.close()
+    pool.join()
+    covm_df = pd.concat(covm_pass_dfs)
+    return covm_df
+
+
 def procMetaGs(abr_path, mg_id, mg_sub_path, mg_raw_file_list, subcontig_path, nthreads):
     # Build BWA index
     buildBWAindex(abr_path, mg_id, mg_sub_path)
@@ -131,7 +130,7 @@ def buildBWAindex(abr_path, mg_id, mg_sub_path):
     check_ind_list = ['.'.join([mg_sub_path, x]) for x in index_ext_list]
     if False in (isfile(f) for f in check_ind_list):
         # Use BWA to build an index for metagenome assembly
-        logging.info('[SABer]: Creating index with BWA\n')
+        logging.info('Creating index with BWA\n')
         bwa_cmd = ['bwa', 'index', mg_sub_path]
         with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
             with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
@@ -145,14 +144,14 @@ def buildBWAindex(abr_path, mg_id, mg_sub_path):
 
 def runBWAmem(abr_path, subcontig_path, mg_id, raw_file_list, nthreads):
     if len(raw_file_list) == 2:
-        logging.info('[SABer]: Raw reads in FWD and REV file...\n')
+        logging.info('Raw reads in FWD and REV file...\n')
         pe1 = raw_file_list[0]
         pe2 = raw_file_list[1]
         mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
                    o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
                    ]  # TODO: add support for specifying number of threads
     else:  # if the fastq is interleaved
-        logging.info('[SABer]: Raw reads in interleaved file...\n')
+        logging.info('Raw reads in interleaved file...\n')
         pe1 = raw_file_list[0]
         mem_cmd = ['bwa', 'mem', '-t', str(nthreads), '-p',
                    o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
@@ -162,7 +161,7 @@ def runBWAmem(abr_path, subcontig_path, mg_id, raw_file_list, nthreads):
     # BWA sam file exists?
     mg_sam_out = o_join(abr_path, pe_id + '.sam')
     if isfile(mg_sam_out) == False:
-        logging.info('[SABer]: Running BWA mem on %s\n' % pe_id)
+        logging.info('Running BWA mem on %s\n' % pe_id)
         with open(mg_sam_out, 'w') as sam_file:
             with open(o_join(abr_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
                 run_mem = Popen(mem_cmd, stdout=sam_file, stderr=stderr_file)
@@ -174,7 +173,7 @@ def runBWAmem(abr_path, subcontig_path, mg_id, raw_file_list, nthreads):
 def runSamTools(abr_path, pe_id, nthreads, mg_id, mg_sam_out):
     mg_bam_out = o_join(abr_path, pe_id + '.bam')
     if isfile(mg_bam_out) == False:
-        logging.info('[SABer]: Converting SAM to BAM with SamTools\n')
+        logging.info('Converting SAM to BAM with SamTools\n')
         bam_cmd = ['samtools', 'view', '-S', '-b', '-@', str(nthreads), mg_sam_out]
         with open(mg_bam_out, 'w') as bam_file:
             with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
@@ -183,7 +182,7 @@ def runSamTools(abr_path, pe_id, nthreads, mg_id, mg_sam_out):
     # sort bam file
     mg_sort_out = o_join(abr_path, pe_id + '.sorted.bam')
     if isfile(mg_sort_out) == False:
-        logging.info('[SABer]: Sort BAM with SamTools\n')
+        logging.info('Sort BAM with SamTools\n')
         sort_cmd = ['samtools', 'sort', '-@', str(nthreads), mg_bam_out, '-o', mg_sort_out]
         with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
             run_sort = Popen(sort_cmd, stderr=stderr_file)
@@ -200,7 +199,7 @@ def runCovM(abr_path, mg_id, nthreads, sorted_bam_list):
     except:  # if file doesn't exist
         covm_size = -1
     if covm_size <= 0:
-        logging.info('[SABer]: Calculate mean abundance and variance with CoverM\n')
+        logging.info('Calculate mean abundance and variance with CoverM\n')
         covm_cmd = ['coverm', 'contig', '-t', str(nthreads), '-m', 'metabat', '-b'
                     ]
         covm_cmd.extend(sorted_bam_list)

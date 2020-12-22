@@ -77,20 +77,17 @@ def recruit(sys_args):
     sag_list = s_utils.get_SAGs(recruit_s.sag_path)
 
     # Build subcontiges for SAGs and MG
-    logging.info('[SABer]: Loading/Building subcontigs for SAGs\n')
-    sag_sub_files = s_utils.build_subcontigs(sag_list,
+    sag_sub_files = s_utils.build_subcontigs('SAGs', sag_list,
                                              save_dirs_dict['subcontigs'],
                                              recruit_s.max_contig_len,
                                              recruit_s.overlap_len
                                              )
-    logging.info('[SABer]: Loading/Building subcontigs for Metagenome\n')
-    mg_sub_file = s_utils.build_subcontigs([recruit_s.mg_file],
+    mg_sub_file = s_utils.build_subcontigs('Metagenomes', [recruit_s.mg_file],
                                            save_dirs_dict['subcontigs'],
                                            recruit_s.max_contig_len,
                                            recruit_s.overlap_len
                                            )
     # Run MinHash recruiting algorithm
-    logging.info('[SABer]: Starting MinHash Recruitment Step\n')
     minhash_df = mhr.run_minhash_recruiter(save_dirs_dict['signatures'],
                                            save_dirs_dict['minhash_recruits'],
                                            sag_sub_files, mg_sub_file,
@@ -98,7 +95,7 @@ def recruit(sys_args):
                                            recruit_s.nthreads, recruit_s.force
                                            )
     # Abundance Recruit Module
-    logging.info('[SABer]: Starting Abundance Recruitment Step\n')
+    logging.info('Starting Abundance Recruitment Step\n')
     abund_df = abr.runAbundRecruiter(save_dirs_dict['subcontigs'],
                                      save_dirs_dict['abund_recruits'], mg_sub_file,
                                      recruit_s.mg_raw_file_list, minhash_df,
@@ -106,14 +103,14 @@ def recruit(sys_args):
                                      recruit_s.force
                                      )
     # Tetranucleotide Hz Recruit Module
-    logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
+    logging.info('Starting Tetranucleotide Recruitment Step\n')
     tetra_df_dict = tra.run_tetra_recruiter(save_dirs_dict['tetra_recruits'],
                                             sag_sub_files, mg_sub_file, abund_df,
                                             minhash_df, recruit_s.gmm_per_pass, recruit_s.nthreads,
                                             recruit_s.force
                                             )
     # Collect and join all recruits
-    logging.info('[SABer]: Combining All Recruits\n')
+    logging.info('Combining All Recruits\n')
     com.run_combine_recruits(save_dirs_dict['xPGs'],
                              recruit_s.mg_file, tetra_df_dict, minhash_df, sag_list
                              )

@@ -36,18 +36,18 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
     #        3. Can TetraNuc Hz be calc'ed for each sample? Does that improve things?
     #            (think about http://merenlab.org/2020/01/02/visualizing-metagenomic-bins/#introduction)
 
-    logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
+    logging.info('Starting Tetranucleotide Recruitment Step\n')
 
     mg_id = mg_sub_file[0]
     # Build/Load tetramers for SAGs and MG subset by ara recruits
     if isfile(o_join(tra_path, mg_id + '.tetras.tsv')):
-        logging.info('[SABer]: Loading tetramer Hz matrix for %s\n' % mg_id)
+        logging.info('Loading tetramer Hz matrix for %s\n' % mg_id)
         mg_tetra_df = pd.read_csv(o_join(tra_path, mg_id + '.tetras.tsv'),
                                   sep='\t', index_col=0, header=0
                                   )
         mg_headers = mg_tetra_df.index.values
     else:
-        logging.info('[SABer]: Calculating tetramer Hz matrix for %s\n' % mg_id)
+        logging.info('Calculating tetramer Hz matrix for %s\n' % mg_id)
         mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])  # TODO: can this be removed?
         mg_headers = tuple(mg_subcontigs.keys())
         mg_subs = tuple([r.seq for r in mg_subcontigs])
@@ -111,7 +111,7 @@ def run_tetra_ML(p):
                 isfile(o_join(tra_path, sag_id + '.comb_recruits.tsv')) &
                 (force is False)
         ):
-            # logging.info('[SABer]: Loading  %s tetramer Hz recruit list\n' % sag_id)
+            # logging.info('Loading  %s tetramer Hz recruit list\n' % sag_id)
             # with open(o_join(tra_path, sag_id + '.gmm_recruits.tsv'), 'r') as tra_in:
             #    gmm_pass_list = [x.rstrip('\n').split('\t') for x in tra_in.readlines()]
             # with open(o_join(tra_path, sag_id + '.svm_recruits.tsv'), 'r') as tra_in:
@@ -157,7 +157,7 @@ def run_tetra_ML(p):
                                         ]
                 mg_tetra_filter_df = std_tetra_df.loc[std_tetra_df.index.isin(mg_tetra_contig_list)]
 
-                # logging.info('[SABer]: Calculating AIC/BIC for GMM components\n')
+                # logging.info('Calculating AIC/BIC for GMM components\n')
                 sag_train_vals = [1 for x in sag_tetra_df.index]
                 n_components = np.arange(1, 100, 1)
                 models = [GMM(n, random_state=42) for n in n_components]
@@ -206,14 +206,14 @@ def run_tetra_ML(p):
 
                 # min_bic_comp = n_components[bics.index(min_bic)]
                 min_aic_comp = n_components[aics.index(min_aic)]
-                # logging.info('[SABer]: Min AIC/BIC at %s/%s, respectively\n' %
+                # logging.info('Min AIC/BIC at %s/%s, respectively\n' %
                 #      (min_aic_comp, min_bic_comp)
                 #      )
-                # logging.info('[SABer]: Using BIC as guide for GMM components\n')
-                # logging.info('[SABer]: Training GMM on SAG tetras\n')
+                # logging.info('Using BIC as guide for GMM components\n')
+                # logging.info('Training GMM on SAG tetras\n')
                 gmm = GMM(n_components=min_aic_comp, random_state=42
                           ).fit(sag_tetra_df.values)
-                # logging.info('[SABer]: GMM Converged: %s\n' % gmm.converged_)
+                # logging.info('GMM Converged: %s\n' % gmm.converged_)
                 try:  # TODO: add predict and predict_proba to this and output all to table
                     sag_scores = gmm.score_samples(sag_tetra_df.values)
                     sag_scores_df = pd.DataFrame(data=sag_scores, index=sag_tetra_df.index.values)
@@ -233,10 +233,10 @@ def run_tetra_ML(p):
                         if mg_tetra_contig_list.count(md_nm) != 0:
                             gmm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
                 except:
-                    # logging.info('[SABer]: Warning: No recruits found...\n')
+                    # logging.info('Warning: No recruits found...\n')
                     gmm_pass_list = []
 
-                # logging.info('[SABer]: Training OCSVM on SAG tetras\n')
+                # logging.info('Training OCSVM on SAG tetras\n')
                 # fit OCSVM
                 clf = svm.OneClassSVM(nu=0.9, gamma=0.0001)
                 clf.fit(sag_tetra_df.values)
@@ -253,7 +253,7 @@ def run_tetra_ML(p):
                     if mg_tetra_contig_list.count(md_nm) != 0:
                         svm_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
 
-                # logging.info('[SABer]: Training Isolation Forest on SAG tetras\n')
+                # logging.info('Training Isolation Forest on SAG tetras\n')
                 # fit IsoForest
                 clf = IsolationForest(random_state=42)
                 clf.fit(sag_tetra_df.values)
@@ -425,6 +425,6 @@ if __name__ == '__main__':
     sag_id = basename(sag_sub_file).rsplit('.', 2)[0]
     mg_id = basename(mg_sub_file).rsplit('.', 2)[0]
     abund_recruit_df = pd.read_csv(abund_recruit_file, header=0, sep='\t')
-    logging.info('[SABer]: Starting Tetranucleotide Recruitment Step\n')
+    logging.info('Starting Tetranucleotide Recruitment Step\n')
     run_tetra_recruiter(tra_path, [[sag_id, sag_sub_file]], [mg_id, mg_sub_file],
                         abund_recruit_df, per_pass)

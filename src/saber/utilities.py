@@ -135,17 +135,17 @@ def check_out_dirs(save_path):
 def get_SAGs(sag_path):
     # Find the SAGs!
     if os.path.isdir(sag_path):
-        logging.info('[SABer]: Directory specified, looking for SAGs\n')
+        logging.info('Directory specified, looking for SAGs\n')
         sag_list = [os.path.join(sag_path, f) for f in
                     os.listdir(sag_path) if ((f.split('.')[-1] == 'fasta' or
                                               f.split('.')[-1] == 'fna') and 'Sample' not in f)
                     ]
-        logging.info('[SABer]: Found %s SAGs in directory\n'
+        logging.info('Found %s SAGs in directory\n'
                      % str(len(sag_list))
                      )
 
     elif os.path.isfile(sag_path):
-        logging.info('[SABer]: File specified, processing %s\n'
+        logging.info('File specified, processing %s\n'
                      % os.path.basename(sag_path)
                      )
         sag_list = [sag_path]
@@ -153,13 +153,13 @@ def get_SAGs(sag_path):
     return sag_list
 
 
-def build_subcontigs(in_fasta_list, subcontig_path, max_contig_len, overlap_len):
+def build_subcontigs(seq_type, in_fasta_list, subcontig_path, max_contig_len, overlap_len):
     sub_list = []
     for i, in_fasta in enumerate(in_fasta_list):
-        logging.info('\r[SABer]: Loading/Building subcontigs: {} done'.format(i + 1))
         basename = os.path.basename(in_fasta)
         samp_id = basename.rsplit('.', 1)[0]
         sub_file = os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')
+        logging.info('\rLoading/Building subcontigs for {}: {}'.format(seq_type, i + 1))
         if os.path.exists(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')) == False:
             # get contigs from fasta file
             contigs = get_seqs(in_fasta)
