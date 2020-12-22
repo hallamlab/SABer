@@ -95,7 +95,6 @@ def recruit(sys_args):
                                            recruit_s.nthreads, recruit_s.force
                                            )
     # Abundance Recruit Module
-    logging.info('Starting Abundance Recruitment Step\n')
     abund_df = abr.runAbundRecruiter(save_dirs_dict['subcontigs'],
                                      save_dirs_dict['abund_recruits'], mg_sub_file,
                                      recruit_s.mg_raw_file_list, minhash_df,
@@ -103,14 +102,12 @@ def recruit(sys_args):
                                      recruit_s.force
                                      )
     # Tetranucleotide Hz Recruit Module
-    logging.info('Starting Tetranucleotide Recruitment Step\n')
     tetra_df_dict = tra.run_tetra_recruiter(save_dirs_dict['tetra_recruits'],
                                             sag_sub_files, mg_sub_file, abund_df,
                                             minhash_df, recruit_s.gmm_per_pass, recruit_s.nthreads,
                                             recruit_s.force
                                             )
     # Collect and join all recruits
-    logging.info('Combining All Recruits\n')
     com.run_combine_recruits(save_dirs_dict['xPGs'],
                              recruit_s.mg_file, tetra_df_dict, minhash_df, sag_list
                              )
