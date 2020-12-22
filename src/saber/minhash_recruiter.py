@@ -30,15 +30,37 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     else:
         build_list, minhash_pass_list = sag_recruit_checker(mhr_path, sag_sub_files)
         if len(build_list) != 0:
-            mg_sbt = build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads)
+            sag_sig_dict = build_sag_sig_dict(build_list, nthreads, sig_path)
+            build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=True)  # make sure SBT exists first
+            pool = multiprocessing.Pool(processes=nthreads)
+            sbt_args = mg_id, mg_sub_file, sig_path, nthreads
+            arg_list = []
+            chunk_list = list(chunks(list(sag_sig_dict.keys()), nthreads))
+            logging.info('Built {} Blocks of SAG Signature Sets\n'.format(len(chunk_list)))
+            for i, sag_id_list in enumerate(chunk_list):
+                sub_sag_sig_dict = {k: sag_sig_dict[k] for k in sag_sig_dict.keys()}
+                arg_list.append([sbt_args, mhr_path, sag_id_list, sub_sag_sig_dict])
+            results = pool.imap_unordered(compare_sag_sbt, arg_list)
+            logging.info('Querying {} Signature Blocks against SBT\n'.format(len(chunk_list)))
+            for i, search_df in enumerate(results):
+                logging.info('\rSignatures Queried Against SBT: {}/{}'.format(len(search_df),
+                                                                              len(build_list))
+                             )
+                minhash_pass_list.extend(search_df)
+            logging.info('\n')
+            pool.close()
+            pool.join()
+
+            '''
             for i, sag_rec in enumerate(build_list):
-                logging.info('\rQuerying SAGs Signatures against SBT: {0:.0%}'.format((i + 1) / len(build_list)))
+                logging.info('\rQuerying SAGs Signatures against SBT: {}/{}'.format(i + 1, len(build_list)))
                 sag_id, sag_file = sag_rec
                 sag_sig_list = load_sag_sigs(nthreads, sag_file, sag_id, sig_path)
                 search_df = compare_sag_sbt(mg_sbt, mhr_path, sag_id,
                                             sag_sig_list)
                 minhash_pass_list.append(search_df)
             logging.info('\n')
+            '''
         if len(minhash_pass_list) > 1:
             minhash_df = pd.concat(minhash_pass_list)
         else:
@@ -97,34 +119,64 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     return minhash_filter_df
 
 
-def compare_sag_sbt(mg_sbt, mhr_path, sag_id, sag_sig_list):  # TODO: There is a memory leak in this method
-    search_list = []
-    for i, sig in enumerate(sag_sig_list):
-        sbt_out = mg_sbt.search(sig, threshold=0.1)
-        for target in sbt_out:
-            similarity = target[0]
-            t_sig = target[1]
-            q_subcontig = t_sig.name()
-            q_contig = q_subcontig.rsplit('_', 1)[0]
-            search_list.append([sag_id, q_subcontig, q_contig, similarity])
-    logging.info('\r')
-    search_df = pd.DataFrame(search_list, columns=['sag_id', 'subcontig_id', 'contig_id',
-                                                   'jacc_sim'
-                                                   ])
-    search_df['jacc_sim'] = search_df['jacc_sim'].astype(float)
-    search_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
-    search_df.drop_duplicates(subset='subcontig_id', inplace=True)
-    search_df.to_csv(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), sep='\t',
-                     index=False
-                     )
-    return search_df
+def build_sag_sig_dict(build_list, nthreads, sig_path):
+    pool = multiprocessing.Pool(processes=nthreads)
+    arg_list = []
+    for i, sag_rec in enumerate(build_list):
+        sag_id, sag_file = sag_rec
+        arg_list.append([sag_file, sag_id, sig_path])
+    results = pool.imap_unordered(load_sag_sigs, arg_list)
+    sag_sig_dict = {}
+    for i, sag_sig_rec in enumerate(results):
+        sag_id, sag_sig_list = sag_sig_rec
+        logging.info('\rLoading/Building SAGs Signatures: {}/{}'.format(i + 1, len(build_list)))
+        sag_sig_dict[sag_id] = sag_sig_list
+    logging.info('\n')
+    pool.close()
+    pool.join()
+    return sag_sig_dict
 
 
-def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads):
+def compare_sag_sbt(p):  # TODO: needs stdout for user monitoring
+    sbt_args, mhr_path, sag_id_list, sag_sig_dict = p
+    mg_id, mg_sub_file, sig_path, nthreads = sbt_args
+    mg_sbt = build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads)
+    search_df_list = []
+    for sag_id in sag_id_list:
+        sag_sig_list = sag_sig_dict[sag_id]
+        search_list = []
+        for i, sig in enumerate(sag_sig_list):
+            sbt_out = mg_sbt.search(sig, threshold=0.1,
+                                    unload_data=True)  # unloading stops memory leak, but slows analysis
+            for target in sbt_out:
+                similarity = target[0]
+                t_sig = target[1]
+                q_subcontig = t_sig.name()
+                q_contig = q_subcontig.rsplit('_', 1)[0]
+                search_list.append([sag_id, q_subcontig, q_contig, similarity])
+        logging.info('\r')
+        search_df = pd.DataFrame(search_list, columns=['sag_id', 'subcontig_id', 'contig_id',
+                                                       'jacc_sim'
+                                                       ])
+        search_df['jacc_sim'] = search_df['jacc_sim'].astype(float)
+        search_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
+        search_df.drop_duplicates(subset='subcontig_id', inplace=True)
+        search_df.to_csv(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), sep='\t',
+                         index=False
+                         )
+        search_df_list.append(search_df)
+    return search_df_list
+
+
+def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=False):
     mg_sbt_file = o_join(sig_path, mg_id + '.sbt.zip')
     if isfile(mg_sbt_file):
-        logging.info('Loading %s Sequence Bloom Tree\n' % mg_id)
-        mg_sbt_tree = sourmash.load_file_as_index(mg_sbt_file)
+        if checkonly is True:
+            logging.info('%s Sequence Bloom Tree Exists\n' % mg_id)
+            mg_sbt_tree = True
+        else:
+            # logging.info('Loading %s Sequence Bloom Tree\n' % mg_id)
+            mg_sbt_tree = sourmash.load_file_as_index(mg_sbt_file)
     else:
         logging.info('Building %s Sequence Bloom Tree\n' % mg_id)
         mg_sig_list = load_mg_sigs(mg_id, mg_sub_file, nthreads, sig_path)
@@ -141,6 +193,8 @@ def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads):
             mg_sbt_tree.add_node(lef)
         logging.info('\n')
         mg_sbt_tree.save(mg_sbt_file)
+        pool.close()
+        pool.join()
     return mg_sbt_tree
 
 
@@ -162,14 +216,15 @@ def load_mg_sigs(mg_id, mg_sub_file, nthreads, sig_path):
     return mg_sig_list
 
 
-def load_sag_sigs(nthreads, sag_file, sag_id, sig_path):  # TODO: this is redundant with load_mg_sigs
+def load_sag_sigs(p):
+    sag_file, sag_id, sig_path = p
     if isfile(o_join(sig_path, sag_id + '.SAG.sig')):
         sag_sig_list = tuple(sourmash.signature.load_signatures(o_join(sig_path,
                                                                        sag_id + '.SAG.sig')
                                                                 ))
     else:
-        sag_sig_list = build_sag_sigs(nthreads, sag_file, sag_id, sig_path)
-    return sag_sig_list
+        sag_sig_list = build_sag_sigs(sag_file, sag_id, sig_path)
+    return sag_id, sag_sig_list
 
 
 '''
@@ -201,20 +256,13 @@ def compare_sag_mg_sigs(jacc_threshold, mhr_path, nthreads, sag_id, sag_sig_list
 '''
 
 
-def build_sag_sigs(nthreads, sag_file, sag_id, sig_path):  # TODO: this is redundant with build_mg_sig
+def build_sag_sigs(sag_file, sag_id, sig_path):
     sag_subcontigs = s_utils.get_seqs(sag_file)
     sag_headers = tuple(sag_subcontigs.keys())
-    pool = multiprocessing.Pool(processes=nthreads)
-    arg_list = []
-    for i, sag_head in enumerate(sag_headers):
-        arg_list.append([sag_head, str(sag_subcontigs[sag_head].seq)])
-    results = pool.imap_unordered(build_signature, arg_list)
     sag_sig_list = []
-    for i, sag_sig in enumerate(results):
+    for i, sag_head in enumerate(sag_headers):
+        sag_sig = build_signature([sag_head, str(sag_subcontigs[sag_head].seq)])
         sag_sig_list.append(sag_sig)
-    logging.info('\r')
-    pool.close()
-    pool.join()
     with open(o_join(sig_path, sag_id + '.SAG.sig'), 'w') as sag_out:
         sourmash.signature.save_signatures(sag_sig_list, fp=sag_out)
     sag_sig_list = tuple(sag_sig_list)
@@ -286,3 +334,9 @@ def compare_sigs(p):
     pass_list = tuple(pass_list)
 
     return pass_list
+
+
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
