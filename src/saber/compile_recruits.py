@@ -33,7 +33,7 @@ def run_combine_recruits(xpg_path, mg_file, tetra_df_dict,
             sag_de_df_list = []
             for sag_id in set(mh_gmm_merge_df['sag_id']):
                 sub_merge_df = mh_gmm_merge_df.loc[mh_gmm_merge_df['sag_id'] == sag_id]
-                logging.info('\rRecruited %s contigs from entire analysis for %s' %
+                logging.info('Recruited %s contigs from entire analysis for %s\n' %
                              (sub_merge_df.shape[0], sag_id)
                              )
                 final_rec = o_join(xpg_path, sag_id + '.' + tetra_id + '.xPG.fasta')
