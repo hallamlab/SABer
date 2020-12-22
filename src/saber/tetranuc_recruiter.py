@@ -72,6 +72,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
         iso_df_list.append(output[2])
         comb_df_list.append(output[3])
         logging.info('\rRecruiting with TetraHz ML-Ensemble: {0:.0%}'.format((i + 1) / len(arg_list)))
+    logging.info('\n')
     pool.close()
     pool.join()
     ####
