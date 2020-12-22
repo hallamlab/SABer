@@ -1,7 +1,6 @@
 import argparse
 import logging
 import multiprocessing
-import sys
 from os.path import isfile, basename
 from os.path import join as o_join
 
@@ -36,7 +35,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
     #        3. Can TetraNuc Hz be calc'ed for each sample? Does that improve things?
     #            (think about http://merenlab.org/2020/01/02/visualizing-metagenomic-bins/#introduction)
 
-    logging.info('Starting Tetranucleotide Recruitment Step\n')
+    logging.info('Starting Tetranucleotide Recruitment\n')
 
     mg_id = mg_sub_file[0]
     # Build/Load tetramers for SAGs and MG subset by ara recruits
@@ -72,7 +71,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
         svm_df_list.append(output[1])
         iso_df_list.append(output[2])
         comb_df_list.append(output[3])
-        sys.stderr.write('\rdone {}/{}'.format(i, len(arg_list)))
+        logging.info('\rRecruiting with TetraHz ML-Ensemble: {0:.0%}'.format((i + 1) / len(arg_list)))
     pool.close()
     pool.join()
     ####

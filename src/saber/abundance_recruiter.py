@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
                       minhash_df, covm_per_pass, nthreads, force
                       ):
-    logging.info('Starting Abundance Recruitment Step\n')
+    logging.info('Starting Abundance Recruitment\n')
     mg_id = mg_sub_file[0]
     if ((isfile(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'))) &
             (force == False)
