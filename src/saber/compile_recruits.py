@@ -36,7 +36,6 @@ def run_combine_recruits(xpg_path, mg_file, tetra_df_dict,
                 logging.info('\rRecruited %s contigs from entire analysis for %s' %
                              (sub_merge_df.shape[0], sag_id)
                              )
-                print("\033[A \033[A")
                 final_rec = o_join(xpg_path, sag_id + '.' + tetra_id + '.xPG.fasta')
                 with open(final_rec, 'w') as final_out:
                     mg_sub_filter_df = mg_contigs_df.loc[mg_contigs_df['contig_id'
