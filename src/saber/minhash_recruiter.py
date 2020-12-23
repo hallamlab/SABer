@@ -55,16 +55,6 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             pool.close()
             pool.join()
 
-            '''
-            for i, sag_rec in enumerate(build_list):
-                logging.info('\rQuerying SAGs Signatures against SBT: {}/{}'.format(i + 1, len(build_list)))
-                sag_id, sag_file = sag_rec
-                sag_sig_list = load_sag_sigs(nthreads, sag_file, sag_id, sig_path)
-                search_df = compare_sag_sbt(mg_sbt, mhr_path, sag_id,
-                                            sag_sig_list)
-                minhash_pass_list.append(search_df)
-            logging.info('\n')
-            '''
         if len(minhash_pass_list) > 1:
             minhash_df = pd.concat(minhash_pass_list)
         else:
@@ -157,7 +147,6 @@ def compare_sag_sbt(p):  # TODO: needs stdout for user monitoring
                 q_subcontig = t_sig.name()
                 q_contig = q_subcontig.rsplit('_', 1)[0]
                 search_list.append([sag_id, q_subcontig, q_contig, similarity])
-        logging.info('\r')
         search_df = pd.DataFrame(search_list, columns=['sag_id', 'subcontig_id', 'contig_id',
                                                        'jacc_sim'
                                                        ])
