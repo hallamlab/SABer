@@ -37,7 +37,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             sbt_args = mg_id, mg_sub_file, sig_path, nthreads
             arg_list = []
             chunk_list = [list(x) for x in np.array_split(np.array(list(sag_sig_dict.keys())),
-                                                          nthreads * 20) if len(list(x)) != 0
+                                                          nthreads) if len(list(x)) != 0
                           ]  # TODO: might be a better way to chunk up the list?
             logging.info('Built {} Blocks of SAG Signature Sets\n'.format(len(chunk_list)))
             for i, sag_id_list in enumerate(chunk_list):
