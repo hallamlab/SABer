@@ -31,7 +31,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     else:
         build_list, minhash_pass_list = sag_recruit_checker(mhr_path, sag_sub_files)
         if len(build_list) != 0:
-            sag_sig_dict = build_sag_sig_dict(build_list[0:500], nthreads, sig_path)
+            sag_sig_dict = build_sag_sig_dict(build_list, nthreads, sig_path)
             build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=True)  # make sure SBT exists first
             pool = multiprocessing.Pool(processes=nthreads)
             sbt_args = mg_id, mg_sub_file, sig_path, nthreads
