@@ -3,6 +3,7 @@ import multiprocessing
 from os.path import isfile
 from os.path import join as o_join
 
+import numpy as np
 import pandas as pd
 import saber.utilities as s_utils
 import sourmash
@@ -30,18 +31,21 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
     else:
         build_list, minhash_pass_list = sag_recruit_checker(mhr_path, sag_sub_files)
         if len(build_list) != 0:
-            sag_sig_dict = build_sag_sig_dict(build_list, nthreads, sig_path)
+            sag_sig_dict = build_sag_sig_dict(build_list[0:500], nthreads, sig_path)
             build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=True)  # make sure SBT exists first
             pool = multiprocessing.Pool(processes=nthreads)
             sbt_args = mg_id, mg_sub_file, sig_path, nthreads
             arg_list = []
-            chunk_list = list(chunks(list(sag_sig_dict.keys()), nthreads))
+            chunk_list = [list(x) for x in np.array_split(np.array(list(sag_sig_dict.keys())),
+                                                          nthreads * 20) if len(list(x)) != 0
+                          ]  # TODO: might be a better way to chunk up the list?
             logging.info('Built {} Blocks of SAG Signature Sets\n'.format(len(chunk_list)))
             for i, sag_id_list in enumerate(chunk_list):
                 sub_sag_sig_dict = {k: sag_sig_dict[k] for k in sag_sig_dict.keys()}
                 arg_list.append([sbt_args, mhr_path, sag_id_list, sub_sag_sig_dict])
             results = pool.imap_unordered(compare_sag_sbt, arg_list)
             logging.info('Querying {} Signature Blocks against SBT\n'.format(len(chunk_list)))
+            logging.info('WARNING: This can be VERY time consuming, be patient\n'.format(len(chunk_list)))
             for i, search_df in enumerate(results):
                 logging.info('\rSignatures Queried Against SBT: {}/{}'.format(len(search_df),
                                                                               len(build_list))
@@ -146,11 +150,10 @@ def compare_sag_sbt(p):  # TODO: needs stdout for user monitoring
         sag_sig_list = sag_sig_dict[sag_id]
         search_list = []
         for i, sig in enumerate(sag_sig_list):
-            sbt_out = mg_sbt.search(sig, threshold=0.1,
-                                    unload_data=True)  # unloading stops memory leak, but slows analysis
+            sbt_out = sourmash.search_sbt_index(mg_sbt, sig, threshold=0.1)
             for target in sbt_out:
-                similarity = target[0]
-                t_sig = target[1]
+                similarity = target[1]
+                t_sig = target[0]
                 q_subcontig = t_sig.name()
                 q_contig = q_subcontig.rsplit('_', 1)[0]
                 search_list.append([sag_id, q_subcontig, q_contig, similarity])
@@ -176,7 +179,7 @@ def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=False):
             mg_sbt_tree = True
         else:
             # logging.info('Loading %s Sequence Bloom Tree\n' % mg_id)
-            mg_sbt_tree = sourmash.load_file_as_index(mg_sbt_file)
+            mg_sbt_tree = sourmash.load_sbt_index(mg_sbt_file)
     else:
         logging.info('Building %s Sequence Bloom Tree\n' % mg_id)
         mg_sig_list = load_mg_sigs(mg_id, mg_sub_file, nthreads, sig_path)
@@ -307,7 +310,7 @@ def sag_recruit_checker(mhr_path, sag_sub_files):
         else:
             build_list.append(sag_rec)
             b += 1
-        logging.info('\rLoading/Comparing SAG and MetaG signatures: {}/{} done'.format(l, b))
+        logging.info('\rChecking for previously completed SAGs: {}/{} done'.format(l, b))
     logging.info('\n')
     return build_list, minhash_pass_list
 
@@ -321,6 +324,7 @@ def build_signature(p):
     return mg_sig
 
 
+'''
 def compare_sigs(p):
     sag_id, sag_sig_list, mhr_path, sig_path, mg_sig_list, jacc_threshold = p
     # logging.info('Comparing  %s and MetaG signature\n' % sag_id)
@@ -334,6 +338,7 @@ def compare_sigs(p):
     pass_list = tuple(pass_list)
 
     return pass_list
+'''
 
 
 def chunks(lst, n):
