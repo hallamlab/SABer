@@ -49,7 +49,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             for i, search_df in enumerate(results):
                 logging.info('\rSignatures Queried Against SBT: {}/{}'.format(len(search_df),
                                                                               len(build_list))
-                             )
+                             )  # TODO: this doesn't print properly, needs to be fixed
                 minhash_pass_list.extend(search_df)
             logging.info('\n')
             pool.close()
