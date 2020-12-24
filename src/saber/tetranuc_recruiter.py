@@ -56,6 +56,11 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
         mg_tetra_df.to_csv(o_join(tra_path, mg_id + '.tetras.tsv'),
                            sep='\t'
                            )
+    # Standardize the mg tetra DF
+    scale = StandardScaler().fit(mg_tetra_df.values)
+    scaled_data = scale.transform(mg_tetra_df.values)
+    std_tetra_df = pd.DataFrame(scaled_data, index=mg_tetra_df.index)
+
     ####
     gmm_df_list = []
     svm_df_list = []
@@ -64,7 +69,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
     pool = multiprocessing.Pool(processes=nthreads)
     arg_list = []
     for sag_id in set(minhash_df['sag_id']):
-        arg_list.append([sag_id, mg_id, mg_headers, tra_path, minhash_df, mg_tetra_df, rpkm_max_df, force])
+        arg_list.append([sag_id, mg_id, mg_headers, tra_path, minhash_df, std_tetra_df, rpkm_max_df, force])
     results = pool.imap_unordered(run_tetra_ML, arg_list)
     for i, output in enumerate(results, 1):
         gmm_df_list.append(output[0])
@@ -139,23 +144,18 @@ def run_tetra_ML(p):
                                             (minhash_df['jacc_sim'] == 1.0)
                                             ]
             if minhash_sag_df.shape[0] != 0:
-
-                scale = StandardScaler().fit(mg_tetra_df.values)
-                scaled_data = scale.transform(mg_tetra_df.values)
-                std_tetra_df = pd.DataFrame(scaled_data, index=mg_tetra_df.index)
-
                 sag_mh_contig_list = list(set(minhash_sag_df['contig_id'].values))
-                sag_tetra_contig_list = [x for x in std_tetra_df.index.values
+                sag_tetra_contig_list = [x for x in mg_tetra_df.index.values
                                          if sag_mh_contig_list.count(x.rsplit('_', 1)[0]) != 0
                                          ]
-                sag_tetra_df = std_tetra_df.loc[std_tetra_df.index.isin(sag_tetra_contig_list)]
+                sag_tetra_df = mg_tetra_df.loc[mg_tetra_df.index.isin(sag_tetra_contig_list)]
                 mg_rpkm_contig_list = list(set(rpkm_max_df.loc[rpkm_max_df['sag_id'] == sag_id
                                                                ]['contig_id'].values)
                                            )
-                mg_tetra_contig_list = [x for x in std_tetra_df.index.values
+                mg_tetra_contig_list = [x for x in mg_tetra_df.index.values
                                         if mg_rpkm_contig_list.count(x.rsplit('_', 1)[0]) != 0
                                         ]
-                mg_tetra_filter_df = std_tetra_df.loc[std_tetra_df.index.isin(mg_tetra_contig_list)]
+                mg_tetra_filter_df = mg_tetra_df.loc[mg_tetra_df.index.isin(mg_tetra_contig_list)]
 
                 # logging.info('Calculating AIC/BIC for GMM components\n')
                 sag_train_vals = [1 for x in sag_tetra_df.index]
