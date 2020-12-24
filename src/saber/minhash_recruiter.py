@@ -46,8 +46,10 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             results = pool.imap_unordered(compare_sag_sbt, arg_list)
             logging.info('Querying {} Signature Blocks against SBT\n'.format(len(chunk_list)))
             logging.info('WARNING: This can be VERY time consuming, be patient\n'.format(len(chunk_list)))
+            df_cnt = 0
             for i, search_df in enumerate(results):
-                logging.info('\rSignatures Queried Against SBT: {}/{}'.format(len(search_df),
+                df_cnt = df_cnt + len(search_df)
+                logging.info('\rSignatures Queried Against SBT: {}/{}'.format(df_cnt,
                                                                               len(build_list))
                              )  # TODO: this doesn't print properly, needs to be fixed
                 minhash_pass_list.extend(search_df)

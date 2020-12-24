@@ -101,6 +101,7 @@ def abund_recruiter(abr_path, covm_pass_dfs, mg_covm_out, minhash_df, nthreads):
         # logging.info("\rThere are {} total subcontigs, {} contigs".format(
         #    len(output['subcontig_id']), len(output['contig_id'].unique()))
         # )
+    logging.info('\n')
     pool.close()
     pool.join()
     covm_df = pd.concat(covm_pass_dfs)

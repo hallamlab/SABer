@@ -66,12 +66,12 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, rpkm_max_df, minha
     for sag_id in set(minhash_df['sag_id']):
         arg_list.append([sag_id, mg_id, mg_headers, tra_path, minhash_df, mg_tetra_df, rpkm_max_df, force])
     results = pool.imap_unordered(run_tetra_ML, arg_list)
-    for i, output in enumerate(results):
+    for i, output in enumerate(results, 1):
         gmm_df_list.append(output[0])
         svm_df_list.append(output[1])
         iso_df_list.append(output[2])
         comb_df_list.append(output[3])
-        logging.info('\rRecruiting with TetraHz ML-Ensemble: {0:.0%}'.format((i + 1) / len(arg_list)))
+        logging.info('\rRecruiting with TetraHz ML-Ensemble: {}/{}'.format(i, len(arg_list)))
     logging.info('\n')
     pool.close()
     pool.join()
