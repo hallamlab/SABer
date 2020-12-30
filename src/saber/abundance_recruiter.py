@@ -12,6 +12,7 @@ pd.set_option('display.max_columns', None)
 pd.options.mode.chained_assignment = None
 import multiprocessing
 from sklearn.preprocessing import StandardScaler
+import saber.tetranuc_recruiter as tra
 
 
 def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
@@ -81,7 +82,13 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
 def abund_recruiter(abr_path, covm_pass_dfs, mg_covm_out, minhash_df, nthreads):
     pool = multiprocessing.Pool(processes=nthreads)
     arg_list = []
-    for sag_id in set(minhash_df['sag_id']):
+    # Prep MinHash
+    minhash_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
+    minhash_dedup_df = minhash_df[['sag_id', 'subcontig_id', 'contig_id', 'jacc_sim', 'jacc_sim_max']
+    ].loc[minhash_df['jacc_sim'] == 1.0].drop_duplicates(subset=['sag_id', 'contig_id'])
+    mh_recruit_dict = tra.build_uniq_dict(minhash_dedup_df, 'sag_id', nthreads,
+                                          'MinHash Recruits')  # TODO: this might not need multithreading
+    for i, sag_id in enumerate(mh_recruit_dict.keys(), 1):
         if isfile(o_join(abr_path, sag_id + '.abr_recruits.tsv')):
             # logging.info('Loading Abundance Recruits for  %s\n' % sag_id)
             final_pass_df = pd.read_csv(o_join(abr_path, sag_id + '.abr_recruits.tsv'),
@@ -91,13 +98,16 @@ def abund_recruiter(abr_path, covm_pass_dfs, mg_covm_out, minhash_df, nthreads):
                                         )
             covm_pass_dfs.append(final_pass_df)
         else:
-            mh_sub_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]
+            logging.info('\rPrepping for OCSVM: {}/{}'.format(i, len(mh_recruit_dict.keys())))
+            # mh_sub_df = minhash_df.loc[minhash_df['sag_id'] == sag_id]  # TODO: this is slow, needs to be refactored
+            mh_sub_df = mh_recruit_dict[sag_id]
             arg_list.append([abr_path, sag_id, mh_sub_df, mg_covm_out])
+    logging.info('\n')
     logging.info("{} already complete, {} to run\n".format(len(covm_pass_dfs), len(arg_list)))
     results = pool.imap_unordered(recruitSubs, arg_list)
-    for i, output in enumerate(results):
+    for i, output in enumerate(results, 1):
         covm_pass_dfs.append(output)
-        logging.info('\rRecruiting with Abundance Model: {0:.0%}'.format((i + 1) / len(arg_list)))
+        logging.info('\rRecruiting with Abundance Model: {}/{}'.format(i, len(arg_list)))
         # logging.info("\rThere are {} total subcontigs, {} contigs".format(
         #    len(output['subcontig_id']), len(output['contig_id'].unique()))
         # )
@@ -218,7 +228,7 @@ def runCovM(abr_path, mg_id, nthreads, sorted_bam_list):
 
 def recruitSubs(p):
     abr_path, sag_id, minhash_sag_df, mg_covm_out = p
-    minhash_filter_df = minhash_sag_df.copy()  # .loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]
+    minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]  # TODO: maybe try 0.5 as well
     if len(minhash_filter_df['sag_id']) != 0:
         mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t', index_col=['contigName'])
         mg_covm_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
