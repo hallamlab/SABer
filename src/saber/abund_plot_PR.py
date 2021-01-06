@@ -14,13 +14,13 @@ pd.set_option('mode.chained_assignment', None)
 sns.set_context("poster")
 sns.set_style('whitegrid')
 sns.set(font_scale=1.0)
-
-pred_file = 'CAMI_high_GoldStandardAssembly.SCORES.filtered.tsv'
+# TODO: build plot to investigate best hyperparams based on starting completeness
+pred_file = 'CAMI_high_GoldStandardAssembly.SCORES.abund.tsv'
 src2sag_file = 'src2sag_map.tsv'
-abund_file = 'CAMI_high_GoldStandardAssembly.metabat.trimmed.tsv'
+abund_file = 'CAMI_high_GoldStandardAssembly.3000.metabat.tsv'
 
 pred_df = pd.read_csv(pred_file, header=0, sep='\t')
-trans_map = {'normalized': 'MinMaxScaler', 'scaled': 'StandardScaler', 'raw': 'raw'}
+trans_map = {'scaled': 'StandardScaler'}
 pred_df['transformation'] = [trans_map[x] for x in pred_df['transformation']]
 src2sag_df = pd.read_csv(src2sag_file, header=0, sep='\t')
 abund_df = pd.read_csv(abund_file, header=0, sep='\t')

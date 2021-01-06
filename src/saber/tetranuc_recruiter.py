@@ -1,6 +1,7 @@
 import argparse
 import logging
 import multiprocessing
+import warnings
 from os.path import isfile, basename
 from os.path import join as o_join
 
@@ -12,6 +13,15 @@ from sklearn import svm
 from sklearn.ensemble import IsolationForest
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn.preprocessing import StandardScaler
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+
+# TODO: not really sure what else to do about this error:
+# /home/rmclaughlin/anaconda3/envs/saber_env/lib/python3.8/site-packages/pandas/core/ops/array_ops.py:253:
+# FutureWarning: elementwise comparison failed;
+# returning scalar instead, but in the future will perform elementwise comparison
+# res_values = method(rvalues)
 
 
 def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, minhash_df,
@@ -77,47 +87,45 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, 
     # Subset tetras matrix for each SAG
     sag_id_list = list(mh_recruit_dict.keys())
     sag_id_cnt = len(sag_id_list)
-    pool = multiprocessing.Pool(processes=nthreads)
-    arg_list = []
     gmm_df_list = []
     svm_df_list = []
     iso_df_list = []
     comb_df_list = []
-    for i, sag_id in enumerate(sag_id_list, 1):  # TODO: reduce RAM usage
-        logging.info('\rPrepping to Run TetraHz ML-Ensemble: {}/{}'.format(i, sag_id_cnt))
-        minhash_sag_df = mh_recruit_dict[sag_id]
-        abund_sag_df = ab_recruit_dict[sag_id]
-        if ((minhash_sag_df.shape[0] != 0) & (abund_sag_df.shape[0] != 0)):
-            sag_id, sag_tetra_df, mg_tetra_filter_df = subset_tetras([std_tetra_dict, minhash_sag_df,
-                                                                      abund_sag_df, sag_id]
-                                                                     )
-            arg_list.append([force, mg_headers, mg_tetra_filter_df, sag_id, sag_tetra_df, tra_path])
-            # comb_recruits_df, gmm_recruits_df, iso_recruits_df, svm_recruits_df = ensemble_recruiter(force, mg_headers,
-            #                                                                                         mg_tetra_filter_df,
-            #                                                                                         sag_id, sag_tetra_df,
-            #                                                                                         tra_path)
-            # gmm_df_list.append(gmm_recruits_df)
-            # svm_df_list.append(svm_recruits_df)
-            # iso_df_list.append(iso_recruits_df)
-            # comb_df_list.append(comb_recruits_df)
-    arg_list = tuple(arg_list)
-    logging.info('\n')
-    results = pool.imap_unordered(ensemble_recruiter, arg_list)
-    for i, output in enumerate(results, 1):
-        logging.info('\rRecruiting with TetraHz ML-Ensemble: {}/{}'.format(i, sag_id_cnt))
-        comb_recruits_df, gmm_recruits_df, iso_recruits_df, svm_recruits_df = output
-        if isinstance(gmm_recruits_df, pd.DataFrame):
-            gmm_df_list.append(gmm_recruits_df)
-        if isinstance(svm_recruits_df, pd.DataFrame):
-            svm_df_list.append(svm_recruits_df)
-        if isinstance(iso_recruits_df, pd.DataFrame):
-            iso_df_list.append(iso_recruits_df)
-        if isinstance(comb_recruits_df, pd.DataFrame):
-            comb_df_list.append(comb_recruits_df)
-    logging.info('\n')
-    pool.close()
-    pool.join()
-
+    sag_chunks = [list(x) for x in np.array_split(np.array(list(sag_id_list)), nthreads) if len(x) != 0]
+    s_counter = 0
+    r_counter = 0
+    for i, sag_id_chunk in enumerate(sag_chunks, 1):
+        pool = multiprocessing.Pool(processes=nthreads)
+        arg_list = []
+        for j, sag_id in enumerate(sag_id_chunk, 1):  # TODO: reduce RAM usage
+            s_counter += 1
+            logging.info('\rPrepping to Run TetraHz ML-Ensemble: Chunk {} - {}/{}'.format(i, s_counter, sag_id_cnt))
+            minhash_sag_df = mh_recruit_dict.pop(sag_id)
+            abund_sag_df = ab_recruit_dict.pop(sag_id)
+            if ((minhash_sag_df.shape[0] != 0) & (abund_sag_df.shape[0] != 0)):
+                sag_id, sag_tetra_df, mg_tetra_filter_df = subset_tetras([std_tetra_dict,
+                                                                          minhash_sag_df,
+                                                                          abund_sag_df, sag_id
+                                                                          ])
+                arg_list.append([force, mg_headers, mg_tetra_filter_df, sag_id, sag_tetra_df, tra_path])
+        arg_list = tuple(arg_list)
+        results = pool.imap_unordered(ensemble_recruiter, arg_list)
+        logging.info('\r                                                            ')
+        for k, output in enumerate(results, 1):  # TODO: only open files after all have been run? maybe save RAMies?
+            r_counter += 1
+            logging.info('\rRecruiting with TetraHz ML-Ensemble: Chunk {} - {}/{}'.format(i, r_counter, sag_id_cnt))
+            comb_recruits_df, gmm_recruits_df, iso_recruits_df, svm_recruits_df = output
+            if isinstance(gmm_recruits_df, pd.DataFrame):
+                gmm_df_list.append(gmm_recruits_df)
+            if isinstance(svm_recruits_df, pd.DataFrame):
+                svm_df_list.append(svm_recruits_df)
+            if isinstance(iso_recruits_df, pd.DataFrame):
+                iso_df_list.append(iso_recruits_df)
+            if isinstance(comb_recruits_df, pd.DataFrame):
+                comb_df_list.append(comb_recruits_df)
+        pool.close()
+        pool.join()
+    sys.exit()
     gmm_concat_df = pd.concat(gmm_df_list)
     svm_concat_df = pd.concat(svm_df_list)
     iso_concat_df = pd.concat(iso_df_list)
@@ -339,7 +347,7 @@ def GMM_recruiter(mg_headers, mg_tetra_filter_df, sag_id, sag_tetra_df, tra_path
     return gmm_filter_df
 
 
-def subset_tetras(p):  # TODO: this function doesn't work yet, need to debug
+def subset_tetras(p):
     mg_tetra_dict, mh_sag_df, abund_sag_df, sag_id = p
     if mh_sag_df.shape[0] != 0:
         sag_df_list = [mg_tetra_dict[x] for x in set(mh_sag_df['contig_id'])]

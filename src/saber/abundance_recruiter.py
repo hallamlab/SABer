@@ -21,8 +21,9 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     logging.info('Starting Abundance Recruitment\n')
     mg_id = mg_sub_file[0]
     if ((isfile(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'))) &
-            (force == False)
+            (force is False)
     ):
+        logging.info('Loading Abundance matrix for %s\n' % mg_id)
         mh_covm_df = pd.read_csv(o_join(abr_path, mg_id + '.abr_trimmed_recruits.tsv'), header=0,
                                  sep='\t'
                                  )
@@ -61,12 +62,16 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         #                                             ]
 
         covm_max_list = []
-        for sag_id in list(set(covm_recruit_filter_df['sag_id'])):
+        for i, sag_id in enumerate(list(set(covm_recruit_filter_df['sag_id'])), 1):
+            logging.info("\rSubsetting recruits for each SAG: {}/{}".format(i,
+                                                                            len(list(set(
+                                                                                covm_recruit_filter_df['sag_id'])))))
             sag_max_only_df = covm_recruit_filter_df.loc[covm_recruit_filter_df['sag_id'] == sag_id]
             covm_max_df = mg_tot_df[mg_tot_df['contig_id'].isin(list(sag_max_only_df['contig_id']))]
             covm_max_df['sag_id'] = sag_id
             covm_max_df = covm_max_df[['sag_id', 'subcontig_id', 'contig_id']]
             covm_max_list.append(covm_max_df)
+        logging.info('\n')
         covm_final_max_df = pd.concat(covm_max_list)
         mh_covm_df = pd.concat([covm_final_max_df,
                                 minhash_df[['sag_id', 'subcontig_id', 'contig_id']]
@@ -85,7 +90,8 @@ def abund_recruiter(abr_path, covm_pass_dfs, mg_covm_out, minhash_df, nthreads):
     # Prep MinHash
     minhash_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
     minhash_dedup_df = minhash_df[['sag_id', 'subcontig_id', 'contig_id', 'jacc_sim', 'jacc_sim_max']
-    ].loc[minhash_df['jacc_sim'] == 1.0].drop_duplicates(subset=['sag_id', 'contig_id'])
+    ]  # .drop_duplicates(subset=['sag_id', 'contig_id'])
+    # ].loc[minhash_df['jacc_sim'] == 1.0].drop_duplicates(subset=['sag_id', 'contig_id'])
     mh_recruit_dict = tra.build_uniq_dict(minhash_dedup_df, 'sag_id', nthreads,
                                           'MinHash Recruits')  # TODO: this might not need multithreading
     for i, sag_id in enumerate(mh_recruit_dict.keys(), 1):
@@ -228,7 +234,7 @@ def runCovM(abr_path, mg_id, nthreads, sorted_bam_list):
 
 def recruitSubs(p):
     abr_path, sag_id, minhash_sag_df, mg_covm_out = p
-    minhash_filter_df = minhash_sag_df.loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]  # TODO: maybe try 0.5 as well
+    minhash_filter_df = minhash_sag_df.copy()  #.loc[(minhash_sag_df['jacc_sim_max'] == 1.0)]  # TODO: maybe try 0.5 as well
     if len(minhash_filter_df['sag_id']) != 0:
         mg_covm_df = pd.read_csv(mg_covm_out, header=0, sep='\t', index_col=['contigName'])
         mg_covm_df.drop(columns=['contigLen', 'totalAvgDepth'], inplace=True)
@@ -261,11 +267,14 @@ def runOCSVM(sag_df, mg_df, sag_id):
     pred_df = pd.DataFrame(zip(mg_df.index.values, contig_id_list, mg_pred),
                            columns=['subcontig_id', 'contig_id', 'ocsvm_pred']
                            )
-    key_cnts = pred_df.groupby('contig_id')['ocsvm_pred'].count().reset_index()
+    # key_cnts = pred_df.groupby('contig_id')['ocsvm_pred'].count().reset_index()
+    key_cnts = pred_df.groupby('contig_id')['ocsvm_pred'].value_counts().reset_index(name='count')
     val_perc = pred_df.groupby('contig_id')['ocsvm_pred'].value_counts(
-        normalize=True).reset_index(name='precent')
+        normalize=True).reset_index(name='percent')
     pos_perc = val_perc.loc[val_perc['ocsvm_pred'] == 1]
-    major_df = pos_perc.loc[pos_perc['precent'] >= 0.51]
+    major_df = pos_perc.loc[pos_perc['percent'] >= 0.51]
+    # pos_perc = key_cnts.loc[key_cnts['ocsvm_pred'] == 1]
+    # major_df = pos_perc.loc[pos_perc['count'] != 0]
     major_pred = [1 if x in list(major_df['contig_id']) else -1
                   for x in contig_id_list
                   ]

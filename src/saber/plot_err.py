@@ -155,7 +155,7 @@ for algo in set(filter_df['stage']):
     df_list.append(tmp_df)
 concat_df = pd.concat(df_list)
 g = sns.catplot(x='synSAG_score_cat', y='stage_score', hue='datatype', col='stage',
-                kind='box', col_wrap=3,
+                kind='box', col_wrap=3, aspect=2,
                 col_order=['MinHash', 'MBN-Abund', 'Isolation Forest', 'OCSVM', 'GMM',
                            'SABer-xPG'
                            ],

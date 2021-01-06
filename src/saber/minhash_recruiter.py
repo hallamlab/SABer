@@ -47,10 +47,13 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             logging.info('Querying {} Signature Blocks against SBT\n'.format(len(chunk_list)))
             logging.info('WARNING: This can be VERY time consuming, be patient\n'.format(len(chunk_list)))
             df_cnt = 0
+            logging.info('\rSignatures Queried Against SBT: {}/{}'.format(df_cnt,
+                                                                          len(sag_sig_dict.keys()))
+                         )
             for i, search_df in enumerate(results):
-                df_cnt = df_cnt + len(search_df)
+                df_cnt += len(search_df)
                 logging.info('\rSignatures Queried Against SBT: {}/{}'.format(df_cnt,
-                                                                              len(build_list))
+                                                                              len(sag_sig_dict.keys()))
                              )  # TODO: this doesn't print properly, needs to be fixed
                 minhash_pass_list.extend(search_df)
             logging.info('\n')
@@ -63,8 +66,8 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
             minhash_df = minhash_pass_list[0]
 
         minhash_df['jacc_sim'] = minhash_df['jacc_sim'].astype(float)
-        recruit_list = list(minhash_df['subcontig_id'].loc[minhash_df['jacc_sim'] >= 0.10])
-        minhash_recruit_df = minhash_df.loc[minhash_df['subcontig_id'].isin(recruit_list)]
+        # recruit_list = list(minhash_df['subcontig_id'].loc[minhash_df['jacc_sim'] >= 0.10])
+        minhash_recruit_df = minhash_df.copy()  # .loc[minhash_df['subcontig_id'].isin(recruit_list)]
         logging.info('Compiling all MinHash Recruits\n')
         # Count # of subcontigs recruited to each SAG via sourmash
         mh_cnt_df = minhash_recruit_df.groupby(['sag_id', 'contig_id'])['subcontig_id'].count().reset_index()
@@ -103,9 +106,10 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         merge_jacc_df = mh_final_max_df.merge(minhash_df, how='left',
                                               on=['sag_id', 'subcontig_id', 'contig_id']
                                               )
-        minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] > 0.5) &
+        # minhash_filter_df = merge_jacc_df.copy()
+        minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] > 0.1) &
                                                (merge_jacc_df['subcontig_recruits'] > 3)) |
-                                              (merge_jacc_df['jacc_sim_max'] >= 0.9)
+                                              (merge_jacc_df['jacc_sim_max'] >= 1.0)
                                               ]
         minhash_filter_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t',
                                  index=False
