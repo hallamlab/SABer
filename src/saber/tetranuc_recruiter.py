@@ -60,8 +60,6 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, 
         mg_headers = tuple(mg_subcontigs.keys())
         mg_subs = tuple([r.seq for r in mg_subcontigs])
         mg_tetra_df = s_utils.tetra_cnt(mg_subs)
-        mg_tetra_df['contig_id'] = mg_headers
-        mg_tetra_df.set_index('contig_id', inplace=True)
         mg_tetra_df.to_csv(o_join(tra_path, mg_id + '.tetras.tsv'),
                            sep='\t'
                            )
