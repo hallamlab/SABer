@@ -1,6 +1,6 @@
 import logging
 import multiprocessing
-from os.path import isfile
+from os.path import isfile, getsize
 from os.path import join as o_join
 
 import numpy as np
@@ -54,7 +54,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                 df_cnt += len(search_df)
                 logging.info('\rSignatures Queried Against SBT: {}/{}'.format(df_cnt,
                                                                               len(sag_sig_dict.keys()))
-                             )  # TODO: this doesn't print properly, needs to be fixed
+                             )
                 minhash_pass_list.extend(search_df)
             logging.info('\n')
             pool.close()
@@ -107,7 +107,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                                               on=['sag_id', 'subcontig_id', 'contig_id']
                                               )
         # minhash_filter_df = merge_jacc_df.copy()
-        minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] > 0.1) &
+        minhash_filter_df = merge_jacc_df.loc[((merge_jacc_df['jacc_sim_max'] >= 0.5) &
                                                (merge_jacc_df['subcontig_recruits'] > 3)) |
                                               (merge_jacc_df['jacc_sim_max'] >= 1.0)
                                               ]
@@ -146,7 +146,7 @@ def compare_sag_sbt(p):  # TODO: needs stdout for user monitoring
         sag_sig_list = sag_sig_dict[sag_id]
         search_list = []
         for i, sig in enumerate(sag_sig_list):
-            sbt_out = sourmash.search_sbt_index(mg_sbt, sig, threshold=0.1)
+            sbt_out = sourmash.search_sbt_index(mg_sbt, sig, threshold=0.5)
             for target in sbt_out:
                 similarity = target[1]
                 t_sig = target[0]
@@ -176,23 +176,25 @@ def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=False):
             # logging.info('Loading %s Sequence Bloom Tree\n' % mg_id)
             mg_sbt_tree = sourmash.load_sbt_index(mg_sbt_file)
     else:
-        logging.info('Building %s Sequence Bloom Tree\n' % mg_id)
+        logging.info('Building %s Sequence Bloom Tree\n' % mg_id)  # TODO: perhaps multiple smaller SBTs would be better
         mg_sig_list = load_mg_sigs(mg_id, mg_sub_file, nthreads, sig_path)
         mg_sbt_tree = sourmash.create_sbt_index()
         pool = multiprocessing.Pool(processes=nthreads)
         results = pool.imap_unordered(build_leaf, mg_sig_list)
         leaf_list = []
-        for i, leaf in enumerate(results):
-            logging.info('\rBuilding leaves for SBT: {0:.0%}'.format((i + 1) / len(mg_sig_list)))
+        for i, leaf in enumerate(results, 1):
+            logging.info('\rBuilding leaves for SBT: {}/{}'.format(i, len(mg_sig_list)))
             leaf_list.append(leaf)
         logging.info('\n')
-        for i, lef in enumerate(leaf_list):
-            logging.info('\rAdding leaves to tree: {0:.0%}'.format((i + 1) / len(leaf_list)))
+        for i, lef in enumerate(leaf_list, 1):
+            logging.info('\rAdding leaves to tree: {}/{}'.format(i, len(leaf_list)))
             mg_sbt_tree.add_node(lef)
         logging.info('\n')
         mg_sbt_tree.save(mg_sbt_file)
         pool.close()
         pool.join()
+        mg_sbt_tree = sourmash.load_sbt_index(mg_sbt_file)
+
     return mg_sbt_tree
 
 
@@ -276,30 +278,33 @@ def build_mg_sigs(mg_id, mg_subcontigs, nthreads, sig_path):
     pool = multiprocessing.Pool(processes=nthreads)
     results = pool.imap_unordered(build_signature, arg_list)
     mg_sig_list = []
-    for i, mg_sig in enumerate(results):
-        logging.info('\rBuilding MinHash Signatures for %s: {0:.0%} done'.format([mg_id, i / len(arg_list)]))
+    for i, mg_sig in enumerate(results, 1):
+        logging.info('\rBuilding MinHash Signatures for {}: {}/{} done'.format(mg_id, i, len(arg_list)))
         mg_sig_list.append(mg_sig)
     logging.info('\n')
     pool.close()
     pool.join()
     with open(o_join(sig_path, mg_id + '.metaG.sig'), 'w') as mg_out:
         sourmash.signature.save_signatures(mg_sig_list, fp=mg_out)
-    mg_sig_list = tuple(mg_sig_list)
+    mg_sig_list = tuple(sourmash.signature.load_signatures(o_join(sig_path, mg_id + '.metaG.sig')))
+
     return mg_sig_list
 
 
 def sag_recruit_checker(mhr_path, sag_sub_files):
-    l = 0
-    b = 0
     build_list = []
     minhash_pass_list = []
+    l = 0
+    b = 0
     for i, sag_rec in enumerate(sag_sub_files):
         sag_id, sag_file = sag_rec
-        if isfile(o_join(mhr_path, sag_id + '.mhr_recruits.tsv')):
-            # logging.info('Loading %s and MetaG signature recruit list\n' % sag_id)
-            pass_df = pd.read_csv(o_join(mhr_path, sag_id + '.mhr_recruits.tsv'), header=0,
-                                  sep='\t'
-                                  )
+        mh_file = o_join(mhr_path, sag_id + '.mhr_recruits.tsv')
+        if isfile(mh_file):
+            filesize = getsize(mh_file)
+        else:
+            filesize = 0
+        if filesize != 0:
+            pass_df = pd.read_csv(mh_file, header=0, sep='\t')
             minhash_pass_list.append(pass_df)
             l += 1
         else:

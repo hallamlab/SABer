@@ -90,7 +90,7 @@ def abund_recruiter(abr_path, covm_pass_dfs, mg_covm_out, minhash_df, nthreads):
     # Prep MinHash
     minhash_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
     minhash_dedup_df = minhash_df[['sag_id', 'subcontig_id', 'contig_id', 'jacc_sim', 'jacc_sim_max']
-    ]  # .drop_duplicates(subset=['sag_id', 'contig_id'])
+    ].drop_duplicates(subset=['sag_id', 'contig_id'])
     # ].loc[minhash_df['jacc_sim'] == 1.0].drop_duplicates(subset=['sag_id', 'contig_id'])
     mh_recruit_dict = tra.build_uniq_dict(minhash_dedup_df, 'sag_id', nthreads,
                                           'MinHash Recruits')  # TODO: this might not need multithreading

@@ -76,12 +76,12 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, 
     std_tetra_dict = build_uniq_dict(std_tetra_df, 'contig_id', nthreads, 'TetraHz')
     # Prep MinHash
     minhash_df.sort_values(by='jacc_sim', ascending=False, inplace=True)
-    minhash_dedup_df = minhash_df[['sag_id', 'contig_id', 'jacc_sim']
-    ].loc[minhash_df['jacc_sim'] == 1.0].drop_duplicates()
+    minhash_dedup_df = minhash_df[['sag_id', 'subcontig_id', 'contig_id', 'jacc_sim', 'jacc_sim_max']
+    ].loc[minhash_df['jacc_sim_max'] == 1.0].drop_duplicates(subset=['sag_id', 'contig_id'])
     mh_recruit_dict = build_uniq_dict(minhash_dedup_df, 'sag_id', nthreads,
                                       'MinHash Recruits')  # TODO: this might not need multithreading
     # Prep Abundance
-    abund_dedup_df = abund_recruit_df[['sag_id', 'contig_id']].drop_duplicates()
+    abund_dedup_df = abund_recruit_df[['sag_id', 'contig_id']].drop_duplicates(subset=['sag_id', 'contig_id'])
     ab_recruit_dict = build_uniq_dict(abund_dedup_df, 'sag_id', nthreads,
                                       'Abundance Recruits')  # TODO: this might not need multithreading
     # Subset tetras matrix for each SAG
@@ -111,7 +111,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, 
         arg_list = tuple(arg_list)
         results = pool.imap_unordered(ensemble_recruiter, arg_list)
         logging.info('\r                                                            ')
-        for k, output in enumerate(results, 1):  # TODO: only open files after all have been run? maybe save RAMies?
+        for k, output in enumerate(results, 1):  # TODO: maybe check if files exist before running this, like minhash
             r_counter += 1
             logging.info('\rRecruiting with TetraHz ML-Ensemble: Chunk {} - {}/{}'.format(i, r_counter, sag_id_cnt))
             comb_recruits_df, gmm_recruits_df, iso_recruits_df, svm_recruits_df = output
@@ -125,7 +125,6 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, 
                 comb_df_list.append(comb_recruits_df)
         pool.close()
         pool.join()
-    sys.exit()
     gmm_concat_df = pd.concat(gmm_df_list)
     svm_concat_df = pd.concat(svm_df_list)
     iso_concat_df = pd.concat(iso_df_list)
@@ -437,12 +436,20 @@ def filter_tetras(sag_id, mg_headers, tetra_id, tetra_df):
                                          mg_recruit_df['subcontig_total']
     mg_recruit_df.sort_values(by='percent_recruited', ascending=False, inplace=True)
     # Only pass contigs that have the magjority of subcontigs recruited (>= N%)
-    if ((tetra_id == 'svm') or (tetra_id == 'gmm')):
+    if (tetra_id == 'svm'):
         mg_recruit_filter_df = mg_recruit_df.loc[
             # mg_recruit_df['percent_recruited'] >= 0.51
             mg_recruit_df['subcontig_recruits'] >= 3
             ]
-    elif ((tetra_id == 'comb') or (tetra_id == 'iso')):
+    elif (tetra_id == 'gmm'):
+        mg_recruit_filter_df = mg_recruit_df.loc[
+            mg_recruit_df['subcontig_recruits'] >= 1
+            ]
+    elif (tetra_id == 'iso'):
+        mg_recruit_filter_df = mg_recruit_df.loc[
+            mg_recruit_df['percent_recruited'] >= 0.95
+            ]
+    elif (tetra_id == 'comb'):
         mg_recruit_filter_df = mg_recruit_df.loc[
             mg_recruit_df['percent_recruited'] >= 0.51
             ]
