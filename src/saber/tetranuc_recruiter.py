@@ -56,7 +56,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, 
         mg_headers = mg_tetra_df.index.values
     else:
         logging.info('Calculating tetramer Hz matrix for %s\n' % mg_id)
-        mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])  # TODO: can this be removed?
+        mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
         mg_headers = tuple(mg_subcontigs.keys())
         mg_subs = tuple([r.seq for r in mg_subcontigs])
         mg_tetra_df = s_utils.tetra_cnt(mg_subs)

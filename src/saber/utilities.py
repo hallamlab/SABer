@@ -264,6 +264,7 @@ def get_kmer(seq, n):
 
 
 def tetra_cnt(seq_list):
+    '''
     # Dict of all tetramers
     tetra_cnt_dict = {''.join(x): [] for x in product('atgc', repeat=4)}
     # count up all tetramers and also populate the tetra dict
@@ -307,5 +308,54 @@ def tetra_cnt(seq_list):
     # convert the final dict into a pd dataframe for ease
     tetra_cnt_df = pd.DataFrame.from_dict(tetra_cnt_dict)
     dedupped_df = tetra_cnt_df.loc[:, (tetra_cnt_df != 0.0).any(axis=0)]
+    '''
+    # Dict of all tetramers
+    tetra_cnt_dict = {''.join(x): [] for x in product('atgc', repeat=4)}
+    header_list = []
+    # count up all tetramers and also populate the tetra dict
+    for rec in fasta:
+        header = rec.name
+        header_list.append(header)
+        seq = rec.seq
+        tmp_dict = {k: 0 for k, v in tetra_cnt_dict.items()}
+        clean_seq = seq.strip('\n').lower()
+        kmer_list = [''.join(x) for x in get_kmer(clean_seq, 4)]
+        tetra_counter = Counter(kmer_list)
+        # add counter to tmp_dict
+        for tetra in tmp_dict.keys():
+            count_tetra = int(tetra_counter[tetra])
+            tmp_dict[tetra] = count_tetra
+        # map tetras to their reverse tetras (not compliment)
+        dedup_dict = {}
+        for tetra in tmp_dict.keys():
+            if (tetra not in dedup_dict.keys()) & (tetra[::-1] not in dedup_dict.keys()):
+                dedup_dict[tetra] = ''
+            elif tetra[::-1] in dedup_dict.keys():
+                dedup_dict[tetra[::-1]] = tetra
+        # combine the tetras and their reverse (not compliment)
+        tetra_prop_dict = {}
+        for tetra in dedup_dict.keys():
+            if dedup_dict[tetra] != '':
+                tetra_prop_dict[tetra] = tmp_dict[tetra] + tmp_dict[dedup_dict[tetra]]
+            else:
+                tetra_prop_dict[tetra] = tmp_dict[tetra]
+        # add to tetra_cnt_dict
+        for k in tetra_cnt_dict.keys():
+            if k in tetra_prop_dict.keys():
+                tetra_cnt_dict[k].append(tetra_prop_dict[k])
+            else:
+                tetra_cnt_dict[k].append(0.0)
+    # convert the final dict into a pd dataframe for ease
+    tetra_cnt_dict['contig_id'] = header_list
+    tetra_cnt_df = pd.DataFrame.from_dict(tetra_cnt_dict).set_index('contig_id')
+    dedupped_df = tetra_cnt_df.loc[:, (tetra_cnt_df != 0.0).any(axis=0)]
+    dedupped_df += 1  # TODO: adds pseudo-count, is there a better way?
+    first_val = dedupped_df.columns[0]
+    last_val = dedupped_df.columns[-1]
+    dedupped_df['sum'] = dedupped_df.sum(axis=1)
+    # Covert to proportion
+    normal_df = dedupped_df.loc[:, first_val:last_val].div(dedupped_df['sum'], axis=0)
+    # Transform using CLR
+    clr_df = normal_df.apply(clr)
 
-    return dedupped_df
+    return clr_df
