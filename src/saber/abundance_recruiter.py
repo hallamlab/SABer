@@ -152,7 +152,9 @@ def buildBWAindex(abr_path, mg_id, mg_sub_path):
     if False in (isfile(f) for f in check_ind_list):
         # Use BWA to build an index for metagenome assembly
         logging.info('Creating index with BWA\n')
-        bwa_cmd = ['bwa', 'index', mg_sub_path]
+        mg_sub_fa = s_utils.get_seqs(mg_sub_path)
+        base_count = mg_sub_fa.size
+        bwa_cmd = ['bwa', 'index', '-b', str(int(base_count / 8)), mg_sub_path]
         with open(o_join(abr_path, mg_id + '.stdout.txt'), 'w') as stdout_file:
             with open(o_join(abr_path, mg_id + '.stderr.txt'), 'w') as stderr_file:
                 run_bwa = Popen(bwa_cmd, stdout=stdout_file,
