@@ -304,13 +304,17 @@ svm_concat_df['algorithm'] = 'tetra_svm'
 iso_concat_df['algorithm'] = 'tetra_iso'
 comb_concat_df['algorithm'] = 'tetra_comb'
 xpg_df['algorithm'] = 'xpg'
-
+sag_set = set(mh_concat_df['sag_id']).intersection(set(xpg_df['sag_id']), set(mbn_concat_df['sag_id']),
+                                                   set(gmm_concat_df['sag_id']), set(svm_concat_df['sag_id']),
+                                                   set(iso_concat_df['sag_id']), set(comb_concat_df['sag_id'])
+                                                   )
 final_concat_df = pd.concat([mh_concat_df, mbn_concat_df,
                              gmm_concat_df, svm_concat_df,
                              iso_concat_df,
                              comb_concat_df,
                              xpg_df
                              ])
+final_concat_df = final_concat_df.loc[final_concat_df['sag_id'].isin(list(sag_set))]
 
 final_group_df = final_concat_df.groupby(['sag_id', 'algorithm', 'contig_id'])[
     'subcontig_id'].count().reset_index()
