@@ -10,6 +10,7 @@ from itertools import product, islice
 
 import pandas as pd
 import pyfastx
+from skbio.stats.composition import clr
 
 
 def is_exe(fpath):
@@ -263,7 +264,7 @@ def get_kmer(seq, n):
         yield result
 
 
-def tetra_cnt(seq_list):
+def tetra_cnt(fasta):  # TODO: add multi-processing to this function
     '''
     # Dict of all tetramers
     tetra_cnt_dict = {''.join(x): [] for x in product('atgc', repeat=4)}

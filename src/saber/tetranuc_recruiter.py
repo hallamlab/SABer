@@ -59,7 +59,7 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, 
         mg_subcontigs = s_utils.get_seqs(mg_sub_file[1])
         mg_headers = tuple(mg_subcontigs.keys())
         mg_subs = tuple([r.seq for r in mg_subcontigs])
-        mg_tetra_df = s_utils.tetra_cnt(mg_subs)
+        mg_tetra_df = s_utils.tetra_cnt(mg_subcontigs)
         mg_tetra_df.to_csv(o_join(tra_path, mg_id + '.tetras.tsv'),
                            sep='\t'
                            )
@@ -98,14 +98,15 @@ def run_tetra_recruiter(tra_path, sag_sub_files, mg_sub_file, abund_recruit_df, 
         for j, sag_id in enumerate(sag_id_chunk, 1):  # TODO: reduce RAM usage
             s_counter += 1
             logging.info('\rPrepping to Run TetraHz ML-Ensemble: Chunk {} - {}/{}'.format(i, s_counter, sag_id_cnt))
-            minhash_sag_df = mh_recruit_dict.pop(sag_id)
-            abund_sag_df = ab_recruit_dict.pop(sag_id)
-            if ((minhash_sag_df.shape[0] != 0) & (abund_sag_df.shape[0] != 0)):
-                sag_id, sag_tetra_df, mg_tetra_filter_df = subset_tetras([std_tetra_dict,
-                                                                          minhash_sag_df,
-                                                                          abund_sag_df, sag_id
-                                                                          ])
-                arg_list.append([force, mg_headers, mg_tetra_filter_df, sag_id, sag_tetra_df, tra_path])
+            if ((sag_id in list(mh_recruit_dict.keys())) & (sag_id in list(ab_recruit_dict.keys()))):
+                minhash_sag_df = mh_recruit_dict.pop(sag_id)
+                abund_sag_df = ab_recruit_dict.pop(sag_id)
+                if ((minhash_sag_df.shape[0] != 0) & (abund_sag_df.shape[0] != 0)):
+                    sag_id, sag_tetra_df, mg_tetra_filter_df = subset_tetras([std_tetra_dict,
+                                                                              minhash_sag_df,
+                                                                              abund_sag_df, sag_id
+                                                                              ])
+                    arg_list.append([force, mg_headers, mg_tetra_filter_df, sag_id, sag_tetra_df, tra_path])
         arg_list = tuple(arg_list)
         results = pool.imap_unordered(ensemble_recruiter, arg_list)
         logging.info('\r                                                            ')
