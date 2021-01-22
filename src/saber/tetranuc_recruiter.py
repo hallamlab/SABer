@@ -10,6 +10,7 @@ import pandas as pd
 import saber.logger as s_log
 import saber.utilities as s_utils
 from sklearn import svm
+from sklearn.cluster import MiniBatchKMeans
 from sklearn.ensemble import IsolationForest
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn.preprocessing import StandardScaler
@@ -277,14 +278,22 @@ def OCSVM_recruiter(mg_headers, mg_tetra_filter_df, sag_id, sag_tetra_df, tra_pa
                                     )
     else:
         # logging.info('Training OCSVM on SAG tetras\n')
+
+        kmeans_pass_list = runKMEANS(sag_tetra_df, sag_id, mg_tetra_filter_df)
+        kmeans_pass_df = pd.DataFrame(kmeans_pass_list,
+                                      columns=['sag_id', 'subcontig_id', 'contig_id']
+                                      )
+        mg_tetra_kmeans_df = mg_tetra_filter_df.loc[mg_tetra_filter_df.index.isin(
+            kmeans_pass_df['subcontig_id'])]
+
         # fit OCSVM
         clf = svm.OneClassSVM(nu=0.9, gamma=0.0001)
         clf.fit(sag_tetra_df.values)
         # print(clf.get_params())
         sag_pred = clf.predict(sag_tetra_df.values)
         # sag_pred_df = pd.DataFrame(data=sag_pred, index=sag_tetra_df.index.values)
-        mg_pred = clf.predict(mg_tetra_filter_df.values)
-        mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_filter_df.index.values)
+        mg_pred = clf.predict(mg_tetra_kmeans_df.values)
+        mg_pred_df = pd.DataFrame(data=mg_pred, index=mg_tetra_kmeans_df.index.values)
         svm_pass_df = mg_pred_df.loc[mg_pred_df[0] != -1]
         # And is has to be from the RPKM pass list
         # svm_pass_df = svm_pass_df.loc[svm_pass_df.index.isin(mg_rpkm_contig_list)]
@@ -437,20 +446,19 @@ def filter_tetras(sag_id, mg_headers, tetra_id, tetra_df):
     # Only pass contigs that have the magjority of subcontigs recruited (>= N%)
     if (tetra_id == 'svm'):
         mg_recruit_filter_df = mg_recruit_df.loc[
-            # mg_recruit_df['percent_recruited'] >= 0.51
-            mg_recruit_df['subcontig_recruits'] >= 3
+            mg_recruit_df['percent_recruited'] >= 0.01
             ]
     elif (tetra_id == 'gmm'):
         mg_recruit_filter_df = mg_recruit_df.loc[
-            mg_recruit_df['subcontig_recruits'] >= 1
+            mg_recruit_df['percent_recruited'] >= 0.01
             ]
     elif (tetra_id == 'iso'):
         mg_recruit_filter_df = mg_recruit_df.loc[
-            mg_recruit_df['percent_recruited'] >= 0.95
+            mg_recruit_df['percent_recruited'] >= 0.01
             ]
     elif (tetra_id == 'comb'):
         mg_recruit_filter_df = mg_recruit_df.loc[
-            mg_recruit_df['percent_recruited'] >= 0.51
+            mg_recruit_df['percent_recruited'] >= 0.01
             ]
     tetra_max_list = []
     sag_max_only_df = mg_recruit_filter_df.loc[
@@ -507,3 +515,38 @@ if __name__ == '__main__':
     logging.info('Starting Tetranucleotide Recruitment Step\n')
     run_tetra_recruiter(tra_path, [[sag_id, sag_sub_file]], [mg_id, mg_sub_file],
                         abund_recruit_df, per_pass)
+
+
+def runKMEANS(recruit_contigs_df, sag_id, std_merge_df):
+    temp_cat_df = std_merge_df.copy()
+    last_len = 0
+    while temp_cat_df.shape[0] != last_len:
+        last_len = temp_cat_df.shape[0]
+        clusters = 10 if last_len >= 10 else last_len
+        kmeans = MiniBatchKMeans(n_clusters=clusters, random_state=42).fit(temp_cat_df.values)
+        clust_labels = kmeans.labels_
+        clust_df = pd.DataFrame(zip(temp_cat_df.index.values, clust_labels),
+                                columns=['subcontig_id', 'kmeans_clust']
+                                )
+        recruit_clust_df = clust_df.loc[clust_df['subcontig_id'].isin(list(recruit_contigs_df.index))]
+        subset_clust_df = clust_df.loc[clust_df['kmeans_clust'].isin(
+            list(recruit_clust_df['kmeans_clust'].unique())
+        )]
+        subset_clust_df['kmeans_pred'] = 1
+        temp_cat_df = temp_cat_df.loc[temp_cat_df.index.isin(list(subset_clust_df['subcontig_id']))]
+    cat_clust_df = subset_clust_df.copy()  # pd.concat(block_list)
+    std_id_df = pd.DataFrame(std_merge_df.index.values, columns=['subcontig_id'])
+    std_id_df['contig_id'] = [x.rsplit('_', 1)[0] for x in std_id_df['subcontig_id']]
+    cat_clust_df['contig_id'] = [x.rsplit('_', 1)[0] for x in cat_clust_df['subcontig_id']]
+    sub_std_df = std_id_df.loc[std_id_df['contig_id'].isin(list(cat_clust_df['contig_id']))]
+    std_clust_df = sub_std_df.merge(cat_clust_df, on=['subcontig_id', 'contig_id'], how='outer')
+    std_clust_df.fillna(-1, inplace=True)
+    pred_df = std_clust_df[['subcontig_id', 'contig_id', 'kmeans_pred']]
+    val_perc = pred_df.groupby('contig_id')['kmeans_pred'].value_counts(normalize=True).reset_index(name='percent')
+    pos_perc = val_perc.loc[val_perc['kmeans_pred'] == 1]
+    major_df = pos_perc.loc[pos_perc['percent'] >= 0.01]
+    major_pred_df = pred_df.loc[pred_df['contig_id'].isin(major_df['contig_id'])]
+    kmeans_pass_list = []
+    for md_nm in major_pred_df['subcontig_id']:
+        kmeans_pass_list.append([sag_id, md_nm, md_nm.rsplit('_', 1)[0]])
+    return kmeans_pass_list

@@ -41,7 +41,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
                           ]  # TODO: might be a better way to chunk up the list?
             logging.info('Built {} Blocks of SAG Signature Sets\n'.format(len(chunk_list)))
             for i, sag_id_list in enumerate(chunk_list):
-                sub_sag_sig_dict = {k: sag_sig_dict[k] for k in sag_sig_dict.keys()}
+                sub_sag_sig_dict = {k: sag_sig_dict[k] for k in sag_id_list}
                 arg_list.append([sbt_args, mhr_path, sag_id_list, sub_sag_sig_dict])
             results = pool.imap_unordered(compare_sag_sbt, arg_list)
             logging.info('Querying {} Signature Blocks against SBT\n'.format(len(chunk_list)))
@@ -106,11 +106,7 @@ def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file,
         merge_jacc_df = mh_final_max_df.merge(minhash_df, how='left',
                                               on=['sag_id', 'subcontig_id', 'contig_id']
                                               )
-        # minhash_filter_df = merge_jacc_df.copy()
         minhash_filter_df = merge_jacc_df.loc[(merge_jacc_df['jacc_sim_max'] >= 1.0)]
-        # ((merge_jacc_df['jacc_sim_max'] >= 0.5) &
-        # (merge_jacc_df['subcontig_recruits'] > 3))
-        # ]
         minhash_filter_df.to_csv(o_join(mhr_path, mg_id + '.mhr_trimmed_recruits.tsv'), sep='\t',
                                  index=False
                                  )

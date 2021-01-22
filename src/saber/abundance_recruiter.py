@@ -301,7 +301,7 @@ def runKMEANS(recruit_contigs_df, sag_id, std_merge_df):
 
 def runOCSVM(sag_df, mg_df, sag_id):
     # fit OCSVM
-    clf = svm.OneClassSVM(nu=0.4, gamma=10)
+    clf = svm.OneClassSVM(nu=0.3, gamma=10)
     clf.fit(sag_df.values)
     mg_pred = clf.predict(mg_df.values)
     contig_id_list = [x.rsplit('_', 1)[0] for x in mg_df.index.values]

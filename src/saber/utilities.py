@@ -175,7 +175,10 @@ def build_subcontigs(seq_type, in_fasta_list, subcontig_path, max_contig_len, ov
                               )
         sub_list.append((samp_id, sub_file))
     logging.info('\n')
-    if len(sub_list) == 1:
+    if ((seq_type == 'SAGs') & (len(sub_list) == 1)):
+        sub_list = tuple(sub_list)
+        return sub_list
+    elif len(sub_list) == 1:
         sub_file = sub_list[0]
         return sub_file
     else:
