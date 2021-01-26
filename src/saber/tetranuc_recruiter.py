@@ -378,53 +378,23 @@ def calc_components(sag_tetra_df):
     aics = []
     min_bic = np.inf
     bic = np.inf
-    # min_aic = None
     bic_counter = 0
-    # aic_counter = 0
     for i, model in enumerate(models):
         n_comp = n_components[i]
         if ((bic_counter <= 5) & (sag_tetra_df.shape[0] >= n_comp) & (sag_tetra_df.shape[0] >= 2)):
-            # try:
             bic = model.fit(sag_tetra_df.values,
-                            sag_train_vals).aic(sag_tetra_df.values
+                            sag_train_vals).bic(sag_tetra_df.values
                                                 )
             bics.append(bic)
-            # except:
-            #    1 + 1
-            # logging.info('[WARNING]: BIC failed with %s components\n' % n_comp)
             if min_bic > bic:
                 min_bic = bic
                 bic_counter = 0
             else:
                 bic_counter += 1
-        '''
-        if aic_counter <= 10:
-            try:
-                aic = model.fit(sag_tetra_df.values,
-                                sag_train_vals).aic(sag_tetra_df.values
-                                                    )
-                aics.append(aic)
-            except:
-                1 + 1
-                # logging.info('[WARNING]: AIC failed with %s components\n' % n_comp)
-            if min_aic is None:
-                min_aic = aic
-            elif min_aic > aic:
-                min_aic = aic
-                aic_counter = 0
-            else:
-                aic_counter += 1
-        '''
     if min_bic != np.inf:
         min_bic_comp = n_components[bics.index(min_bic)]
     else:
         min_bic_comp = None
-    # min_aic_comp = n_components[aics.index(min_aic)]
-    # logging.info('\nMin BIC at %s\n' % (min_bic_comp))
-    # logging.info('Min AIC/BIC at %s/%s, respectively\n' %
-    #      (min_aic_comp, min_bic_comp)
-    #      )
-    # logging.info('Using BIC as guide for GMM components\n')
     return min_bic_comp
 
 
@@ -454,7 +424,7 @@ def filter_tetras(sag_id, mg_headers, tetra_id, tetra_df):
             ]
     elif (tetra_id == 'iso'):
         mg_recruit_filter_df = mg_recruit_df.loc[
-            mg_recruit_df['percent_recruited'] >= 0.01
+            mg_recruit_df['percent_recruited'] >= 0.51
             ]
     elif (tetra_id == 'comb'):
         mg_recruit_filter_df = mg_recruit_df.loc[

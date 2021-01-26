@@ -169,7 +169,6 @@ def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=False):
             logging.info('%s Sequence Bloom Tree Exists\n' % mg_id)
             mg_sbt_tree = True
         else:
-            # logging.info('Loading %s Sequence Bloom Tree\n' % mg_id)
             mg_sbt_tree = sourmash.load_sbt_index(mg_sbt_file)
     else:
         logging.info('Building %s Sequence Bloom Tree\n' % mg_id)  # TODO: perhaps multiple smaller SBTs would be better
@@ -181,6 +180,7 @@ def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=False):
         for i, leaf in enumerate(results, 1):
             logging.info('\rBuilding leaves for SBT: {}/{}'.format(i, len(mg_sig_list)))
             leaf_list.append(leaf)
+        leaf_list = tuple(leaf_list)
         logging.info('\n')
         for i, lef in enumerate(leaf_list, 1):
             logging.info('\rAdding leaves to tree: {}/{}'.format(i, len(leaf_list)))
@@ -189,7 +189,7 @@ def build_mg_sbt(mg_id, mg_sub_file, sig_path, nthreads, checkonly=False):
         mg_sbt_tree.save(mg_sbt_file)
         pool.close()
         pool.join()
-        mg_sbt_tree = sourmash.load_sbt_index(mg_sbt_file)
+        mg_sbt_tree = None  # sourmash.load_sbt_index(mg_sbt_file)
 
     return mg_sbt_tree
 

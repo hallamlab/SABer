@@ -56,7 +56,7 @@ def sel_contig(real_contig_df, sub_sag_df):
 
 
 src_gen_path = sys.argv[1]  # path containing the reference genomes
-
+syn_out_path = sys.argv[2]
 src_gen_list = [os.path.join(src_gen_path, f) for f in os.listdir(src_gen_path)
                 if (('.fa' in f) | ('.fna' in f) | ('.fasta' in f))
                 ]
@@ -76,7 +76,7 @@ for gen_fasta in src_gen_list:
     rec_df = pd.DataFrame(rec_list, columns=['contig_id', 'seq', 'seq_len'])
     gen_dict[gen_fasta] = rec_df
 
-synth_sag_file = sys.argv[2]  # file containing SAGs ditributions, Synth-SAG_contig_length.tsv
+synth_sag_file = sys.argv[3]  # file containing SAGs ditributions, Synth-SAG_contig_length.tsv
 synth_sag_df = pd.read_csv(synth_sag_file, header=0, sep='\t')
 
 for gen_id in gen_dict.keys():
@@ -102,7 +102,7 @@ for gen_id in gen_dict.keys():
         if max_contig_len <= gen_max_len:
             try:
                 gen_synth_df = sel_contig(gen_recs_df, sub_df)
-                sag_save_file = 'synthetic_SAGs/' + \
+                sag_save_file = syn_out_path + '/' + \
                                 gen_id.rsplit('/', 1)[1].rsplit('.', 1)[0] + '.' + str(sag_rand) + \
                                 '.fasta'
                 with open(sag_save_file, 'w') as syn_fa:
