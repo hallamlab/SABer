@@ -32,7 +32,7 @@ pandas==0.25.3
 pathlib2==2.3.5
 pluggy==0.13.1
 protobuf==3.12.0
-py==1.8.1
+py==1.10.0
 py-spy==0.3.3
 pycparser==2.19
 pyfastx==0.6.11
