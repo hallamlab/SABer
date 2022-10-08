@@ -53,7 +53,7 @@ SETUP_METADATA = \
              'numba==0.54.1', 'packaging==21.3',
              'pandas==1.3.4', 'parso==0.8.2', 'pbr==5.8.0',
              'pexpect==4.8.0', 'pickleshare==0.7.5',
-             'Pillow==8.4.0', 'pluggy==1.0.0', 'prettytable==2.4.0',
+             'Pillow==9.0.1', 'pluggy==1.0.0', 'prettytable==2.4.0',
              'prompt-toolkit==3.0.22', 'ptyprocess==0.7.0',
              'py==1.11.0', 'pycparser==2.21', 'pyfastx==0.8.4',
              'Pygments==2.10.0', 'pynndescent==0.5.5',
