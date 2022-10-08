@@ -45,7 +45,7 @@ SETUP_METADATA = \
              'dit==1.2.3', 'fonttools==4.28.1', 'hdbscan==0.8.27',
              'hdmedians==0.14.2', 'idna==3.3',
              'importlib-metadata==4.8.2', 'iniconfig==1.1.1',
-             'ipython==7.29.0', 'jedi==0.18.1', 'joblib==1.1.0',
+             'ipython==7.31.1', 'jedi==0.18.1', 'joblib==1.1.0',
              'kiwisolver==1.3.2', 'llvmlite==0.37.0',
              'lockfile==0.12.2', 'matplotlib==3.5.0',
              'matplotlib-inline==0.1.3', 'msgpack==1.0.2',
