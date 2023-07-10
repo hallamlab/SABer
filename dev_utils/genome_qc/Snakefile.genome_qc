@@ -24,6 +24,7 @@ gunc_db = config["gunc_db"]
 filtered_genome_dir = os.path.join(working_dir, genome_dir + "_filtered")
 # Only proceed with genomes of sufficient quality via CheckM
 subset_genome_dir = os.path.join(working_dir, genome_dir + "_subset")
+logs = os.path.join(working_dir, logs)
 check_dirs = [logs, subset_genome_dir, filtered_genome_dir]
 for d in check_dirs:
 	isExist = os.path.exists(d)
