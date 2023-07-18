@@ -127,7 +127,7 @@ def recruit(sys_args):
     tetra_file = tra.run_tetra_recruiter(recruit_s.save_path,
                                          mg_sub_file
                                          )
-    # Run HDBSCAN Cluster and Trusted Cluster Cleaning
+    # Set all clustering parameters
     recruit_s.mode, recruit_s.set, recruit_s.params_dict = s_utils.set_clust_params(recruit_s.denovo_min_clust,
                                                                                   recruit_s.denovo_min_samp,
                                                                                   recruit_s.anchor_min_clust,
@@ -141,6 +141,8 @@ def recruit(sys_args):
 
     # Build save dir structure and start logging file
     save_dirs_dict = s_utils.check_out_dirs(recruit_s.save_path, recruit_s.mode, recruit_s.set)
+
+    # Run HDBSCAN Cluster and Trusted Cluster Cleaning
     mg_id = mg_sub_file[0]
     clusters = clst.runClusterer(mg_id, save_dirs_dict[recruit_s.set], save_dirs_dict[recruit_s.set],
                                  abund_scale_file, tetra_file,
