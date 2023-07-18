@@ -869,7 +869,7 @@ def run_param_match(real_dir, autoopt_setting, vr, r, s, vs):
         ocs_df = opt_df.query("cv_algo == 'ocsvm' & algo == 'ocsvm'"
                               "& mq_nc == 'mq' & level == 'strain'"
                               )
-        setting = 'Very Relaxed'
+        setting = 'very_relaxed'
     elif r:
         d_hdb_df = opt_df.query("cv_algo == 'hdbscan' & algo == 'denovo'"
                                 "& mq_nc == 'mq' & level == 'exact'"
@@ -880,7 +880,7 @@ def run_param_match(real_dir, autoopt_setting, vr, r, s, vs):
         ocs_df = opt_df.query("cv_algo == 'ocsvm' & algo == 'ocsvm'"
                               "& mq_nc == 'mq' & level == 'exact'"
                               )
-        setting = 'Relaxed'
+        setting = 'relaxed'
 
     elif s:
         d_hdb_df = opt_df.query("cv_algo == 'hdbscan' & algo == 'denovo'"
@@ -892,7 +892,7 @@ def run_param_match(real_dir, autoopt_setting, vr, r, s, vs):
         ocs_df = opt_df.query("cv_algo == 'ocsvm' & algo == 'ocsvm'"
                               "& mq_nc == 'nc' & level == 'strain'"
                               )
-        setting = 'Strict'
+        setting = 'strict'
 
     elif vs:
         d_hdb_df = opt_df.query("cv_algo == 'hdbscan' & algo == 'denovo'"
@@ -904,7 +904,7 @@ def run_param_match(real_dir, autoopt_setting, vr, r, s, vs):
         ocs_df = opt_df.query("cv_algo == 'ocsvm' & algo == 'ocsvm'"
                               "& mq_nc == 'nc' & level == 'exact'"
                               )
-        setting = 'Very Strict'
+        setting = 'very_strict'
 
     else:  # else use algo defaults
         setting = 'Default'
