@@ -1,0 +1,144 @@
+#SNAKEMAKE WORKFLOW FOR BINNING
+
+##Usage##
+# snakemake -p -s Snakefile.metawrap --cluster 'qsub -l {resource_list} -N {params.name} -A {account} -m {mail_opt} -M {email} -V -o {params.pbs_out} -e {params.pbs_err}' -j 10 --keep-going --use-conda
+########
+
+## Configuration file
+import os
+if len(config) == 0:
+	if os.path.isfile("./config.yaml"):
+		configfile: "./config.yaml"
+	else:
+		sys.exit("Make sure there is a config.yaml file in " + os.getcwd() + " or specify one with the --configfile commandline parameter.")
+
+configvars = ['account', 'resource_list', 'mail_opt', 'email', 'metag', 'reads', 'out', 'pbs_logs', 'threads']
+for k in configvars:
+		if k not in config:
+				config[k] = None
+
+
+### For PBSpro only ###
+# PBS params
+account = config["account"]
+resource_list = config["resource_list"]
+mail_opt = config["mail_opt"]
+email = config["email"]
+pbs_logs = config["pbs_logs"]
+#######################
+
+### Inputs for Mapping workflow ###
+metag_dir = config["metag"]
+reads_dir = config["reads"]
+out_dir = config["out"]
+nthreads = config["threads"]
+################################
+
+# Create PBS logs dir if needed
+isExist = os.path.exists(pbs_logs)
+if not isExist:
+		os.makedirs(pbs_logs)
+
+# Create output directory if needed
+isExist = os.path.exists(out_dir)
+if not isExist:
+		os.makedirs(out_dir)
+
+Ids, = glob_wildcards(os.path.join(metag_dir, "{id}.fasta"))
+
+
+rule all:
+	input:
+		expand(os.path.join(pbs_logs, "{id}.ensemble.log"), id=Ids),
+
+rule read_mapping:
+	input:
+		assembly = os.path.join(metag_dir, "{id}.fasta"),
+		in_fwd = os.path.join(reads_dir, "{id}_1.fastq"),
+		in_rev = os.path.join(reads_dir, "{id}_2.fastq"),
+	output:
+		out_dup = os.path.join(out_dir, "mapped_reads", "{id}.sorted.markdup.bam"),
+
+	params:
+		name = "{id}",
+		pbs_out = os.path.join(pbs_logs, "{id}.mapping.out.log"),
+		pbs_err = os.path.join(pbs_logs, "{id}.mapping.err.log"),
+		out_bam = os.path.join(out_dir, "mapped_reads", "{id}.bam"),
+		out_sorted = os.path.join(out_dir, "mapped_reads", "{id}.sorted.bam"),
+		out_metrics = os.path.join(out_dir, "mapped_reads", "{id}.markdup.metrics"),
+		out_dir = os.path.join(out_dir, "mapped_reads")
+	conda:
+		"mapping_env",
+	shell:
+		"""
+		echo "Starting Read Mapping module"
+		bowtie2-build {input.assembly} {input.assembly}.idx
+		bowtie2 -p 4 -x {input.assembly}.idx -1 {input.in_fwd} -2 {input.in_rev} --end-to-end --very-sensitive  | samtools view -bS  -> {params.out_bam}
+		samtools sort {params.out_bam} -o {params.out_sorted}
+		picard MarkDuplicates INPUT={params.out_sorted} OUTPUT={output.out_dup} METRICS_FILE={params.out_metrics} AS=TRUE VALIDATION_STRINGENCY=LENIENT MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1000 REMOVE_DUPLICATES=TRUE TMP_DIR={params.out_dir} -Xmx100g
+		"""
+
+rule binning:
+	input:
+		assembly = os.path.join(metag_dir, "{id}.fasta"),
+		bam_in = os.path.join(out_dir, "mapped_reads", "{id}.sorted.markdup.bam"),
+	output:
+		bin_dirs = os.path.join(out_dir, "binning_output/{id}", "bin_dirs.tsv")
+	params:
+		threads = nthreads,
+		bin_output = os.path.join(out_dir, "binning_output/{id}"),
+		# PBS rule-specific params
+		name = "{id}",
+		pbs_out = os.path.join(pbs_logs, "{id}.binning.out.txt"),
+		pbs_err = os.path.join(pbs_logs, "{id}.binning.err.txt"),
+	conda:
+		"unitem_cenv",
+	shell:
+		"""
+		echo "Starting Binning module"
+		unitem bin -c {params.threads} --mb2 --max40 --max107 --mb_verysensitive --mb_sensitive --mb_specific --mb_veryspecific --mb_superspecific {input.assembly} {params.bin_output} --bam_files {input.bam_in}
+		"""
+
+rule profile_bins:
+	input:
+		bin_dirs = os.path.join(out_dir, "binning_output/{id}", "bin_dirs.tsv"),
+	output:
+		log = os.path.join(pbs_logs, "{id}.profiling.log"),
+		out_dir = directory(os.path.join(out_dir, "profile_output/{id}")),
+	params:
+		threads = nthreads,
+		bin_output = os.path.join(out_dir, "binning_output/{id}"),
+		# PBS rule-specific params
+		name = "{id}",
+		pbs_out = os.path.join(pbs_logs, "{id}.profiling.out.txt"),
+		pbs_err = os.path.join(pbs_logs, "{id}.profinling.err.txt"),
+	conda:
+		"unitem_cenv",
+	shell:
+		"""
+		echo "Starting Profiling module"
+		unitem profile -c {params.threads} -f {input.bin_dirs} {output.out_dir}
+		echo "DONE" > {output.log}
+		"""
+
+rule ensemble_bins:
+	input:
+		bin_dirs = os.path.join(out_dir, "binning_output/{id}", "bin_dirs.tsv"),
+		plog = os.path.join(pbs_logs, "{id}.profiling.log"),
+	output:
+		out_dir = directory(os.path.join(out_dir, "greedy_output/{id}")),
+		log = os.path.join(pbs_logs, "{id}.ensemble.log"),
+	params:
+		threads = nthreads,
+		pro_output = os.path.join(out_dir, "profile_output/{id}"),
+		name = "{id}",
+		pbs_out = os.path.join(pbs_logs, "{id}.ensemble.out.txt"),
+		pbs_err = os.path.join(pbs_logs, "{id}.ensemble.err.txt"),
+	conda:
+		"unitem_cenv",
+	shell:
+		"""
+		echo "Starting Ensemble Binning module"
+		unitem greedy -f {input.bin_dirs} {params.pro_output} {output.out_dir}
+		echo "DONE" > {output.log}
+		"""

@@ -1,0 +1,15 @@
+# Path to folders
+assemblies: "/scratch/st-shallam-1/mcglock/xPGs_read_mapping/GAPP_asms"
+asm_id: "None"
+metat: "/scratch/st-shallam-1/mcglock/xPGs_read_mapping/reads_MetaG"
+gff: "/scratch/st-shallam-1/mcglock/xPGs_read_mapping/GAPP_gffs"
+
+#Path to output
+out: "/scratch/st-shallam-1/mcglock/xPGs_read_mapping/mapping_results"
+pbs_logs: "/scratch/st-shallam-1/mcglock/xPGs_read_mapping/logs/"
+
+# PBSpro inputs (optional)
+account: "st-shallam-1"
+resource_list: "walltime=16:00:00,select=1:ncpus=4:mem=128gb"
+mail_opt: "a"
+email: "mclaughlinr2@gmail.com"

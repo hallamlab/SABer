@@ -1,0 +1,33 @@
+
+# snakemake -np -s Snakefile.JGI_MAGs --cluster 'qsub -l {params.resource_list} -N {params.name} -A {params.account} -m {params.mail_opt} -M {params.email} -V -o {params.pbs_out} -e {params.pbs_err}' -j 100 
+
+Ids, = glob_wildcards("/scratch/st-shallam-1/mcglock/SI_arco_reasm/concat_simu/{id}.fasta")
+
+# a pseudo-rule that collects the target files
+rule all:
+	input:  expand("/scratch/st-shallam-1/mcglock/SI_arco_reasm/reassemblies/{id}.reasm.contigs.fasta", id=Ids)
+
+# a general rule using wildcards that does the work
+rule run_mp3:
+	input:  
+		asm_fa = "/scratch/st-shallam-1/mcglock/SI_arco_reasm/concat_simu/{id}.fasta"
+	output: 
+		out_fa = "/scratch/st-shallam-1/mcglock/SI_arco_reasm/reassemblies/{id}.reasm.contigs.fasta"
+	threads : 10
+	params :
+		fq = "/scratch/st-shallam-1/mcglock/SI_arco_reasm/fastqs",
+		out_dir = "/scratch/st-shallam-1/mcglock/SI_arco_reasm/",
+		# PBS params
+		account = "st-shallam-1",
+		resource_list = "walltime=48:00:00,select=1:ncpus=10:mem=64gb",
+		name = "{id}",
+		mail_opt = "a",
+		email = "mclaughlinr2@alumni.ubc.ca",
+		pbs_out = "/scratch/st-shallam-1/mcglock/SI_arco_reasm/pbs/{id}.xpg.out.txt",
+		pbs_err = "/scratch/st-shallam-1/mcglock/SI_arco_reasm/pbs/{id}.xpg.err.txt"		
+	conda:
+		"reasm"
+	shell:
+		"""
+		/scratch/st-shallam-1/mcglock/SI_arco_reasm/xPG_reassemble_workflow.sh {input.asm_fa} {params.fq} {params.out_dir} {threads}
+		"""

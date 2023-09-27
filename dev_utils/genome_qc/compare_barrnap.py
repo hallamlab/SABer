@@ -51,7 +51,7 @@ blast_df['pident'] = pd.to_numeric(blast_df['pident'].copy())
 blast_df['bitscore'] = pd.to_numeric(blast_df['bitscore'].copy())
 blast_df.to_csv(os.path.join(barnap_dir, 'barrnap_blast_raw.tsv'), sep='\t', index=False)
 
-min_id_df = blast_df.groupby(col_list)['pident', 'bitscore'].min().reset_index()
+min_id_df = blast_df.groupby(col_list)[['pident', 'bitscore']].min().reset_index()
 
 min_id_df['pass_BARRNAP'] = [True if ((x[0] >= 97) & (x[1] >= 100)) else False
 							 for x in zip(min_id_df['pident'], min_id_df['bitscore'])

@@ -38,8 +38,7 @@ trna_df = pd.read_csv(third_file_path,sep='\t')
 merge2_df = pd.merge(merged_df, trna_df, left_on='Bin Id', right_on='genome_id', how='left').drop('genome_id', axis=1)
 
 #Create the final master table
-master = master.append(merge2_df)
-        
+master = pd.concat([master, merge2_df])
 master[['Domain', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']] = master['classification'].str.split(';', expand=True)
 
 # remove prefix from each column
@@ -55,8 +54,10 @@ final = master.drop('classification', axis=1)
 
 #Save the master table
 final.to_csv(out_path, index=False)
-
-final['contains_16S'] = [False if x == 0 else True for x in final['16S_rRNA']]
+if '16S_rRNA' in final.columns:
+	final['contains_16S'] = [False if x == 0 else True for x in final['16S_rRNA']]
+else:
+	final['contains_16S'] = [False for x in final.index]
 
 #Contamination and Completion plots
 pio.templates.default = "plotly_dark"

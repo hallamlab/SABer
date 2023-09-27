@@ -1,0 +1,175 @@
+#Snakemake workflow to map metatranscriptome to metagenome 
+
+##Usage##
+# snakemake -p -s Snakefile.mapping --cluster 'qsub -l {resource_list} -A {account} -m {mail_opt} -M {email} -V' -j 10 --keep-going --use-conda --conda-frontend mamba 
+########
+
+## Configuration file
+import os
+if len(config) == 0:
+  if os.path.isfile("./config.yaml"):
+    configfile: "./config.yaml"
+  else:
+    sys.exit("Make sure there is a config.yaml file in " + os.getcwd() + " or specify one with the --configfile commandline parameter.")
+
+configvars = ['account', 'resource_list', 'mail_opt', 'email', 'metag', 'metat', 'gff', 'out']
+for k in configvars:
+	if k not in config:
+		config[k] = None
+
+### For PBSpro only ###
+# PBS params
+account = config["account"]
+resource_list = config["resource_list"]
+mail_opt = config["mail_opt"]
+email = config["email"]
+pbs_logs = config["pbs_logs"]
+#######################
+
+### Inputs for Mapping workflow ###
+metag_dir = config["assemblies"]
+metat_dir = config["metat"]
+gff_dir = config["gff"]
+out_dir = config["out"]
+################################
+
+# Create PBS logs dir if needed
+isExist = os.path.exists(pbs_logs)
+if not isExist:
+        os.makedirs(pbs_logs)
+
+# Create output directory if needed
+isExist = os.path.exists(out_dir)
+if not isExist:
+        os.makedirs(out_dir)
+
+Ids, = glob_wildcards(os.path.join(metag_dir, "{id}.fasta"))
+
+fq_Ids, = glob_wildcards(os.path.join(metat_dir, "{id}.rRNA.clean.fastq.gz"))
+
+fqs = os.path.join(metat_dir, "*.fq.gz")
+
+rule all:
+	input:
+		expand(os.path.join(out_dir, "tpm", "{id}.{fq}.tpm"), id=Ids, fq=fq_Ids)
+
+rule read_mapping:
+	priority: 1
+	input:
+		in_genome = os.path.join(metag_dir, "{id}.fasta"),
+		in_transcriptR1 = os.path.join(metat_dir, "{fq}.rRNA.clean.fastq.gz"),
+		#in_transcriptR2 = os.path.join(metat_dir, "{fq}_2.fastq")
+	params:
+		pbs_out = os.path.join(pbs_logs, "{id}.{fq}.bowtie2.out.log"),
+		pbs_err = os.path.join(pbs_logs, "{id}.{fq}.bowtie2.err.log"),
+		out_bam = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.bam"),
+		out_sorted = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.sorted.bam"),
+		out_dup = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.sorted.markdup.bam"),
+		out_bai = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.sorted.markdup.bam.bai"),
+	output:
+                out_metrics = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.markdup.metrics"),
+	conda:
+		"mapping_env"
+	shell:
+		"""
+		#minimap2 -ax sr {input.in_genome} {input.in_transcriptR1} | samtools view -bS  -> {params.out_bam}
+		#bowtie2-build {input.in_genome} {input.in_genome}.idx
+		bowtie2 -p 4 -x {input.in_genome}.idx --interleaved {input.in_transcriptR1} --end-to-end --very-sensitive  | samtools view -bS  -> {params.out_bam}
+		#bowtie2 -p 4 -x {input.in_genome}.idx -1 {input.in_transcriptR1} -2 /input.in_transcriptR2/ --end-to-end --very-sensitive  | samtools view -bS  -> {params.out_bam}
+		samtools sort {params.out_bam} -o {params.out_sorted}
+		picard MarkDuplicates INPUT={params.out_sorted} OUTPUT={params.out_dup} METRICS_FILE={output.out_metrics} AS=TRUE VALIDATION_STRINGENCY=LENIENT MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1000 REMOVE_DUPLICATES=TRUE
+                samtools index {params.out_dup}
+		rm -rf {params.out_bam} {params.out_sorted}
+		"""
+
+rule run_coverm:
+	priority: 1
+	input:
+		in_genome = os.path.join(metag_dir, "{id}.fasta"),
+		out_metrics = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.markdup.metrics"),
+	params:
+		clean_bam = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.sorted.markdup.bam"),
+		pbs_out = os.path.join(pbs_logs, "{id}.{fq}.coverm.out.log"),
+		pbs_err = os.path.join(pbs_logs, "{id}.{fq}.coverm.err.log"),
+	output:
+		covm_tpm = os.path.join(out_dir, "genome_cov", "{id}.{fq}.covm.tpm.tsv"),
+		covm_count = os.path.join(out_dir, "genome_cov", "{id}.{fq}.covm.count.tsv"),
+	conda:
+		"coverm"
+	shell:
+		"""
+		coverm contig --bam-files {params.clean_bam} -m tpm -o {output.covm_tpm} -t 4
+		coverm contig --bam-files {params.clean_bam} -m count -o {output.covm_count} -t 4
+		"""
+
+rule gff_to_gtf:
+	priority: 1
+	input:
+		in_gff = os.path.join(gff_dir, "{id}.annot.gff"),
+	params:
+		pbs_out = os.path.join(pbs_logs, "{id}.{fq}.gff2gtf.out.log"),
+		pbs_err = os.path.join(pbs_logs, "{id}.{fq}.gff2gtf.err.log")
+	output:
+		out_gtf = os.path.join(out_dir, "gtf_file", "{id}.{fq}.gtf"),
+	conda:
+		"mapping_env"
+	shell:
+		"""
+		bash scripts/prokkagff2gtf.sh {input.in_gff} > {output.out_gtf}
+		"""
+
+rule count_mapped_reads:
+	priority: 1
+	input:
+		out_metrics = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.markdup.metrics"),
+		in_gtf = os.path.join(out_dir, "gtf_file","{id}.{fq}.gtf"),
+	params:
+		pbs_out = os.path.join(pbs_logs, "{id}.{fq}.count.out.log"),
+		pbs_err = os.path.join(pbs_logs, "{id}.{fq}.count.err.log"),
+		in_bam = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.sorted.markdup.bam"),
+	output:
+		out_count = os.path.join(out_dir, "count", "{id}.{fq}.count"),
+	conda:
+		"mapping_env"
+	shell:
+		"""
+		htseq-count -r pos -t CDS -f bam {params.in_bam} {input.in_gtf} > {output.out_count}
+		"""
+
+rule calculate_genelengths:
+	priority: 1
+	input:
+		in_gtf = os.path.join(out_dir, "gtf_file", "{id}.{fq}.gtf"),
+	params:
+		pbs_out = os.path.join(pbs_logs, "{id}.{fq}.genlen.out.log"),
+		pbs_err = os.path.join(pbs_logs, "{id}.{fq}.genlen.err.log")
+	conda:
+		"mapping_env"
+	output:
+		out_genelengths = os.path.join(out_dir, "genelengths", "{id}.{fq}.genelengths"),
+	shell:
+		"""
+		cut -f4,5,9 {input.in_gtf} | sed 's/gene_id //g' | gawk '{{print $3,$2-$1+1}}' | tr ' ' '\t' > {output.out_genelengths}
+		"""
+
+rule calculate_tpm:
+	priority: 10
+	input:
+		in_count = os.path.join(out_dir, "count", "{id}.{fq}.count"),
+		in_genelengths = os.path.join(out_dir, "genelengths", "{id}.{fq}.genelengths"),
+		covm_output = os.path.join(out_dir, "genome_cov", "{id}.{fq}.covm.count.tsv"),
+	params:
+		pbs_out = os.path.join(pbs_logs, "{id}.{fq}.tpm.out.log"),
+		pbs_err = os.path.join(pbs_logs, "{id}.{fq}.tpm.err.log"),
+		out_dup = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.sorted.markdup.bam"),
+		out_bai = os.path.join(out_dir, "mapped_reads", "{id}.{fq}.sorted.markdup.bam.bai"),
+
+	conda:
+		"mapping_env"
+	output:
+		out_tpm = os.path.join(out_dir, "tpm", "{id}.{fq}.tpm")
+	shell:
+		"""
+		python scripts/tpm_table.py -n {wildcards.id}_{wildcards.fq} -c {input.in_count} -i <(echo -e '{wildcards.id}_{wildcards.fq}\t150') -l {input.in_genelengths} > {output.out_tpm}
+		rm -rf {params.out_dup} {params.out_bai}
+		"""

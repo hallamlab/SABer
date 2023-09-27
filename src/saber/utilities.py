@@ -504,6 +504,8 @@ def calc_real_entrophy(mba_cov_list, working_dir):
         samp_label = samp_id
         samp_rep = 0
         cov_df = pd.read_csv(samp_file, sep='\t', header=0)
+        if cov_df.shape[0] > 100000:  # need to sub-sample if table is huge
+            cov_df = cov_df.sample(n=int(100000), random_state=42, replace=False)
         cov_df['hash_id'] = [hashlib.sha256(x.encode(encoding='utf-8')).hexdigest()
                              for x in cov_df['contigName']
                              ]

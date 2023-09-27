@@ -123,7 +123,8 @@ rule run_seqkit_stat:
 	shell:
 		"""
 		mkdir -p {working_dir}/seqkit
-		seqkit stat -a -T -o {working_dir}/seqkit/seqkit_stats.tsv $(ls {input.fasta_dir}/*.{{fa,fna,fasta}})
+		find {input.fasta_dir}/ -type f -name '*' > {working_dir}/seqkit/genome.lst
+		seqkit stat -a -T -o {working_dir}/seqkit/seqkit_stats.tsv --infile-list {working_dir}/seqkit/genome.lst
 		echo "Done."  > {output.out_log}
 		"""
 		
@@ -185,7 +186,7 @@ rule run_gtdbtk:
 
 		gtdbtk align --identify_dir {params.identify_dir} --out_dir {params.align_dir} --cpus {threads}
 
-		gtdbtk classify --genome_dir {params.fasta_dir} -x fasta --align_dir {params.align_dir} --out_dir {params.classify_dir} --cpus {threads} --pplacer_cpus {threads}
+		gtdbtk classify --genome_dir {params.fasta_dir} -x fasta --align_dir {params.align_dir} --out_dir {params.classify_dir} --cpus {threads} --pplacer_cpus {threads} --mash_db {params.classify_dir}
 		echo "Done."  > {output.out_log}
 		"""
 
