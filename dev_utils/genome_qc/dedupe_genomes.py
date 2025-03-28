@@ -13,7 +13,7 @@ cont = int(sys.argv[3])
 qsmin = int(sys.argv[4])
 qscore_file = os.path.join(working_dir, "qscore/qscore_mqhp.tsv")  # MQHP genomes list
 barrnap_file = os.path.join(working_dir, "barrnap/barrnap_blast_pass.tsv")  # barrnap blast results
-gtdbtk_files = glob.glob(os.path.join(working_dir, "gtdbtk/classify_out/classify/gtdbtk.*.summary.tsv"))  # bac and arc gtdbtk results
+gtdbtk_files = glob.glob(os.path.join(working_dir, "gtdbtk/classify/gtdbtk.*.summary.tsv"))  # bac and arc gtdbtk results
 qscore_df = pd.read_csv(qscore_file, header=0, sep='\t')
 barrnap_df = pd.read_csv(barrnap_file, header=0, sep='\t')
 cat_list = []

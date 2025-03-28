@@ -179,11 +179,11 @@ def get_SAGs(sag_path):
 
 def build_subcontigs(seq_type, in_fasta_list, subcontig_path, max_contig_len, overlap_len, min_len):
     sub_list = []
-    for i, in_fasta in enumerate(in_fasta_list):
+    logging.info('\rLoading/Building subcontigs for {}\n'.format(seq_type))
+    for in_fasta in tqdm(in_fasta_list):
         basename = os.path.basename(in_fasta)
         samp_id = basename.rsplit('.', 1)[0]
         sub_file = os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')
-        logging.info('\rLoading/Building subcontigs for {}: {}'.format(seq_type, i + 1))
         if os.path.exists(os.path.join(subcontig_path, samp_id + '.subcontigs.fasta')) == False:
             # get contigs from fasta file
             contigs = get_seqs(in_fasta)
@@ -200,15 +200,8 @@ def build_subcontigs(seq_type, in_fasta_list, subcontig_path, max_contig_len, ov
             sub_list.append((samp_id, sub_file))
 
     logging.info('\n')
-    if ((seq_type == 'SAGs') & (len(sub_list) == 1)):
-        sub_list = tuple(sub_list)
-        return sub_list
-    elif len(sub_list) == 1:
-        sub_file = sub_list[0]
-        return sub_file
-    else:
-        sub_list = tuple(sub_list)
-        return sub_list
+    sub_list = tuple(sub_list)
+    return sub_list
 
 
 def kmer_slide(scd_db, n, o_lap, m_len):

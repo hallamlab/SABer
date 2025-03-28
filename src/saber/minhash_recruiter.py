@@ -14,11 +14,11 @@ import saber.utilities as s_utils
 pd.set_option('display.max_columns', None)
 
 
-def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file, nthreads, min_len):
+def run_minhash_recruiter(sig_path, mhr_path, sag_sub_files, mg_sub_file, nthreads, min_len, kmer_size):
     logging.info('Starting MinHash Recruitment\n')
     # Calculate/Load MinHash Signatures with SourMash for MG subseqs
     mg_id = mg_sub_file[0]
-    kmer_list = [201]
+    kmer_list = [kmer_size]
     mh_kmer_recruits_dict = {}
     for kmer in kmer_list:
         mh_recruit_file = o_join(mhr_path, mg_id + '.' + str(kmer) + '.mhr_contig_recruits.tsv')

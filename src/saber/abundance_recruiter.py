@@ -13,7 +13,7 @@ import saber.utilities as s_utils
 
 
 def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
-                      nthreads
+                      pacbio, nthreads
                       ):
     logging.info('Starting Abundance Data Transformation\n')
     mg_id = mg_sub_file[0]
@@ -27,7 +27,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
         mg_sub_path = o_join(subcontig_path, mg_id + '.subcontigs.fasta')
         # Process raw metagenomes to calculate abundances
         mg_scale_out, mg_covm_out = procMetaGs(abr_path, mg_id, mg_raw_file_list,
-                                               subcontig_path, nthreads
+                                               subcontig_path, pacbio, nthreads
                                                )
     # Clean up the directory
     logging.info('Cleaning up intermediate files...\n')
@@ -37,7 +37,7 @@ def runAbundRecruiter(subcontig_path, abr_path, mg_sub_file, mg_raw_file_list,
     return mg_scale_out, mg_covm_out
 
 
-def procMetaGs(abr_path, mg_id, mg_raw_file_list, subcontig_path, nthreads):
+def procMetaGs(abr_path, mg_id, mg_raw_file_list, subcontig_path, pacbio, nthreads):
     # Process each raw metagenome
     with open(mg_raw_file_list, 'r') as raw_fa_in:
         raw_data = raw_fa_in.readlines()
@@ -45,11 +45,8 @@ def procMetaGs(abr_path, mg_id, mg_raw_file_list, subcontig_path, nthreads):
     sorted_bam_list = []
     for line in raw_data:
         raw_file_list = line.strip('\n').split('\t')
-        # mg_covm_std = runBBtools(abr_path, subcontig_path, mg_id,
-        #                                      raw_file_list, nthreads
-        #                                      )
         pe_id, mg_sam_out = runMiniMap2(abr_path, subcontig_path, mg_id, raw_file_list,
-                                        nthreads
+                                        pacbio, nthreads
                                         )
         sam_list.append(mg_sam_out)
         # Build/sorted .bam files
@@ -70,7 +67,7 @@ def procMetaGs(abr_path, mg_id, mg_raw_file_list, subcontig_path, nthreads):
     return mg_scale_out, mg_covm_out
 
 
-def runMiniMap2(abr_path, subcontig_path, mg_id, raw_file_list, nthreads):
+def runMiniMap2(abr_path, subcontig_path, mg_id, raw_file_list, pacbio, nthreads):
     pe1 = raw_file_list[0]
     if isfile(pe1) == True:
         pe_basename = basename(pe1)
@@ -83,17 +80,22 @@ def runMiniMap2(abr_path, subcontig_path, mg_id, raw_file_list, nthreads):
         if len(raw_file_list) == 2:
             logging.info('Raw reads in FWD and REV file...\n')
             pe2 = raw_file_list[1]
-            mem_cmd = ['minimap2', '-ax', 'sr', '-I', '8G', '-t', str(nthreads), '-o', mg_sam_out,
+            mem_cmd = ['minimap2', '-ax', 'sr', '--split-prefix=tmp', '-t', str(nthreads), '-o', mg_sam_out,
                        o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1, pe2
+                       ]
+        elif ((len(raw_file_list) < 2) & (pacbio == True)):
+            logging.info('Raw reads are PacBio Hifi...\n')
+            mem_cmd = ['minimap2', '-ax', 'map-hifi', '--split-prefix=tmp', '-t', str(nthreads), '-o', mg_sam_out,
+                       o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
                        ]
         else:  # if the fastq is interleaved
             logging.info('Raw reads in interleaved file...\n')
-            mem_cmd = ['minimap2', '-ax', 'sr', '-I', '8G', '-t', str(nthreads), '-o', mg_sam_out,
+            mem_cmd = ['minimap2', '-ax', 'sr', '--split-prefix=tmp', '-t', str(nthreads), '-o', mg_sam_out,
                        o_join(subcontig_path, mg_id + '.subcontigs.fasta'), pe1
                        ]
 
         if sam_size <= 0:
-            logging.info('Running minimap2-sr on %s\n' % pe_id)
+            logging.info('Running minimap2 on %s\n' % pe_id)
             with open(mg_sam_out, 'w') as sam_file:
                 with open(o_join(abr_path, pe_id + '.stderr.txt'), 'w') as stderr_file:
                     with open(o_join(abr_path, pe_id + '.stdout.txt'), 'w') as stdout_file:

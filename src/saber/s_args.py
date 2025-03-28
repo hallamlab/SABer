@@ -1,4 +1,4 @@
-__author__ = 'Ryan J McLaughlin'
+q__author__ = 'Ryan J McLaughlin'
 
 import argparse
 from argparse import RawTextHelpFormatter
@@ -104,6 +104,18 @@ class SABerArgumentParser(argparse.ArgumentParser):
         self.optopt.add_argument("--min_len", required=False, default=2000,
                                  dest="min_len",
                                  help="minimum length of contigs to include in basepairs [2000]."
+                                 )
+        self.optopt.add_argument("--kmer_size", required=False, default=201,
+                                 dest="kmer_size",
+                                 help="kmer length to use for minhash step [201]."
+                                 )
+        self.optopt.add_argument("--jaccard", required=False, default=1.0,
+                                 dest="jaccard",
+                                 help="minimum jaccard index to ID contigs as trusted [1.0]."
+                                 )
+        self.optopt.add_argument("--pacbio", required=False, default=False,
+                                 action="store_true",
+                                 help="Set if raw reads are PacBio Hifi [False]"
                                  )
         self.miscellany.add_argument("-t", "--num_threads", required=False, default=1,
                                      dest="nthreads",

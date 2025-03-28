@@ -65,10 +65,13 @@ def recruit(sys_args):
     recruit_s.trust_path = args.trust_path
     recruit_s.mg_file = args.mg_file
     recruit_s.mg_raw_file_list = args.mg_raw_file_list
+    recruit_s.pacbio = args.pacbio
     recruit_s.save_path = args.save_path
     recruit_s.max_contig_len = int(args.max_contig_len)
     recruit_s.overlap_len = int(args.overlap_len)
     recruit_s.min_len = int(args.min_len)
+    recruit_s.kmer_size = int(args.kmer_size)
+    recruit_s.jaccard = float(args.jaccard)
     recruit_s.nthreads = int(args.nthreads)
     recruit_s.force = args.force
     # Collect args for clustering
@@ -98,30 +101,37 @@ def recruit(sys_args):
                                            recruit_s.max_contig_len,
                                            recruit_s.overlap_len,
                                            recruit_s.min_len
-                                           )
+                                           )[0]
 
     # Build minhash signatures if there are trusted contigs
     if recruit_s.trust_path:
         # Find the Trusted Contigs (TCs)
-        tc_list = s_utils.get_SAGs(
-            recruit_s.trust_path)  # TODO: needs to support a single multi-FASTA and multiple FASTAs
+        tc_list = s_utils.get_SAGs(recruit_s.trust_path)
         trust_files = tuple([(os.path.splitext(os.path.basename(x))[0], x) for x in tc_list])
+        trust_subs = s_utils.build_subcontigs('SAGs', tc_list,
+                                                   recruit_s.save_path,
+                                                   recruit_s.max_contig_len,
+                                                   recruit_s.overlap_len,
+                                                   recruit_s.min_len
+                                                   )
+
         # Run MinHash recruiting algorithm
         minhash_df_dict = mhr.run_minhash_recruiter(recruit_s.save_path,  # TODO: expose some params for users
                                                     recruit_s.save_path,
-                                                    trust_files, mg_file,
+                                                    trust_subs, mg_file,
                                                     recruit_s.nthreads,
-                                                    recruit_s.min_len
+                                                    recruit_s.min_len,
+                                                    recruit_s.kmer_size
                                                     )
     else:
         minhash_df_dict = False
-        trust_files = tuple()
+        trust_subs = tuple()
 
     # Build abundance tables
     abund_scale_file, abund_raw_file = abr.runAbundRecruiter(recruit_s.save_path,
                                                              recruit_s.save_path, mg_sub_file,
                                                              recruit_s.mg_raw_file_list,
-                                                             recruit_s.nthreads
+                                                             recruit_s.pacbio, recruit_s.nthreads
                                                              )
     # Build tetra hz tables
     tetra_file = tra.run_tetra_recruiter(recruit_s.save_path,
@@ -153,6 +163,7 @@ def recruit(sys_args):
                                  recruit_s.params_dict['a_min_samp'],
                                  recruit_s.params_dict['nu'],
                                  recruit_s.params_dict['gamma'],
+                                 recruit_s.jaccard,
                                  recruit_s.nthreads
                                  )
     # Collect and join all recruits

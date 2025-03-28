@@ -108,13 +108,13 @@ def recruitOCSVM(p):
 
 def runClusterer(mg_id, tmp_path, clst_path, cov_file, tetra_file, minhash_dict,
                  denovo_min_clust, denovo_min_samp, anchor_min_clust, anchor_min_samp,
-                 nu, gamma, nthreads
+                 nu, gamma, jaccard, nthreads
                  ):  # TODO: need to add multithreading where ever possible
     # Get the MinHash recruits
     if minhash_dict:
         mh_trusted_df = minhash_dict[201]
         mh_trusted_df.rename(columns={'q_contig_id': 'contig_id'}, inplace=True)
-        mh_best_df = mh_trusted_df.query('jacc_sim == 1.0')
+        mh_best_df = mh_trusted_df.query(f'jacc_sim == {jaccard}')
     # Convert CovM to UMAP feature table
     set_init = 'spectral'
     merged_emb = Path(o_join(tmp_path, mg_id + '.merged_emb.tsv'))
