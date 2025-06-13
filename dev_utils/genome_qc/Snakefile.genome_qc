@@ -350,52 +350,48 @@ rule run_trnscan:
     conda:
         condaenv
     shell:
-        """
+                r"""
         mkdir -p {working_dir}/trnascan
 
-        # Process Bacteria in parallel
-        cat {input.dedupe_table} \
-            | grep 'Bacteria' \
-            | cut -f2 \
-            | grep -v 'Bin Id' \
-            | parallel -j {threads} '
-                echo "Running tRNAscan-SE on {{}}"
-                tRNAscan-SE \
-                    -q -Q -B \
-                    -o {working_dir}/trnascan/{{}}.output.txt \
-                    -m {working_dir}/trnascan/{{}}.stats.txt \
-                    -b {working_dir}/trnascan/{{}}.bed \
-                    -j {working_dir}/trnascan/{{}}.gff \
-                    -a {working_dir}/trnascan/{{}}.trna.fasta \
-                    -l {working_dir}/trnascan/{{}}.log \
-                    --thread 1 \
-                    {params.fasta_dir}/{{}}.fasta
-            '
+        # Bacteria
+        bins_bact=$(grep 'Bacteria' {input.dedupe_table} \
+                    | cut -f2 | grep -v 'Bin Id')
+        if [ -z "$bins_bact" ]; then
+            echo "No Bacteria bins found, skipping." >> {output.out_log}
+        else
+            echo "$bins_bact" | parallel -j {threads} --linebuffer \
+                'echo "Running tRNAscan-SE on {{}}";
+                 tRNAscan-SE -q -Q -B \
+                   -o {working_dir}/trnascan/{{}}.output.txt \
+                   -m {working_dir}/trnascan/{{}}.stats.txt \
+                   -b {working_dir}/trnascan/{{}}.bed \
+                   -j {working_dir}/trnascan/{{}}.gff \
+                   -a {working_dir}/trnascan/{{}}.trna.fasta \
+                   -l {working_dir}/trnascan/{{}}.log \
+                   --thread 1 {params.fasta_dir}/{{}}.fasta'
+            echo "Bacteria Done." >> {output.out_log}
+        fi
 
-        echo "Bacteria Done." >> {output.out_log}
+        # Archaea
+        bins_arc=$(grep 'Archaea' {input.dedupe_table} \
+                  | cut -f2 | grep -v 'Bin Id')
+        if [ -z "$bins_arc" ]; then
+            echo "No Archaea bins found, skipping." >> {output.out_log}
+        else
+            echo "$bins_arc" | parallel -j {threads} --linebuffer \
+                'echo "Running tRNAscan-SE on {{}}";
+                 tRNAscan-SE -q -Q -A \
+                   -o {working_dir}/trnascan/{{}}.output.txt \
+                   -m {working_dir}/trnascan/{{}}.stats.txt \
+                   -b {working_dir}/trnascan/{{}}.bed \
+                   -j {working_dir}/trnascan/{{}}.gff \
+                   -a {working_dir}/trnascan/{{}}.trna.fasta \
+                   -l {working_dir}/trnascan/{{}}.log \
+                   --thread 1 {params.fasta_dir}/{{}}.fasta'
+            echo "Archaea Done." >> {output.out_log}
+        fi
 
-        # Process Archaea in parallel
-        cat {input.dedupe_table} \
-            | grep 'Archaea' \
-            | cut -f2 \
-            | grep -v 'Bin Id' \
-            | parallel -j {threads} '
-                echo "Running tRNAscan-SE on {{}}"
-                tRNAscan-SE \
-                    -q -Q -A \
-                    -o {working_dir}/trnascan/{{}}.output.txt \
-                    -m {working_dir}/trnascan/{{}}.stats.txt \
-                    -b {working_dir}/trnascan/{{}}.bed \
-                    -j {working_dir}/trnascan/{{}}.gff \
-                    -a {working_dir}/trnascan/{{}}.trna.fasta \
-                    -l {working_dir}/trnascan/{{}}.log \
-                    --thread 1 \
-                    {params.fasta_dir}/{{}}.fasta
-            '
-
-        echo "Archaea Done." >> {output.out_log}
-
-        # Parse output
+        # Final parse
         python ./trnascan_parse.py {working_dir}/trnascan/
         echo "Output Parsing Done." >> {output.out_log}
         """
